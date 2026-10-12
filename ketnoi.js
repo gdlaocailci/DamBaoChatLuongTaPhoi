@@ -12,11 +12,11 @@
 const CAUHINH_KETNOI = {
   // 1. THÔNG TIN ĐƠN VỊ & ĐỊNH DANH PHÁP LÝ NHÀ TRƯỜNG
   THONG_TIN_TRUONG: {
-    TEN_TRUONG: "Trường Phổ thông Dân tộc Bán trú Tiểu học & THCS Số 1",
+    TEN_TRUONG: "Trường TH&THC Tả Phời",
     MA_DINH_DANH_CSDL: "24018293",                          // Mã số trường trên CSDL ngành Bộ GD&ĐT
-    CO_QUAN_QUAN_LY: "Phòng Giáo dục và Đào tạo",          // Cơ quan quản lý cấp trên
+    CO_QUAN_QUAN_LY: "UBND xã Hợp Thành",          // Cơ quan quản lý cấp trên
     TINH_THANH_PHO: "Tỉnh Lào Cai",
-    DIA_CHI: "Huyện Bắc Hà, Tỉnh Lào Cai",
+    DIA_CHI: "Xã Hợp Thành, Tỉnh Lào Cai",
     NAM_HOC_DANH_GIA: "2026 - 2027",
     CAP_HOC_MAC_DINH: "TIEU_HOC",                           // 'MAM_NON', 'TIEU_HOC', 'THCS', hoặc 'LIEN_CAP'
     MO_HINH_TRUONG: "TRUONG_LIEN_CAP",                      // 'CONG_LAP', 'TU_THUC', 'LIEN_CAP', 'BAN_TRU'
@@ -86,8 +86,8 @@ const CAUHINH_KETNOI = {
 
   // 3. ĐƯỜNG DẪN KẾT NỐI HẠ TẦNG SỐ (URL ENDPOINTS & DRIVE CLOUD)
   KET_NOI_HA_TANG: {
-    GOOGLE_WEB_APP_URL: "", 
-    GOOGLE_DRIVE_FOLDER_URL: "https://drive.google.com/drive/folders/YOUR_EVIDENCE_FOLDER_ID",
+    GOOGLE_WEB_APP_URL: "https://script.google.com/macros/s/AKfycbzKkzKRwlsQv_cyM9d-sjgKLklzDEqLnJKi9tKFfDJENGr-CcQMbtvGgoTKfOKau-pHJA/exec", 
+    GOOGLE_DRIVE_FOLDER_URL: "https://drive.google.com/drive/u/0/folders/14SLCUGa1Rke-DxRRnTLvCNxE-fii4807",
     CSDL_NGANH_URL: "https://csdl.moet.gov.vn",
     TEMIS_URL: "https://temis.csdl.edu.vn"
   },
