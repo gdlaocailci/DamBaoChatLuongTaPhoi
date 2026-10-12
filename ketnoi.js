@@ -20,7 +20,7 @@ const CAUHINH_KETNOI = {
     NAM_HOC_DANH_GIA: "2026 - 2027",
     CAP_HOC_MAC_DINH: "TIEU_HOC",                           // 'MAM_NON', 'TIEU_HOC', 'THCS', hoặc 'LIEN_CAP'
     MO_HINH_TRUONG: "TRUONG_LIEN_CAP",                      // 'CONG_LAP', 'TU_THUC', 'LIEN_CAP', 'BAN_TRU'
-    SO_DIEN_THOAI_HOTLINE: "0214.386.1234",
+    SO_DIEN_THOAI_HOTLINE: "0969 209 699",
     WEBSITE_TRUONG: "https://truonghoc.edu.vn"
   },
 
@@ -28,8 +28,8 @@ const CAUHINH_KETNOI = {
   // Khai báo danh sách Hội đồng Tự đánh giá và phân quyền phụ trách tiêu chuẩn
   DANH_SACH_NGUOI_DUNG: [
     {
-      id: "nam",
-      hoTen: "Thầy Nguyễn Văn Nam",
+      id: "tuan",
+      hoTen: "Thầy Nguyễn Hữu Tuấn",
       chucVu: "Hiệu trưởng",
       vaiTroHoiDong: "Chủ tịch Hội đồng TĐG",
       roleType: "admin",                                    // 'admin': Toàn quyền quản trị, duyệt báo cáo, phục hồi thùng rác
@@ -39,12 +39,12 @@ const CAUHINH_KETNOI = {
       avatarColor: "bg-indigo-600"
     },
     {
-      id: "thu",
-      hoTen: "Cô Trần Thị Thu",
+      id: "lam",
+      hoTen: "Hoàng Ngọc Lâm",
       chucVu: "Phó Hiệu trưởng",
       vaiTroHoiDong: "Phó Chủ tịch / Thư ký Hội đồng",
       roleType: "reviewer",                                 // 'reviewer': Quyền thẩm tra, duyệt minh chứng, viết tổng hợp
-      googleEmail: "tranthithu.pht@gmail.com",
+      googleEmail: "hoangngoclamlc@gmail.com",
       phuTrach: "Tiêu chuẩn 1 & Tiêu chuẩn 2 (Tổ chức & Đội ngũ)",
       initial: "T",
       avatarColor: "bg-emerald-600"
