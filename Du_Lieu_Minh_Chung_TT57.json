@@ -1,0 +1,1292 @@
+{
+  "metadata": {
+    "app_name": "QA-EDUSYS",
+    "title": "Hệ thống Quản lý Bảo đảm chất lượng & Tự đánh giá Giáo dục",
+    "legal_doc": "Thông tư số 57/2026/TT-BGDĐT ngày 07/07/2026 của Bộ GD&ĐT",
+    "scope": [
+      "Mầm non",
+      "Tiểu học",
+      "THCS",
+      "Trường Liên cấp"
+    ],
+    "version": "2026.1.0",
+    "mandatory_criteria": [
+      "1.3",
+      "1.4",
+      "2.1",
+      "2.2",
+      "3.1",
+      "3.2",
+      "4.1",
+      "4.2"
+    ]
+  },
+  "standards": [
+    {
+      "id": 1,
+      "code": "TC 1",
+      "name": "Tổ chức và quản trị nhà trường"
+    },
+    {
+      "id": 2,
+      "code": "TC 2",
+      "name": "Cán bộ quản lý, giáo viên, nhân viên"
+    },
+    {
+      "id": 3,
+      "code": "TC 3",
+      "name": "Hoạt động giáo dục và kết quả giáo dục"
+    },
+    {
+      "id": 4,
+      "code": "TC 4",
+      "name": "Cơ sở vật chất, thiết bị và môi trường giáo dục"
+    }
+  ],
+  "stages": [
+    {
+      "stage": 1,
+      "name": "Giai đoạn 1: Khởi động Tự đánh giá",
+      "time": "Tháng 8 - Tháng 9",
+      "months": [
+        8,
+        9
+      ],
+      "desc": "Thành lập Hội đồng TĐG; Ban hành Kế hoạch TĐG năm học; Tập huấn mã hóa minh chứng.",
+      "deliverables": "Quyết định thành lập HĐ TĐG; Kế hoạch TĐG năm học; Phân công nhiệm vụ.",
+      "leader": "Hiệu trưởng / Chủ tịch HĐ TĐG"
+    },
+    {
+      "stage": 2,
+      "name": "Giai đoạn 2: Thu thập & Mã hóa Đợt 1",
+      "time": "Tháng 10 - Tháng 12",
+      "months": [
+        10,
+        11,
+        12
+      ],
+      "desc": "Mã hóa minh chứng Tiêu chuẩn 1 & 2; Thu thập minh chứng Học kỳ I (Giáo án, an toàn, y tế).",
+      "deliverables": "Danh mục mã hóa MC Đợt 1; Thư mục dữ liệu số trên CSDL/Drive.",
+      "leader": "Thư ký HĐ & Các Tổ chuyên môn"
+    },
+    {
+      "stage": 3,
+      "name": "Giai đoạn 3: Rà soát & Thu thập Đợt 2",
+      "time": "Tháng 1 - Tháng 4",
+      "months": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "desc": "Đánh giá tiến độ giữa kỳ; Sơ kết HK I; Cập nhật kết quả phong trào, hội thi, kiểm kê tài sản & CSVC.",
+      "deliverables": "Báo cáo sơ kết tiến độ TĐG HK I; Danh mục MC bổ sung Đợt 2.",
+      "leader": "Các Tổ Chuyên môn & Tổ Văn phòng"
+    },
+    {
+      "stage": 4,
+      "name": "Giai đoạn 4: Tổng hợp & Dự thảo Báo cáo",
+      "time": "Tháng 5",
+      "months": [
+        5
+      ],
+      "desc": "Viết dự thảo Báo cáo TĐG hằng năm (Mẫu số 1) & Kế hoạch cải tiến (Mẫu số 2); Họp thông qua HĐ TĐG.",
+      "deliverables": "Dự thảo Báo cáo TĐG; Dự thảo Kế hoạch cải tiến; Biên bản họp HĐ.",
+      "leader": "Thư ký HĐ TĐG & BGH"
+    },
+    {
+      "stage": 5,
+      "name": "Giai đoạn 5: Phê duyệt, Cập nhật & Công khai",
+      "time": "Tháng 6 - Tháng 7",
+      "months": [
+        6,
+        7
+      ],
+      "desc": "Hiệu trưởng duyệt báo cáo; Cập nhật lên CSDL ngành trước 15/6; Công khai kết quả.",
+      "deliverables": "Báo cáo TĐG chính thức (PDF); Dữ liệu cập nhật CSDL ngành; Hồ sơ công khai.",
+      "leader": "Hiệu trưởng / Văn phòng"
+    }
+  ],
+  "special_contexts": [
+    {
+      "context_id": "vung_kho_khan",
+      "name": "Trường Nông thôn / Vùng khó khăn (Thiếu hạ tầng số)",
+      "standard_evidence": "Sổ điểm / học bạ điện tử tích hợp chữ ký số; Phần mềm thương mại chuyên dụng.",
+      "substitute_evidence": "Sổ theo dõi đánh giá học sinh bản giấy có đủ chữ ký GV & BGH + Báo cáo trích xuất định kỳ từ CSDL ngành.",
+      "legal_basis": "Phụ lục IV Thông tư 57/2026/TT-BGDĐT: Cho phép dùng minh chứng bản giấy kèm mô tả cụ thể vị trí lưu trữ tại cơ sở giáo dục."
+    },
+    {
+      "context_id": "tu_thuc",
+      "name": "Trường Tư thục / Dân lập (Không có ngân sách nhà nước)",
+      "standard_evidence": "Báo cáo quyết toán ngân sách nhà nước; Quyết định bổ nhiệm công chức/viên chức.",
+      "substitute_evidence": "Báo cáo tài chính đã được kiểm toán độc lập / xác nhận của HĐQT + Hợp đồng lao động hợp pháp kèm chứng từ đóng BHXH đầy đủ.",
+      "legal_basis": "Điều 4 Thông tư 57/2026/TT-BGDĐT: Thừa nhận hồ sơ quản lý tài chính và nhân sự hợp pháp theo Luật Doanh nghiệp."
+    },
+    {
+      "context_id": "diem_truong_le",
+      "name": "Trường có nhiều Điểm trường lẻ (Điểm bản vùng cao)",
+      "standard_evidence": "Thư viện kiên cố đạt chuẩn riêng cho từng điểm lẻ; Phòng bộ môn riêng biệt tại từng điểm.",
+      "substitute_evidence": "Mô hình 'Thư viện xanh' / Tủ sách dùng chung lớp học + Kế hoạch luân chuyển thiết bị dạy học định kỳ từ điểm chính sang điểm lẻ.",
+      "legal_basis": "Phụ lục II Tiêu chuẩn 4 Thông tư 57: Đánh giá theo điều kiện khai thác và sử dụng thực tế linh hoạt của cơ sở."
+    },
+    {
+      "context_id": "sap_nhap_chia_tach",
+      "name": "Trường mới Sáp nhập / Chia tách (Dưới 3 năm)",
+      "standard_evidence": "Dữ liệu tự đánh giá 3 đến 5 năm liên tiếp dưới mã định danh và tên trường mới.",
+      "substitute_evidence": "Hồ sơ, dữ liệu chất lượng kế thừa từ các trường tiền thân trước khi sáp nhập + Biên bản bàn giao hồ sơ chất lượng nguyên trạng.",
+      "legal_basis": "Điều 15 Thông tư 57/2026/TT-BGDĐT: Cho phép kế thừa kết quả và dữ liệu BĐCLGD của các đơn vị tiền thân."
+    },
+    {
+      "context_id": "chua_phat_sinh",
+      "name": "Nội dung chưa phát sinh (Chưa có HS khuyết tật / bán trú)",
+      "standard_evidence": "Hồ sơ theo dõi học sinh hòa nhập; Giấy chứng nhận ATTP bếp ăn bán trú.",
+      "substitute_evidence": "Văn bản xác nhận của nhà trường về việc chưa có đối tượng phát sinh + Kế hoạch, quy chế dự phòng sẵn sàng triển khai khi có phát sinh.",
+      "legal_basis": "Phụ lục IV Thông tư 57: Đánh giá dựa trên thực tế triển khai và phương án chuẩn bị dự phòng của nhà trường."
+    }
+  ],
+  "workspaces": {
+    "MAM_NON": {
+      "name": "Cấp Mầm non",
+      "legal_basis": "Phụ lục I - Thông tư 57/2026/TT-BGDĐT",
+      "criteria": [
+        {
+          "id": "1.1",
+          "std": 1,
+          "code": "TC 1.1",
+          "name": "Phương hướng, chiến lược xây dựng và phát triển nhà trường",
+          "mandatory": false,
+          "stage": 1,
+          "month": 9,
+          "dept": "Ban Giám hiệu",
+          "default_evidence": [
+            {
+              "code": "MC.1.1.01",
+              "name": "Nghị quyết Hội đồng trường; Kế hoạch phát triển nhà trường giai đoạn 5 năm và hằng năm",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/kehoach/1.1",
+              "stage": 1,
+              "deadline": "2026-09-30",
+              "status": "completed",
+              "dept": "Ban Giám hiệu"
+            }
+          ],
+          "description": "Chiến lược phát triển trường mầm non phù hợp với điều kiện kinh tế - xã hội địa phương và mục tiêu nuôi dưỡng, chăm sóc, giáo dục trẻ."
+        },
+        {
+          "id": "1.2",
+          "std": 1,
+          "code": "TC 1.2",
+          "name": "Hội đồng trường và các tổ chức, đoàn thể, bộ phận",
+          "mandatory": false,
+          "stage": 1,
+          "month": 9,
+          "dept": "Văn phòng / BGH",
+          "default_evidence": [
+            {
+              "code": "MC.1.2.01",
+              "name": "Sơ đồ cơ cấu tổ chức; Quyết định thành lập Hội đồng trường, Tổ chuyên môn, Tổ nuôi dưỡng",
+              "type": "file",
+              "url": "MC.1.2.01_CoCauToChuc.pdf",
+              "stage": 1,
+              "deadline": "2026-09-15",
+              "status": "completed",
+              "dept": "Văn phòng"
+            }
+          ],
+          "description": "Cơ cấu tổ chức bộ máy nhà trường gồm các nhóm trẻ, lớp mẫu giáo, tổ chuyên môn và tổ nuôi dưỡng hoạt động hiệu quả."
+        },
+        {
+          "id": "1.3",
+          "std": 1,
+          "code": "TC 1.3",
+          "name": "Quản lý kế hoạch, nguồn lực, thông tin và dữ liệu (CSDL ngành)",
+          "mandatory": true,
+          "stage": 2,
+          "month": 11,
+          "dept": "BGH / Kế toán / VP",
+          "default_evidence": [
+            {
+              "code": "MC.1.3.01",
+              "name": "Hồ sơ quản lý kế hoạch bán trú, CSDL nhóm/lớp trẻ, nhân sự, tài chính trên hệ thống CSDL ngành",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/dulieu/mamnon",
+              "stage": 2,
+              "deadline": "2026-11-20",
+              "status": "completed",
+              "dept": "BGH / Kế toán"
+            }
+          ],
+          "description": "Cập nhật 100% dữ liệu trẻ mầm non, đội ngũ cán bộ giáo viên, cơ sở vật chất và bữa ăn bán trú lên CSDL ngành đầy đủ, chính xác."
+        },
+        {
+          "id": "1.4",
+          "std": 1,
+          "code": "TC 1.4",
+          "name": "Tự đánh giá, cải tiến chất lượng, công khai và trách nhiệm giải trình",
+          "mandatory": true,
+          "stage": 5,
+          "month": 6,
+          "dept": "Hội đồng TĐG / BGH",
+          "default_evidence": [
+            {
+              "code": "MC.1.4.01",
+              "name": "Báo cáo tự đánh giá chất lượng trường mầm non hằng năm (Mẫu số 1 Phụ lục V)",
+              "type": "file",
+              "url": "MC.1.4.01_BaoCaoTDG_MN.pdf",
+              "stage": 4,
+              "deadline": "2027-05-25",
+              "status": "pending",
+              "dept": "Hội đồng TĐG"
+            },
+            {
+              "code": "MC.1.4.02",
+              "name": "Kế hoạch cải tiến chất lượng nuôi dưỡng, chăm sóc, GD trẻ (Mẫu số 2 Phụ lục V) & Hồ sơ 3 công khai",
+              "type": "link",
+              "url": "https://mamnon.edu.vn/congkhai",
+              "stage": 5,
+              "deadline": "2027-06-10",
+              "status": "pending",
+              "dept": "BGH"
+            }
+          ],
+          "description": "Thực hiện tự đánh giá hằng năm theo đúng Thông tư 57/2026/TT-BGDĐT, niêm yết công khai chất lượng nuôi dưỡng và học phí."
+        },
+        {
+          "id": "2.1",
+          "std": 2,
+          "code": "TC 2.1",
+          "name": "Cán bộ quản lý cơ sở giáo dục (Chuẩn Hiệu trưởng/Phó HT)",
+          "mandatory": true,
+          "stage": 2,
+          "month": 10,
+          "dept": "BGH / Văn phòng",
+          "default_evidence": [
+            {
+              "code": "MC.2.1.01",
+              "name": "Hồ sơ Hiệu trưởng, Phó HT mầm non: Quyết định bổ nhiệm, bằng cử nhân GD Mầm non, chứng chỉ QLGD, đánh giá chuẩn HT",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/cbql/mamnon",
+              "stage": 2,
+              "deadline": "2026-10-30",
+              "status": "completed",
+              "dept": "Văn phòng"
+            }
+          ],
+          "description": "Hiệu trưởng và Phó Hiệu trưởng đạt chuẩn trình độ đào tạo giáo dục mầm non, xếp loại Chuẩn nghề nghiệp đạt mức Khá trở lên."
+        },
+        {
+          "id": "2.2",
+          "std": 2,
+          "code": "TC 2.2",
+          "name": "Giáo viên (Đạt chuẩn trình độ đào tạo & Chuẩn nghề nghiệp)",
+          "mandatory": true,
+          "stage": 2,
+          "month": 11,
+          "dept": "Tổ Chuyên môn / VP",
+          "default_evidence": [
+            {
+              "code": "MC.2.2.01",
+              "name": "Danh sách trích ngang GV; Bảng tổng hợp trình độ CĐSP/ĐHSP mầm non (Luật GD 2019); Đánh giá TEMIS",
+              "type": "link",
+              "url": "https://temis.csdl.edu.vn/mamnon",
+              "stage": 2,
+              "deadline": "2026-11-15",
+              "status": "completed",
+              "dept": "Chuyên môn"
+            }
+          ],
+          "description": "100% giáo viên mầm non đạt chuẩn trình độ đào tạo (cao đẳng sư phạm mầm non trở lên); tỷ lệ giáo viên/nhóm lớp đáp ứng quy định."
+        },
+        {
+          "id": "2.3",
+          "std": 2,
+          "code": "TC 2.3",
+          "name": "Nhân viên và nhân sự hỗ trợ giáo dục",
+          "mandatory": false,
+          "stage": 2,
+          "month": 12,
+          "dept": "Văn phòng / Tổ Nuôi dưỡng",
+          "default_evidence": [
+            {
+              "code": "MC.2.3.01",
+              "name": "Hồ sơ nhân viên nuôi dưỡng, cấp dưỡng (chứng chỉ nấu ăn, khám sức khỏe định kỳ), nhân viên y tế học đường",
+              "type": "paper",
+              "url": "Tủ hồ sơ VP số 02 - Ngăn Nuôi dưỡng",
+              "stage": 2,
+              "deadline": "2026-12-15",
+              "status": "completed",
+              "dept": "Tổ Nuôi dưỡng"
+            }
+          ],
+          "description": "Nhân viên nuôi dưỡng, kế toán, văn thư, y tế học đường có văn bằng chứng chỉ phù hợp vị trí việc làm."
+        },
+        {
+          "id": "3.1",
+          "std": 3,
+          "code": "TC 3.1",
+          "name": "Tổ chức thực hiện chương trình giáo dục mầm non",
+          "mandatory": true,
+          "stage": 1,
+          "month": 9,
+          "dept": "BGH / Tổ Chuyên môn",
+          "default_evidence": [
+            {
+              "code": "MC.3.1.01",
+              "name": "Kế hoạch nuôi dưỡng, chăm sóc, giáo dục trẻ năm học; Kế hoạch hoạt động của nhóm trẻ và các lớp mẫu giáo",
+              "type": "file",
+              "url": "MC.3.1.01_KHGD_MamNon.docx",
+              "stage": 1,
+              "deadline": "2026-09-25",
+              "status": "completed",
+              "dept": "Tổ Chuyên môn"
+            }
+          ],
+          "description": "Thực hiện đúng Chương trình Giáo dục mầm non do Bộ GDĐT ban hành; xây dựng môi trường giáo dục lấy trẻ làm trung tâm."
+        },
+        {
+          "id": "3.2",
+          "std": 3,
+          "code": "TC 3.2",
+          "name": "Đổi mới phương pháp chăm sóc, giáo dục và theo dõi sự phát triển của trẻ",
+          "mandatory": true,
+          "stage": 3,
+          "month": 1,
+          "dept": "Tổ Chuyên môn / GV",
+          "default_evidence": [
+            {
+              "code": "MC.3.2.01",
+              "name": "Kế hoạch giáo dục ngày/tuần; Biên bản sinh hoạt chuyên môn đổi mới phương pháp giáo dục steam/trải nghiệm mầm non",
+              "type": "file",
+              "url": "MC.3.2.01_GiaoAn_MN.pdf",
+              "stage": 2,
+              "deadline": "2026-12-20",
+              "status": "completed",
+              "dept": "Tổ Chuyên môn"
+            },
+            {
+              "code": "MC.3.2.02",
+              "name": "Phiếu theo dõi sự phát triển của trẻ hằng ngày và theo giai đoạn; Đánh giá trẻ 5 tuổi theo Bộ chuẩn PT trẻ",
+              "type": "paper",
+              "url": "Hồ sơ lớp học các nhóm trẻ/lớp mẫu giáo",
+              "stage": 3,
+              "deadline": "2027-01-15",
+              "status": "in_progress",
+              "dept": "GV các lớp"
+            }
+          ],
+          "description": "Ứng dụng phương pháp giáo dục tiên tiến; theo dõi đánh giá trẻ hằng ngày và cuối độ tuổi chính xác, nhân văn."
+        },
+        {
+          "id": "3.3",
+          "std": 3,
+          "code": "TC 3.3",
+          "name": "Hoạt động trải nghiệm, kỹ năng sống và phong trào giáo dục mầm non",
+          "mandatory": false,
+          "stage": 3,
+          "month": 3,
+          "dept": "Đoàn Thanh niên / GV",
+          "default_evidence": [
+            {
+              "code": "MC.3.3.01",
+              "name": "Hồ sơ tổ chức 'Ngày hội bé đến trường', 'Bé vui khỏe - Bé tài năng', hoạt động tham quan trải nghiệm thực tế",
+              "type": "link",
+              "url": "https://mamnon.edu.vn/hoatdong/trainghiem",
+              "stage": 3,
+              "deadline": "2027-03-25",
+              "status": "pending",
+              "dept": "Đoàn TN"
+            }
+          ],
+          "description": "Tổ chức đa dạng các ngày hội, ngày lễ, hoạt động trải nghiệm rèn luyện kỹ năng tự phục vụ cho trẻ."
+        },
+        {
+          "id": "3.4",
+          "std": 3,
+          "code": "TC 3.4",
+          "name": "Chăm sóc, giáo dục trẻ khuyết tật và hoàn cảnh đặc biệt",
+          "mandatory": false,
+          "stage": 3,
+          "month": 2,
+          "dept": "GV Chủ nhiệm / Y tế",
+          "default_evidence": [
+            {
+              "code": "MC.3.4.01",
+              "name": "Sổ theo dõi trẻ khuyết tật học hòa nhập; Kế hoạch giáo dục cá nhân (hoặc văn bản xác nhận chưa có trẻ khuyết tật)",
+              "type": "paper",
+              "url": "Tủ hồ sơ Ban giám hiệu - Ngăn Hòa nhập",
+              "stage": 3,
+              "deadline": "2027-02-28",
+              "status": "completed",
+              "dept": "Y tế / GV"
+            }
+          ],
+          "description": "Bảo đảm quyền học tập hòa nhập của trẻ khuyết tật; có kế hoạch can thiệp sớm và hỗ trợ phù hợp."
+        },
+        {
+          "id": "3.5",
+          "std": 3,
+          "code": "TC 3.5",
+          "name": "Kết quả phát triển thể chất và chất lượng đầu ra hằng năm",
+          "mandatory": false,
+          "stage": 4,
+          "month": 5,
+          "dept": "Chuyên môn / Nuôi dưỡng",
+          "default_evidence": [
+            {
+              "code": "MC.3.5.01",
+              "name": "Bảng tổng hợp đánh giá trẻ cuối năm: Tỷ lệ bé ngoan, chuyên cần (5T ≥ 90%), tỷ lệ suy dinh dưỡng dưới 3%",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/mamnon/danhgiatre",
+              "stage": 4,
+              "deadline": "2027-05-20",
+              "status": "pending",
+              "dept": "Chuyên môn"
+            }
+          ],
+          "description": "Tỷ lệ chuyên cần đạt chuẩn; trẻ phát triển hài hòa về thể chất, tâm lý, nhận thức, ngôn ngữ và tình cảm xã hội."
+        },
+        {
+          "id": "4.1",
+          "std": 4,
+          "code": "TC 4.1",
+          "name": "Cơ sở vật chất, thiết bị, đồ chơi và bếp ăn bán trú",
+          "mandatory": true,
+          "stage": 3,
+          "month": 4,
+          "dept": "Bộ phận CSVC / Nuôi dưỡng",
+          "default_evidence": [
+            {
+              "code": "MC.4.1.01",
+              "name": "Danh mục phòng học nhóm/lớp, sân chơi ngoài trời có cây xanh, đồ chơi tối thiểu, bếp ăn bán trú 1 chiều đạt chuẩn",
+              "type": "file",
+              "url": "MC.4.1.01_CSVC_MamNon.pdf",
+              "stage": 3,
+              "deadline": "2027-04-20",
+              "status": "completed",
+              "dept": "Tổ CSVC"
+            }
+          ],
+          "description": "Khuôn viên xanh - sạch - đẹp, sân chơi an toàn; bếp ăn thiết kế một chiều bảo đảm vệ sinh; đủ đồ dùng đồ chơi."
+        },
+        {
+          "id": "4.2",
+          "std": 4,
+          "code": "TC 4.2",
+          "name": "Môi trường giáo dục an toàn, sức khỏe và hạnh phúc",
+          "mandatory": true,
+          "stage": 2,
+          "month": 10,
+          "dept": "Ban An toàn / Y tế",
+          "default_evidence": [
+            {
+              "code": "MC.4.2.01",
+              "name": "Giấy chứng nhận cơ sở đủ điều kiện ATTP bếp ăn; Hợp đồng cung ứng thực phẩm sạch có nguồn gốc rõ ràng",
+              "type": "file",
+              "url": "MC.4.2.01_ATTP_KiemDinh.pdf",
+              "stage": 2,
+              "deadline": "2026-10-15",
+              "status": "completed",
+              "dept": "Nuôi dưỡng"
+            },
+            {
+              "code": "MC.4.2.02",
+              "name": "Biên bản kiểm tra an toàn PCCC, hồ sơ phòng chống tai nạn thương tích, biên bản khám sức khỏe định kỳ cho trẻ",
+              "type": "file",
+              "url": "MC.4.2.02_PCCC_YTe.pdf",
+              "stage": 2,
+              "deadline": "2026-10-25",
+              "status": "completed",
+              "dept": "Y tế"
+            }
+          ],
+          "description": "Không xảy ra tai nạn thương tích và ngộ độc thực phẩm; 100% trẻ được theo dõi sức khỏe và khám định kỳ 2 lần/năm."
+        },
+        {
+          "id": "4.3",
+          "std": 4,
+          "code": "TC 4.3",
+          "name": "Phối hợp Nhà trường - Gia đình - Xã hội",
+          "mandatory": false,
+          "stage": 3,
+          "month": 1,
+          "dept": "BGH / Ban ĐD Cha mẹ trẻ",
+          "default_evidence": [
+            {
+              "code": "MC.4.3.01",
+              "name": "Biên bản họp Ban đại diện cha mẹ trẻ; Góc tuyên truyền dinh dưỡng và phối hợp chăm sóc trẻ",
+              "type": "paper",
+              "url": "Sổ biên bản họp phụ huynh tại VP",
+              "stage": 3,
+              "deadline": "2027-01-10",
+              "status": "completed",
+              "dept": "BGH"
+            }
+          ],
+          "description": "Thực hiện phối hợp chặt chẽ giữa nhà trường và phụ huynh trong chế độ dinh dưỡng, chăm sóc và phòng bệnh cho trẻ."
+        }
+      ]
+    },
+    "TIEU_HOC": {
+      "name": "Cấp Tiểu học",
+      "legal_basis": "Phụ lục II - Thông tư 57/2026/TT-BGDĐT & Thông tư 27/2020/TT-BGDĐT",
+      "criteria": [
+        {
+          "id": "1.1",
+          "std": 1,
+          "code": "TC 1.1",
+          "name": "Phương hướng, chiến lược xây dựng và phát triển nhà trường",
+          "mandatory": false,
+          "stage": 1,
+          "month": 9,
+          "dept": "Ban Giám hiệu",
+          "default_evidence": [
+            {
+              "code": "MC.1.1.01",
+              "name": "Nghị quyết Hội đồng trường; Kế hoạch phát triển nhà trường 5 năm và hằng năm",
+              "type": "file",
+              "url": "MC.1.1.01_KHChienLuoc.pdf",
+              "stage": 1,
+              "deadline": "2026-09-25",
+              "status": "completed",
+              "dept": "Ban Giám hiệu"
+            }
+          ],
+          "description": "Chiến lược phát triển trường tiểu học phù hợp mục tiêu CTGDPT 2018 và quy hoạch phát triển giáo dục địa phương."
+        },
+        {
+          "id": "1.2",
+          "std": 1,
+          "code": "TC 1.2",
+          "name": "Hội đồng trường và các tổ chức, đoàn thể, bộ phận",
+          "mandatory": false,
+          "stage": 1,
+          "month": 9,
+          "dept": "Văn phòng / BGH",
+          "default_evidence": [
+            {
+              "code": "MC.1.2.01",
+              "name": "Sơ đồ tổ chức; Quyết định thành lập các tổ chuyên môn, tổ văn phòng, các hội đồng",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/tieuhoc/tochuc",
+              "stage": 1,
+              "deadline": "2026-09-15",
+              "status": "completed",
+              "dept": "Văn phòng"
+            }
+          ],
+          "description": "Hội đồng trường, các tổ chuyên môn (Khối 1, 2, 3, 4, 5) và tổ văn phòng thực hiện đúng chức năng, nhiệm vụ."
+        },
+        {
+          "id": "1.3",
+          "std": 1,
+          "code": "TC 1.3",
+          "name": "Quản lý kế hoạch, nguồn lực, thông tin và dữ liệu (CSDL ngành)",
+          "mandatory": true,
+          "stage": 2,
+          "month": 11,
+          "dept": "BGH / Kế toán / VP",
+          "default_evidence": [
+            {
+              "code": "MC.1.3.01",
+              "name": "Hồ sơ quản lý kế hoạch GD, tài chính, nhân sự, học sinh, CSVC trên CSDL ngành",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/tieuhoc/csdl",
+              "stage": 2,
+              "deadline": "2026-11-20",
+              "status": "completed",
+              "dept": "BGH, Kế toán, VP"
+            }
+          ],
+          "description": "Ứng dụng CSDL ngành trong quản lý học bạ điện tử, hồ sơ nhân sự, kế toán tài chính và thiết bị dạy học."
+        },
+        {
+          "id": "1.4",
+          "std": 1,
+          "code": "TC 1.4",
+          "name": "Tự đánh giá, cải tiến chất lượng, công khai và trách nhiệm giải trình",
+          "mandatory": true,
+          "stage": 5,
+          "month": 6,
+          "dept": "Hội đồng TĐG / BGH",
+          "default_evidence": [
+            {
+              "code": "MC.1.4.01",
+              "name": "Báo cáo tự đánh giá chất lượng giáo dục hằng năm (Biểu mẫu 1 Phụ lục V)",
+              "type": "file",
+              "url": "MC.1.4.01_BaoCaoTDG_TH.pdf",
+              "stage": 4,
+              "deadline": "2027-05-25",
+              "status": "pending",
+              "dept": "Hội đồng TĐG"
+            },
+            {
+              "code": "MC.1.4.02",
+              "name": "Kế hoạch cải tiến chất lượng giáo dục (Biểu mẫu 2 Phụ lục V) & Hồ sơ công khai",
+              "type": "link",
+              "url": "https://tieuhoc.edu.vn/cong-khai-tt57",
+              "stage": 5,
+              "deadline": "2027-06-10",
+              "status": "pending",
+              "dept": "Ban Giám hiệu"
+            }
+          ],
+          "description": "Hoàn thành tự đánh giá theo 5 giai đoạn năm học; công khai cam kết chất lượng giáo dục và kết quả tự đánh giá."
+        },
+        {
+          "id": "2.1",
+          "std": 2,
+          "code": "TC 2.1",
+          "name": "Cán bộ quản lý cơ sở giáo dục (Chuẩn Hiệu trưởng/Phó HT)",
+          "mandatory": true,
+          "stage": 2,
+          "month": 10,
+          "dept": "BGH / Văn phòng",
+          "default_evidence": [
+            {
+              "code": "MC.2.1.01",
+              "name": "Hồ sơ cán bộ quản lý (Hiệu trưởng, Phó HT): Bổ nhiệm, văn bằng chứng chỉ đạt chuẩn cử nhân, đánh giá HT",
+              "type": "link",
+              "url": "https://temis.csdl.edu.vn/cbql",
+              "stage": 2,
+              "deadline": "2026-10-30",
+              "status": "completed",
+              "dept": "BGH / Văn phòng"
+            }
+          ],
+          "description": "Hiệu trưởng và Phó Hiệu trưởng có trình độ cử nhân trở lên, năng lực quản trị trường học đáp ứng đổi mới GDPT."
+        },
+        {
+          "id": "2.2",
+          "std": 2,
+          "code": "TC 2.2",
+          "name": "Giáo viên (Đạt chuẩn trình độ đào tạo & Chuẩn nghề nghiệp)",
+          "mandatory": true,
+          "stage": 2,
+          "month": 11,
+          "dept": "Văn phòng / CM",
+          "default_evidence": [
+            {
+              "code": "MC.2.2.01",
+              "name": "Danh sách trích ngang GV; Bảng tổng hợp trình độ đào tạo đạt chuẩn cử nhân trở lên; Kết quả TEMIS",
+              "type": "link",
+              "url": "https://temis.csdl.edu.vn/gv",
+              "stage": 2,
+              "deadline": "2026-11-15",
+              "status": "completed",
+              "dept": "Văn phòng / CM"
+            }
+          ],
+          "description": "Tỷ lệ giáo viên/lớp đạt định mức quy định dạy 2 buổi/ngày; 100% giáo viên đạt chuẩn trình độ theo Luật Giáo dục 2019."
+        },
+        {
+          "id": "2.3",
+          "std": 2,
+          "code": "TC 2.3",
+          "name": "Nhân viên và nhân sự hỗ trợ giáo dục",
+          "mandatory": false,
+          "stage": 2,
+          "month": 12,
+          "dept": "Văn phòng / KT",
+          "default_evidence": [
+            {
+              "code": "MC.2.3.01",
+              "name": "Quyết định phân công/Hợp đồng lao động nhân sự hỗ trợ (Tổng TĐ, Kế toán, Y tế, Thư viện)",
+              "type": "paper",
+              "url": "Tủ hồ sơ văn phòng nhà trường",
+              "stage": 2,
+              "deadline": "2026-12-15",
+              "status": "completed",
+              "dept": "Văn phòng / KT"
+            }
+          ],
+          "description": "Có đủ nhân sự phụ trách kế toán, văn thư, y tế trường học, thư viện - thiết bị dạy học."
+        },
+        {
+          "id": "3.1",
+          "std": 3,
+          "code": "TC 3.1",
+          "name": "Tổ chức thực hiện chương trình giáo dục tiểu học",
+          "mandatory": true,
+          "stage": 1,
+          "month": 9,
+          "dept": "BGH / Tổ CM",
+          "default_evidence": [
+            {
+              "code": "MC.3.1.01",
+              "name": "Kế hoạch giáo dục nhà trường cấp tiểu học; Kế hoạch dạy học môn học & Hoạt động GD 2 buổi/ngày",
+              "type": "file",
+              "url": "MC.3.1.01_KHGD_TieuHoc.pdf",
+              "stage": 1,
+              "deadline": "2026-09-20",
+              "status": "completed",
+              "dept": "Ban Giám hiệu / Tổ CM"
+            }
+          ],
+          "description": "Xây dựng và tổ chức thực hiện kế hoạch giáo dục theo CTGDPT 2018 bảo đảm tính vừa sức, phát triển phẩm chất, năng lực."
+        },
+        {
+          "id": "3.2",
+          "std": 3,
+          "code": "TC 3.2",
+          "name": "Đổi mới phương pháp và theo dõi, đánh giá học sinh (Thông tư 27)",
+          "mandatory": true,
+          "stage": 3,
+          "month": 1,
+          "dept": "Tổ Chuyên môn / GV",
+          "default_evidence": [
+            {
+              "code": "MC.3.2.01",
+              "name": "Kế hoạch bài dạy (Giáo án); Biên bản sinh hoạt chuyên môn theo nghiên cứu bài học",
+              "type": "file",
+              "url": "MC.3.2.01_GiaoAn_SHCM.docx",
+              "stage": 2,
+              "deadline": "2026-12-25",
+              "status": "completed",
+              "dept": "Tổ Chuyên môn / GV"
+            },
+            {
+              "code": "MC.3.2.02",
+              "name": "Hồ sơ đánh giá học sinh tiểu học (Thông tư 27); Học bạ điện tử & Bảng tổng hợp kết quả HK I và cả năm",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/tieuhoc/danhgia",
+              "stage": 3,
+              "deadline": "2027-01-15",
+              "status": "in_progress",
+              "dept": "GV Chủ nhiệm"
+            }
+          ],
+          "description": "Thực hiện đổi mới phương pháp dạy học và đánh giá học sinh tiểu học theo Thông tư 27/2020/TT-BGDĐT."
+        },
+        {
+          "id": "3.3",
+          "std": 3,
+          "code": "TC 3.3",
+          "name": "Hoạt động trải nghiệm, STEM/STEAM và phong trào giáo dục",
+          "mandatory": false,
+          "stage": 3,
+          "month": 3,
+          "dept": "Tổng TĐ / GVCN",
+          "default_evidence": [
+            {
+              "code": "MC.3.3.01",
+              "name": "Hồ sơ tổ chức hoạt động trải nghiệm, STEM/STEAM, kỹ năng sống, giáo dục thể chất",
+              "type": "link",
+              "url": "https://tieuhoc.edu.vn/stem-trainghiem",
+              "stage": 3,
+              "deadline": "2027-03-20",
+              "status": "in_progress",
+              "dept": "Tổng TĐ / GVCN"
+            }
+          ],
+          "description": "Tổ chức hoạt động trải nghiệm, STEM tiểu học, văn hóa văn nghệ, thể dục thể thao sôi nổi, bổ ích."
+        },
+        {
+          "id": "3.4",
+          "std": 3,
+          "code": "TC 3.4",
+          "name": "Học sinh khuyết tật học hòa nhập và giáo dục hòa nhập",
+          "mandatory": false,
+          "stage": 3,
+          "month": 2,
+          "dept": "GVCN / Khuyết tật",
+          "default_evidence": [
+            {
+              "code": "MC.3.4.01",
+              "name": "Hồ sơ theo dõi học sinh khuyết tật học hòa nhập; Kế hoạch giáo dục cá nhân (KHDGCN)",
+              "type": "paper",
+              "url": "Sổ theo dõi học sinh hòa nhập điện tử CSDL",
+              "stage": 3,
+              "deadline": "2027-02-28",
+              "status": "completed",
+              "dept": "GVCN / Khuyết tật"
+            }
+          ],
+          "description": "Lập kế hoạch giáo dục cá nhân và đánh giá vì sự tiến bộ của học sinh khuyết tật học hòa nhập."
+        },
+        {
+          "id": "3.5",
+          "std": 3,
+          "code": "TC 3.5",
+          "name": "Thống kê tỷ lệ học sinh hoàn thành chương trình lớp học & tiểu học",
+          "mandatory": false,
+          "stage": 4,
+          "month": 5,
+          "dept": "Chuyên môn / VP",
+          "default_evidence": [
+            {
+              "code": "MC.3.5.01",
+              "name": "Thống kê tỷ lệ học sinh hoàn thành chương trình lớp học (≥ 98%) và hoàn thành chương trình tiểu học (11 tuổi)",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/tieuhoc/thongke",
+              "stage": 4,
+              "deadline": "2027-05-20",
+              "status": "pending",
+              "dept": "Chuyên môn / VP"
+            }
+          ],
+          "description": "Học sinh hoàn thành chương trình lớp học đạt tỷ lệ cao; 100% học sinh hoàn thành chương trình tiểu học được cấp giấy chứng nhận."
+        },
+        {
+          "id": "4.1",
+          "std": 4,
+          "code": "TC 4.1",
+          "name": "Cơ sở vật chất, thiết bị, học liệu và thư viện đạt chuẩn",
+          "mandatory": true,
+          "stage": 3,
+          "month": 4,
+          "dept": "Bộ phận CSVC / Thư viện",
+          "default_evidence": [
+            {
+              "code": "MC.4.1.01",
+              "name": "Danh mục phòng học kiên cố, phòng chức năng, thư viện đạt chuẩn theo TT 16/2022, thiết bị dạy học tối thiểu",
+              "type": "file",
+              "url": "MC.4.1.01_CSVC_ThietBi.pdf",
+              "stage": 3,
+              "deadline": "2027-04-20",
+              "status": "completed",
+              "dept": "Bộ phận CSVC / Thư viện"
+            }
+          ],
+          "description": "Đủ phòng học đạt chuẩn kiên cố; thư viện thân thiện/thư viện đạt chuẩn; thiết bị dạy học đáp ứng CTGDPT 2018."
+        },
+        {
+          "id": "4.2",
+          "std": 4,
+          "code": "TC 4.2",
+          "name": "Môi trường giáo dục an toàn, sức khỏe và hạnh phúc",
+          "mandatory": true,
+          "stage": 2,
+          "month": 10,
+          "dept": "Ban An toàn / Y tế / Tư vấn",
+          "default_evidence": [
+            {
+              "code": "MC.4.2.01",
+              "name": "Hồ sơ y tế trường học, an toàn vệ sinh thực phẩm (bán trú), PCCC, an ninh trật tự trường học",
+              "type": "file",
+              "url": "MC.4.2.01_YTe_ATTP_PCCC.pdf",
+              "stage": 2,
+              "deadline": "2026-10-20",
+              "status": "completed",
+              "dept": "Y tế / Ban An toàn"
+            },
+            {
+              "code": "MC.4.2.02",
+              "name": "Kế hoạch & Minh chứng phòng chống bạo lực học đường, tổ tư vấn tâm lý học đường cho học sinh tiểu học",
+              "type": "file",
+              "url": "MC.4.2.02_TuVanTamLy.docx",
+              "stage": 2,
+              "deadline": "2026-10-30",
+              "status": "completed",
+              "dept": "Tổ Tư vấn tâm lý / TĐ"
+            }
+          ],
+          "description": "Trường học an toàn, phòng chống tai nạn thương tích; hoạt động tư vấn tâm lý học đường hỗ trợ học sinh kịp thời."
+        },
+        {
+          "id": "4.3",
+          "std": 4,
+          "code": "TC 4.3",
+          "name": "Mối quan hệ Nhà trường - Gia đình - Xã hội",
+          "mandatory": false,
+          "stage": 3,
+          "month": 1,
+          "dept": "BGH / GVCN",
+          "default_evidence": [
+            {
+              "code": "MC.4.3.01",
+              "name": "Biên bản họp Ban đại diện cha mẹ học sinh; Quy chế phối hợp Nhà trường - Gia đình - Xã hội; Sổ liên lạc điện tử",
+              "type": "paper",
+              "url": "Sổ biên bản họp & Sổ liên lạc điện tử CSDL",
+              "stage": 3,
+              "deadline": "2027-01-10",
+              "status": "completed",
+              "dept": "Ban Giám hiệu / GVCN"
+            }
+          ],
+          "description": "Ban đại diện cha mẹ học sinh phối hợp chặt chẽ; huy động nguồn lực xã hội hóa giáo dục đúng quy định."
+        }
+      ]
+    },
+    "THCS": {
+      "name": "Cấp Trung học cơ sở",
+      "legal_basis": "Phụ lục II - Thông tư 57/2026/TT-BGDĐT & Thông tư 22/2021/TT-BGDĐT",
+      "criteria": [
+        {
+          "id": "1.1",
+          "std": 1,
+          "code": "TC 1.1",
+          "name": "Phương hướng, chiến lược xây dựng và phát triển nhà trường",
+          "mandatory": false,
+          "stage": 1,
+          "month": 9,
+          "dept": "Ban Giám hiệu",
+          "default_evidence": [
+            {
+              "code": "MC.1.1.01",
+              "name": "Nghị quyết Hội đồng trường; Kế hoạch phát triển trường THCS 5 năm và hằng năm có chỉ tiêu phân luồng",
+              "type": "file",
+              "url": "MC.1.1.01_ChienLuoc_THCS.pdf",
+              "stage": 1,
+              "deadline": "2026-09-25",
+              "status": "completed",
+              "dept": "Ban Giám hiệu"
+            }
+          ],
+          "description": "Chiến lược phát triển trường THCS gắn với mục tiêu giáo dục toàn diện, hướng nghiệp và phân luồng sau THCS."
+        },
+        {
+          "id": "1.2",
+          "std": 1,
+          "code": "TC 1.2",
+          "name": "Hội đồng trường và các tổ chức, đoàn thể, bộ phận",
+          "mandatory": false,
+          "stage": 1,
+          "month": 9,
+          "dept": "Văn phòng / BGH",
+          "default_evidence": [
+            {
+              "code": "MC.1.2.01",
+              "name": "Sơ đồ cơ cấu tổ chức; Quyết định thành lập các tổ bộ môn (Toán, KHTN, Văn, Sử-Địa, Ngoại ngữ...)",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/thcs/tochuc",
+              "stage": 1,
+              "deadline": "2026-09-15",
+              "status": "completed",
+              "dept": "Văn phòng"
+            }
+          ],
+          "description": "Các tổ chuyên môn bộ môn và tổ văn phòng hoạt động hiệu quả; Đoàn - Đội phát huy vai trò rèn luyện học sinh."
+        },
+        {
+          "id": "1.3",
+          "std": 1,
+          "code": "TC 1.3",
+          "name": "Quản lý kế hoạch, nguồn lực, thông tin và dữ liệu (CSDL ngành)",
+          "mandatory": true,
+          "stage": 2,
+          "month": 11,
+          "dept": "BGH / Kế toán / VP",
+          "default_evidence": [
+            {
+              "code": "MC.1.3.01",
+              "name": "Hồ sơ quản lý kế hoạch GD, sổ điểm điện tử, học bạ số, kiểm tra định kỳ trên CSDL ngành",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/thcs/csdl",
+              "stage": 2,
+              "deadline": "2026-11-20",
+              "status": "completed",
+              "dept": "BGH / Kế toán / VP"
+            }
+          ],
+          "description": "Ứng dụng CSDL ngành quản lý điểm số, kiểm tra đánh giá, học bạ số và phân luồng học sinh sau tốt nghiệp."
+        },
+        {
+          "id": "1.4",
+          "std": 1,
+          "code": "TC 1.4",
+          "name": "Tự đánh giá, cải tiến chất lượng, công khai và trách nhiệm giải trình",
+          "mandatory": true,
+          "stage": 5,
+          "month": 6,
+          "dept": "Hội đồng TĐG / BGH",
+          "default_evidence": [
+            {
+              "code": "MC.1.4.01",
+              "name": "Báo cáo tự đánh giá chất lượng trường THCS hằng năm (Mẫu số 1 Phụ lục V)",
+              "type": "file",
+              "url": "MC.1.4.01_BaoCaoTDG_THCS.pdf",
+              "stage": 4,
+              "deadline": "2027-05-25",
+              "status": "pending",
+              "dept": "Hội đồng TĐG"
+            },
+            {
+              "code": "MC.1.4.02",
+              "name": "Kế hoạch cải tiến chất lượng giáo dục THCS (Mẫu số 2 Phụ lục V) & Hồ sơ công khai kết quả",
+              "type": "link",
+              "url": "https://thcs.edu.vn/cong-khai",
+              "stage": 5,
+              "deadline": "2027-06-10",
+              "status": "pending",
+              "dept": "Ban Giám hiệu"
+            }
+          ],
+          "description": "Thực hiện tự đánh giá hằng năm theo chu kỳ năm học; cải tiến chất lượng dạy học các môn thi vào lớp 10."
+        },
+        {
+          "id": "2.1",
+          "std": 2,
+          "code": "TC 2.1",
+          "name": "Cán bộ quản lý cơ sở giáo dục (Chuẩn Hiệu trưởng/Phó HT)",
+          "mandatory": true,
+          "stage": 2,
+          "month": 10,
+          "dept": "BGH / Văn phòng",
+          "default_evidence": [
+            {
+              "code": "MC.2.1.01",
+              "name": "Hồ sơ Hiệu trưởng, Phó HT: Quyết định bổ nhiệm, bằng cử nhân/thạc sĩ sư phạm, chứng chỉ QLGD, kết quả đánh giá chuẩn HT",
+              "type": "link",
+              "url": "https://temis.csdl.edu.vn/thcs/cbql",
+              "stage": 2,
+              "deadline": "2026-10-30",
+              "status": "completed",
+              "dept": "BGH / Văn phòng"
+            }
+          ],
+          "description": "Hiệu trưởng và Phó Hiệu trưởng có trình độ cử nhân sư phạm trở lên; năng lực lãnh đạo đổi mới phương pháp dạy học THCS."
+        },
+        {
+          "id": "2.2",
+          "std": 2,
+          "code": "TC 2.2",
+          "name": "Giáo viên (Đạt chuẩn trình độ đào tạo & Chuẩn nghề nghiệp)",
+          "mandatory": true,
+          "stage": 2,
+          "month": 11,
+          "dept": "Tổ Chuyên môn / VP",
+          "default_evidence": [
+            {
+              "code": "MC.2.2.01",
+              "name": "Danh sách trích ngang GV; Bảng tổng hợp trình độ cử nhân sư phạm các bộ môn; Đánh giá chuẩn nghề nghiệp TEMIS",
+              "type": "link",
+              "url": "https://temis.csdl.edu.vn/thcs/gv",
+              "stage": 2,
+              "deadline": "2026-11-15",
+              "status": "completed",
+              "dept": "Tổ Chuyên môn / VP"
+            }
+          ],
+          "description": "100% giáo viên đạt chuẩn trình độ cử nhân sư phạm đúng chuyên ngành đào tạo theo Luật Giáo dục 2019."
+        },
+        {
+          "id": "2.3",
+          "std": 2,
+          "code": "TC 2.3",
+          "name": "Nhân viên và nhân sự hỗ trợ giáo dục",
+          "mandatory": false,
+          "stage": 2,
+          "month": 12,
+          "dept": "Văn phòng / Thiết bị",
+          "default_evidence": [
+            {
+              "code": "MC.2.3.01",
+              "name": "Hồ sơ nhân viên phụ trách phòng thí nghiệm - thực hành, thư viện, CNTT, kế toán, tư vấn học đường",
+              "type": "paper",
+              "url": "Tủ hồ sơ văn phòng trường THCS",
+              "stage": 2,
+              "deadline": "2026-12-15",
+              "status": "completed",
+              "dept": "Văn phòng / Thiết bị"
+            }
+          ],
+          "description": "Có nhân viên chuyên trách thiết bị thí nghiệm hỗ trợ thực hành môn KHTN, Tin học, Công nghệ."
+        },
+        {
+          "id": "3.1",
+          "std": 3,
+          "code": "TC 3.1",
+          "name": "Tổ chức thực hiện chương trình giáo dục THCS",
+          "mandatory": true,
+          "stage": 1,
+          "month": 9,
+          "dept": "BGH / Tổ CM",
+          "default_evidence": [
+            {
+              "code": "MC.3.1.01",
+              "name": "Kế hoạch giáo dục nhà trường cấp THCS; Phân phối chương trình môn học và Hoạt động trải nghiệm, hướng nghiệp",
+              "type": "file",
+              "url": "MC.3.1.01_KHGD_THCS.pdf",
+              "stage": 1,
+              "deadline": "2026-09-20",
+              "status": "completed",
+              "dept": "BGH / Tổ CM"
+            }
+          ],
+          "description": "Tổ chức thực hiện CTGDPT 2018 cấp THCS đồng bộ các khối 6, 7, 8, 9; dạy học tích hợp môn KHTN, Lịch sử và Địa lý hiệu quả."
+        },
+        {
+          "id": "3.2",
+          "std": 3,
+          "code": "TC 3.2",
+          "name": "Đổi mới phương pháp và đánh giá học sinh THCS (Thông tư 22)",
+          "mandatory": true,
+          "stage": 3,
+          "month": 1,
+          "dept": "Tổ Chuyên môn / GV",
+          "default_evidence": [
+            {
+              "code": "MC.3.2.01",
+              "name": "Kế hoạch bài dạy theo Công văn 5512/BGDĐT; Biên bản sinh hoạt chuyên môn cụm trường/tổ bộ môn",
+              "type": "file",
+              "url": "MC.3.2.01_KHBD_CV5512.docx",
+              "stage": 2,
+              "deadline": "2026-12-25",
+              "status": "completed",
+              "dept": "Tổ Chuyên môn / GV"
+            },
+            {
+              "code": "MC.3.2.02",
+              "name": "Hồ sơ đánh giá học sinh THCS (Thông tư 22/2021/TT-BGDĐT); Ma trận, đề kiểm tra định kỳ; Học bạ điện tử",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/thcs/danhgia-tt22",
+              "stage": 3,
+              "deadline": "2027-01-15",
+              "status": "in_progress",
+              "dept": "Tổ Chuyên môn"
+            }
+          ],
+          "description": "Đổi mới phương pháp dạy học phát triển phẩm chất, năng lực; thực hiện đánh giá học sinh theo đúng Thông tư 22/2021/TT-BGDĐT."
+        },
+        {
+          "id": "3.3",
+          "std": 3,
+          "code": "TC 3.3",
+          "name": "Hoạt động trải nghiệm hướng nghiệp (HĐTN-HN) và nghiên cứu KHKT",
+          "mandatory": false,
+          "stage": 3,
+          "month": 3,
+          "dept": "Tổng TĐ / GVCN",
+          "default_evidence": [
+            {
+              "code": "MC.3.3.01",
+              "name": "Hồ sơ tổ chức Hoạt động trải nghiệm, hướng nghiệp (HĐTN-HN); Dự án nghiên cứu KHKT học sinh THCS cấp trường/huyện",
+              "type": "link",
+              "url": "https://thcs.edu.vn/khkt-hdtn",
+              "stage": 3,
+              "deadline": "2027-03-25",
+              "status": "in_progress",
+              "dept": "Tổng TĐ / GVCN"
+            }
+          ],
+          "description": "Tổ chức hoạt động hướng nghiệp và phân luồng học sinh; học sinh tham gia nghiên cứu khoa học kỹ thuật."
+        },
+        {
+          "id": "3.4",
+          "std": 3,
+          "code": "TC 3.4",
+          "name": "Giáo dục hòa nhập và tư vấn tâm lý lứa tuổi vị thành niên",
+          "mandatory": false,
+          "stage": 3,
+          "month": 2,
+          "dept": "Tổ Tư vấn / GVCN",
+          "default_evidence": [
+            {
+              "code": "MC.3.4.01",
+              "name": "Sổ theo dõi học sinh hòa nhập; Hồ sơ phòng tư vấn tâm lý học đường hỗ trợ học sinh tuổi dậy thì",
+              "type": "paper",
+              "url": "Phòng tư vấn tâm lý học đường tầng 2",
+              "stage": 3,
+              "deadline": "2027-02-28",
+              "status": "completed",
+              "dept": "Tổ Tư vấn / GVCN"
+            }
+          ],
+          "description": "Tư vấn tâm lý, giới tính và hỗ trợ học sinh lứa tuổi vị thành niên vượt qua khó khăn tâm lý."
+        },
+        {
+          "id": "3.5",
+          "std": 3,
+          "code": "TC 3.5",
+          "name": "Kết quả học tập, rèn luyện và tốt nghiệp THCS, phân luồng",
+          "mandatory": false,
+          "stage": 4,
+          "month": 5,
+          "dept": "Chuyên môn / VP",
+          "default_evidence": [
+            {
+              "code": "MC.3.5.01",
+              "name": "Thống kê kết quả rèn luyện (Tốt/Khá ≥ 90%), học tập (Tốt/Khá ≥ 55%), tốt nghiệp THCS (≥ 98%), tỷ lệ phân luồng",
+              "type": "link",
+              "url": "https://csdl.moet.gov.vn/thcs/thongke-totnghiep",
+              "stage": 4,
+              "deadline": "2027-05-20",
+              "status": "pending",
+              "dept": "Chuyên môn / VP"
+            }
+          ],
+          "description": "Tỷ lệ rèn luyện và học tập đạt chỉ tiêu kế hoạch; tỷ lệ tốt nghiệp THCS cao và thực hiện tốt định hướng phân luồng."
+        },
+        {
+          "id": "4.1",
+          "std": 4,
+          "code": "TC 4.1",
+          "name": "Phòng học bộ môn, phòng thí nghiệm thực hành đạt chuẩn",
+          "mandatory": true,
+          "stage": 3,
+          "month": 4,
+          "dept": "Bộ phận CSVC / Thiết bị",
+          "default_evidence": [
+            {
+              "code": "MC.4.1.01",
+              "name": "Danh mục phòng học bộ môn KHTN, Tin học, Ngoại ngữ, Công nghệ đạt chuẩn TT 14/2020; Thiết bị thực hành TT 38/2021",
+              "type": "file",
+              "url": "MC.4.1.01_PhongBoMon_THCS.pdf",
+              "stage": 3,
+              "deadline": "2027-04-20",
+              "status": "completed",
+              "dept": "Bộ phận CSVC"
+            }
+          ],
+          "description": "Đủ phòng học bộ môn theo quy chuẩn; bảo đảm thiết bị thí nghiệm thực hành cho học sinh thực hiện bài học STEM."
+        },
+        {
+          "id": "4.2",
+          "std": 4,
+          "code": "TC 4.2",
+          "name": "Môi trường giáo dục an toàn, phòng chống bạo lực học đường",
+          "mandatory": true,
+          "stage": 2,
+          "month": 10,
+          "dept": "Ban An toàn / Đoàn - Đội",
+          "default_evidence": [
+            {
+              "code": "MC.4.2.01",
+              "name": "Kế hoạch & Minh chứng trường học an toàn, biên bản PCCC, an ninh trật tự cổng trường, kiểm tra y tế",
+              "type": "file",
+              "url": "MC.4.2.01_AnToan_PCCC.pdf",
+              "stage": 2,
+              "deadline": "2026-10-20",
+              "status": "completed",
+              "dept": "Ban An toàn"
+            },
+            {
+              "code": "MC.4.2.02",
+              "name": "Kế hoạch & biên bản tuyên truyền phòng chống bạo lực học đường, sử dụng mạng xã hội an toàn, hòm thư 'Điều em muốn nói'",
+              "type": "file",
+              "url": "MC.4.2.02_BaoLucHocDuong.docx",
+              "stage": 2,
+              "deadline": "2026-10-30",
+              "status": "completed",
+              "dept": "Đoàn - Đội / Tư vấn"
+            }
+          ],
+          "description": "Không xảy ra bạo lực học đường; học sinh được giáo dục kỹ năng sử dụng không gian mạng an toàn, lành mạnh."
+        },
+        {
+          "id": "4.3",
+          "std": 4,
+          "code": "TC 4.3",
+          "name": "Mối quan hệ Nhà trường - Gia đình - Xã hội và Định hướng nghề",
+          "mandatory": false,
+          "stage": 3,
+          "month": 1,
+          "dept": "BGH / GVCN",
+          "default_evidence": [
+            {
+              "code": "MC.4.3.01",
+              "name": "Biên bản họp Ban đại diện CMHS; Kế hoạch phối hợp với doanh nghiệp/trung tâm GDNN-GDTX trong tư vấn phân luồng",
+              "type": "paper",
+              "url": "Sổ biên bản họp phụ huynh và liên kết GDNN",
+              "stage": 3,
+              "deadline": "2027-01-10",
+              "status": "completed",
+              "dept": "Ban Giám hiệu / GVCN"
+            }
+          ],
+          "description": "Phối hợp hiệu quả giữa nhà trường, gia đình và các cơ sở giáo dục nghề nghiệp trong tư vấn chọn trường, chọn nghề."
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,2633 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QA-EDUSYS | Phần Mềm Kiểm Định & Tự Đánh Giá Giáo Dục (TT 57/2026/TT-BGDĐT)</title>
+  <!-- Nạp Tệp Cấu Hình Riêng Biệt (Không bị ảnh hưởng khi nâng cấp giao diện) -->
+  <script src="ketnoi.js"></script>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js for visualization -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; }
+    .badge-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    @media print {
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      body { background: white !important; font-size: 11pt; color: black !important; }
+      .page-break { page-break-before: always; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col custom-scroll">
+
+  <!-- ================= TOPBAR ================= -->
+  <header class="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white shadow-lg sticky top-0 z-40 border-b border-indigo-700/50 no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        
+        <!-- Logo & School Brand -->
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-400 to-indigo-600 flex items-center justify-center shadow-md shadow-blue-500/30 text-white font-black text-xl">
+            <i class="fa-solid fa-graduation-cap"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-blue-100 to-indigo-200 bg-clip-text text-transparent">QA-EDUSYS</span>
+              <span class="text-xs bg-indigo-500/30 border border-indigo-400/40 text-indigo-200 px-2 py-0.5 rounded-full font-medium">TT 57/2026</span>
+            </div>
+            <p class="text-[11px] text-slate-300 font-medium hidden sm:block truncate max-w-xs" id="topbar-school-name">Hệ thống Quản lý BĐCLGD & Tự đánh giá 3 Cấp học</p>
+          </div>
+        </div>
+
+        <!-- Level Selector & Unified School Switcher -->
+        <div class="flex items-center space-x-2">
+          <div class="bg-slate-800/80 p-1 rounded-xl border border-slate-700 flex items-center shadow-inner">
+            <span class="text-xs text-slate-400 px-2 hidden md:inline"><i class="fa-solid fa-school mr-1"></i>Cấp học:</span>
+            <button onclick="setWorkspace('MAM_NON')" id="btn-ws-MAM_NON" class="ws-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">
+              Mầm non
+            </button>
+            <button onclick="setWorkspace('TIEU_HOC')" id="btn-ws-TIEU_HOC" class="ws-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">
+              Tiểu học
+            </button>
+            <button onclick="setWorkspace('THCS')" id="btn-ws-THCS" class="ws-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">
+              THCS
+            </button>
+            <button onclick="setWorkspace('LIEN_CAP')" id="btn-ws-LIEN_CAP" class="ws-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition-all bg-amber-500/20 text-amber-300 border border-amber-500/30 hover:bg-amber-500/30">
+              <i class="fa-solid fa-layer-group mr-1"></i>Liên cấp
+            </button>
+          </div>
+        </div>
+
+        <!-- Multi-User Role & Concurrency Presence -->
+        <div class="flex items-center space-x-3">
+          <!-- Live Presence Badge -->
+          <div class="hidden lg:flex items-center bg-emerald-950/60 border border-emerald-500/40 text-emerald-300 px-2.5 py-1 rounded-full text-xs" title="Đồng bộ thời gian thực qua BroadcastChannel & LocalStorage">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 badge-pulse"></span>
+            <span id="presence-count-text">Trực tuyến</span>
+          </div>
+
+          <!-- Active User Switcher (Dynamic from ketnoi.js) -->
+          <div class="relative group">
+            <div class="flex items-center bg-slate-800/90 border border-slate-700 hover:border-indigo-400 rounded-xl px-2.5 py-1.5 cursor-pointer transition-all">
+              <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs font-bold mr-2" id="user-avatar">
+                N
+              </div>
+              <div class="text-left hidden sm:block">
+                <div class="text-xs font-bold leading-tight" id="user-name">Đang tải...</div>
+                <div class="text-[10px] text-indigo-300 truncate max-w-[150px]" id="user-role-badge">Tài khoản</div>
+              </div>
+              <i class="fa-solid fa-chevron-down text-slate-400 text-xs ml-2"></i>
+            </div>
+            <!-- Dynamic User Dropdown Menu from ketnoi.js -->
+            <div class="absolute right-0 mt-2 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 hidden group-hover:block z-50 text-xs" id="user-dropdown-menu">
+              <!-- Rendered dynamically by JS from ketnoi.js -->
+            </div>
+          </div>
+
+          <!-- Quick Tools (Trash, Audit, Conflict Demo) -->
+          <div class="flex items-center space-x-1">
+            <button onclick="openTrashModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition relative" title="Thùng rác & Phục hồi dữ liệu">
+              <i class="fa-solid fa-trash-can"></i>
+              <span id="trash-badge" class="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+            </button>
+            <button onclick="openAuditModal()" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white transition" title="Lịch sử chỉnh sửa & Nhật ký phiên bản">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </button>
+            <button onclick="triggerSimulatedConflict()" class="p-2 rounded-lg bg-indigo-800 hover:bg-indigo-700 text-indigo-200 hover:text-white transition text-xs font-semibold flex items-center" title="Mô phỏng kiểm tra xử lý xung đột đồng thời 3-Way Diff">
+              <i class="fa-solid fa-code-compare mr-1"></i>
+              <span class="hidden xl:inline">Test Xung Đột</span>
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Navigation Tabs Bar -->
+    <nav class="bg-slate-900/90 border-t border-slate-800 px-4 sm:px-8">
+      <div class="max-w-7xl mx-auto flex space-x-1 sm:space-x-4 overflow-x-auto py-2 custom-scroll">
+        <button onclick="showTab('dashboard')" id="nav-dashboard" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 whitespace-nowrap transition">
+          <i class="fa-solid fa-chart-pie"></i><span>Bảng điều khiển & 08 Tiêu chí Cốt lõi</span>
+        </button>
+        <button onclick="showTab('timeline')" id="nav-timeline" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 whitespace-nowrap transition">
+          <i class="fa-solid fa-timeline"></i><span>Lộ trình Thông minh 5 Giai đoạn</span>
+        </button>
+        <button onclick="showTab('criteria')" id="nav-criteria" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 whitespace-nowrap transition">
+          <i class="fa-solid fa-list-check"></i><span>Đánh giá 15 Tiêu chí (TT 57)</span>
+        </button>
+        <button onclick="showTab('evidence')" id="nav-evidence" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 whitespace-nowrap transition">
+          <i class="fa-solid fa-folder-tree"></i><span>Kho Minh chứng & Đặc thù</span>
+        </button>
+        <button onclick="showTab('liencap')" id="nav-liencap" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 whitespace-nowrap transition">
+          <i class="fa-solid fa-school-flag"></i><span>Trường Liên cấp (Điều 15)</span>
+        </button>
+        <button onclick="showTab('reports')" id="nav-reports" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 whitespace-nowrap transition">
+          <i class="fa-solid fa-print"></i><span>Xuất Báo cáo Phụ lục V & IV</span>
+        </button>
+        <button onclick="showTab('settings')" id="nav-settings" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 whitespace-nowrap transition">
+          <i class="fa-solid fa-sliders"></i><span>Cài đặt & Triển khai</span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ================= SUB-HEADER BREADCRUMB & REALTIME SYNC STATUS ================= -->
+  <div class="bg-white border-b border-slate-200 py-2.5 px-4 sm:px-8 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+      <div class="flex items-center space-x-2 text-xs">
+        <span class="text-slate-500"><i class="fa-solid fa-house mr-1"></i>Trang chủ</span>
+        <span class="text-slate-400">/</span>
+        <span class="font-bold text-indigo-700 uppercase" id="current-ws-label">Cấp Tiểu học</span>
+        <span class="text-slate-400">/</span>
+        <span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded border border-indigo-200 font-medium" id="current-legal-label">Phụ lục II - Thông tư 57/2026/TT-BGDĐT</span>
+      </div>
+      
+      <!-- Auto-save and Concurrency Indicator -->
+      <div class="flex items-center space-x-3 text-xs">
+        <span id="autosave-status" class="text-slate-500 flex items-center">
+          <i class="fa-solid fa-cloud-arrow-up text-emerald-500 mr-1.5"></i>
+          <span>Tự động lưu: <strong id="save-time">11:35:52</strong></span>
+        </span>
+        <span class="text-slate-300">|</span>
+        <span class="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 flex items-center" id="active-editors-indicator">
+          <i class="fa-solid fa-user-pen mr-1"></i>Không có ai đang khóa trường
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MAIN CONTENT WRAPPER ================= -->
+  <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- ================= TAB 1: DASHBOARD & CORE 8 GATEKEEPER ================= -->
+    <section id="tab-dashboard" class="tab-content space-y-6">
+      
+      <!-- CORE 8 MANDATORY GATEKEEPER BANNER -->
+      <div id="gatekeeper-banner" class="rounded-2xl p-5 shadow-sm border transition-all duration-300">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+      <!-- Overview Metric Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-list-check"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium">Tổng số Tiêu chí</div>
+            <div class="text-2xl font-black text-slate-800">15 <span class="text-xs font-normal text-slate-500">tiêu chí</span></div>
+            <div class="text-[11px] text-blue-600 font-semibold">04 Tiêu chuẩn</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3">
+          <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium">Tiêu chí Bắt buộc</div>
+            <div class="text-2xl font-black text-rose-600">08 <span class="text-xs font-normal text-slate-500">cốt lõi</span></div>
+            <div class="text-[11px] text-rose-700 font-semibold" id="mandatory-status-badge">Đang kiểm tra...</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-file-shield"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium">Minh chứng đã lập</div>
+            <div class="text-2xl font-black text-emerald-600" id="total-evidence-count">0</div>
+            <div class="text-[11px] text-emerald-700 font-semibold" id="completed-evidence-percent">0% hoàn thành</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3">
+          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div>
+            <div class="text-xs text-slate-500 font-medium">Giai đoạn hiện tại</div>
+            <div class="text-lg font-black text-amber-600" id="current-stage-title">GĐ 2: Thu thập Đ1</div>
+            <div class="text-[11px] text-amber-700 font-semibold" id="current-stage-time">Tháng 10 - Tháng 12</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts & Core 8 Status Breakdown Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Radar / Progress Chart -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="font-bold text-slate-800 text-sm flex items-center">
+                <i class="fa-solid fa-chart-radar text-indigo-600 mr-2"></i>Tiến độ 04 Tiêu chuẩn Chất lượng
+              </h3>
+              <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Tự đánh giá</span>
+            </div>
+            <div class="relative h-60 flex items-center justify-center">
+              <canvas id="standardsChart"></canvas>
+            </div>
+          </div>
+          <div class="border-t border-slate-100 pt-3 text-xs text-slate-500 flex justify-between">
+            <span>TC 1: Tổ chức & QT</span>
+            <span>TC 2: Đội ngũ</span>
+            <span>TC 3: GD & Đào tạo</span>
+            <span>TC 4: CSVC & MT</span>
+          </div>
+        </div>
+
+        <!-- 8 Mandatory Criteria Live Status Table -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 lg:col-span-2">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-slate-800 text-sm flex items-center">
+                <i class="fa-solid fa-star text-rose-500 mr-2"></i>Bảng Kiểm soát 08 Tiêu chí Bắt buộc (Điều kiện Tiên quyết)
+              </h3>
+              <p class="text-xs text-slate-500 mt-0.5">Bắt buộc 100% đạt Mức 1 để được xét BĐCLGD & Chuẩn quốc gia</p>
+            </div>
+            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
+              <i class="fa-solid fa-triangle-exclamation mr-1"></i>Điều 5 & Điều 15 TT 57
+            </span>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-50 text-slate-600 font-semibold border-y border-slate-200">
+                <tr>
+                  <th class="py-2.5 px-3">Mã TC</th>
+                  <th class="py-2.5 px-3">Tên Tiêu chí</th>
+                  <th class="py-2.5 px-3">Bộ phận phụ trách</th>
+                  <th class="py-2.5 px-3">Hạn chót</th>
+                  <th class="py-2.5 px-3 text-center">Trạng thái Mức 1</th>
+                  <th class="py-2.5 px-3 text-right">Thao tác</th>
+                </tr>
+              </thead>
+              <tbody id="mandatory-criteria-tbody" class="divide-y divide-slate-100">
+                <!-- Rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Action Cards: Smart Guidance for Special Contexts -->
+      <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-5">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="flex items-center space-x-2">
+              <span class="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center text-xs font-bold">
+                <i class="fa-solid fa-lightbulb"></i>
+              </span>
+              <h4 class="font-bold text-slate-800 text-sm">Hỗ trợ Minh chứng Thay thế Linh hoạt (Dành cho Trường Đặc thù)</h4>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Trường vùng khó khăn thiếu hạ tầng số? Trường tư thục không có quyết toán ngân sách? Trường nhiều điểm lẻ vùng cao? Trường mới sáp nhập dưới 3 năm?
+              Thông tư 57 cho phép sử dụng <strong>Minh chứng thay thế hợp pháp</strong>.
+            </p>
+          </div>
+          <button onclick="openSpecialContextModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 whitespace-nowrap transition flex items-center">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>Xem Gợi ý Minh chứng Thay thế
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= TAB 2: SMART TIMELINE & EVIDENCE SCHEDULER ================= -->
+    <section id="tab-timeline" class="tab-content hidden space-y-6">
+      
+      <!-- Timeline Header & Month Simulator -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-extrabold text-slate-800 flex items-center">
+            <i class="fa-solid fa-timeline text-indigo-600 mr-2"></i>Lộ trình Hoàn thành Minh chứng Hằng năm (5 Giai đoạn)
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Căn cứ Phần IV Thông tư 57/2026/TT-BGDĐT: Tự đánh giá thường xuyên theo chu kỳ kế hoạch năm học từ Tháng 8 đến Tháng 7 năm sau.
+          </p>
+        </div>
+
+        <!-- Month Filter / Simulator -->
+        <div class="flex items-center space-x-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+          <span class="text-xs text-slate-600 font-semibold"><i class="fa-solid fa-calendar-day mr-1"></i>Thời điểm hiện tại:</span>
+          <select id="timeline-month-selector" onchange="simulateMonth(this.value)" class="text-xs bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-bold text-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+            <option value="8">Tháng 8 (Bắt đầu năm học)</option>
+            <option value="9">Tháng 9 (Khai giảng & Ban hành KH)</option>
+            <option value="10" selected>Tháng 10 (Hiện tại - Thu thập Đ1)</option>
+            <option value="11">Tháng 11 (Cập nhật CSDL & Đội ngũ)</option>
+            <option value="12">Tháng 12 (Minh chứng HK I)</option>
+            <option value="1">Tháng 1 (Sơ kết HK I & Đợt 2)</option>
+            <option value="2">Tháng 2 (Hòa nhập & KHKT)</option>
+            <option value="3">Tháng 3 (Phong trào & STEM)</option>
+            <option value="4">Tháng 4 (Kiểm kê CSVC & Rà soát)</option>
+            <option value="5">Tháng 5 (Tổng kết & Dự thảo Báo cáo)</option>
+            <option value="6">Tháng 6 (Phê duyệt & Đẩy CSDL ngành)</option>
+            <option value="7">Tháng 7 (Công khai & Lưu trữ số)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- 5-Stage Interactive Cards Visualizer -->
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-3" id="stages-cards-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Filter Bar for Timeline Evidences -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="font-bold text-slate-700"><i class="fa-solid fa-filter mr-1"></i>Lọc theo Giai đoạn:</span>
+          <button onclick="filterTimelineStage('all')" id="btn-stage-all" class="stage-filter-btn px-2.5 py-1 rounded-lg bg-indigo-600 text-white font-semibold">Tất cả (5 Giai đoạn)</button>
+          <button onclick="filterTimelineStage(1)" id="btn-stage-1" class="stage-filter-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">Giai đoạn 1 (T8-9)</button>
+          <button onclick="filterTimelineStage(2)" id="btn-stage-2" class="stage-filter-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">Giai đoạn 2 (T10-12)</button>
+          <button onclick="filterTimelineStage(3)" id="btn-stage-3" class="stage-filter-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">Giai đoạn 3 (T1-4)</button>
+          <button onclick="filterTimelineStage(4)" id="btn-stage-4" class="stage-filter-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">Giai đoạn 4 (T5)</button>
+          <button onclick="filterTimelineStage(5)" id="btn-stage-5" class="stage-filter-btn px-2.5 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700">Giai đoạn 5 (T6-7)</button>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <span class="font-bold text-slate-700">Lọc Hạn:</span>
+          <select id="urgency-filter" onchange="renderTimelineList()" class="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs">
+            <option value="all">Tất cả trạng thái</option>
+            <option value="overdue">Quá hạn cần hoàn thành gấp (⚠️)</option>
+            <option value="due_soon">Sắp đến hạn (trong 30 ngày)</option>
+            <option value="completed">Đã hoàn thành</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Timeline Detailed Schedule Table -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="p-4 bg-slate-50/80 border-b border-slate-200 flex items-center justify-between">
+          <h3 class="font-bold text-slate-800 text-sm flex items-center">
+            <i class="fa-solid fa-calendar-check text-indigo-600 mr-2"></i>Bảng Kế hoạch Chi tiết Thời điểm Hoàn thành từng Minh chứng của Tiêu chí
+          </h3>
+          <span class="text-xs text-slate-500 font-medium" id="timeline-count-label">Hiển thị tất cả minh chứng</span>
+        </div>
+        
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-100/80 text-slate-600 font-bold border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Giai đoạn & Thời gian</th>
+                <th class="py-3 px-4">Mã MC</th>
+                <th class="py-3 px-4">Tên Minh chứng cụ thể</th>
+                <th class="py-3 px-4">Thuộc Tiêu chí</th>
+                <th class="py-3 px-4">Bộ phận chủ trì</th>
+                <th class="py-3 px-4">Hạn hoàn thành</th>
+                <th class="py-3 px-4 text-center">Trạng thái Tiến độ</th>
+                <th class="py-3 px-4 text-right">Cập nhật</th>
+              </tr>
+            </thead>
+            <tbody id="timeline-tbody" class="divide-y divide-slate-100">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= TAB 3: 15 CRITERIA ASSESSMENT & CONCURRENCY ================= -->
+    <section id="tab-criteria" class="tab-content hidden space-y-6">
+      
+      <!-- Standards & Criteria Header -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-extrabold text-slate-800 flex items-center">
+            <i class="fa-solid fa-clipboard-check text-indigo-600 mr-2"></i>Hồ sơ Đánh giá 15 Tiêu chí Chất lượng (Thông tư 57)
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Đánh giá theo 4 Tiêu chuẩn. Tích hợp cơ chế <strong>Khóa mềm (Soft-Locking)</strong> và <strong>Chống xung đột đa người dùng (3-Way Merge)</strong>.
+          </p>
+        </div>
+
+        <!-- Filter by Standard -->
+        <div class="flex items-center space-x-1.5 bg-slate-50 p-1.5 rounded-xl border border-slate-200">
+          <button onclick="filterCriteriaStandard('all')" id="btn-std-all" class="std-filter-btn px-3 py-1.5 rounded-lg bg-indigo-600 text-white font-bold text-xs">Tất cả</button>
+          <button onclick="filterCriteriaStandard(1)" id="btn-std-1" class="std-filter-btn px-3 py-1.5 rounded-lg bg-white text-slate-700 font-semibold text-xs hover:bg-slate-100">TC 1</button>
+          <button onclick="filterCriteriaStandard(2)" id="btn-std-2" class="std-filter-btn px-3 py-1.5 rounded-lg bg-white text-slate-700 font-semibold text-xs hover:bg-slate-100">TC 2</button>
+          <button onclick="filterCriteriaStandard(3)" id="btn-std-3" class="std-filter-btn px-3 py-1.5 rounded-lg bg-white text-slate-700 font-semibold text-xs hover:bg-slate-100">TC 3</button>
+          <button onclick="filterCriteriaStandard(4)" id="btn-std-4" class="std-filter-btn px-3 py-1.5 rounded-lg bg-white text-slate-700 font-semibold text-xs hover:bg-slate-100">TC 4</button>
+        </div>
+      </div>
+
+      <!-- Criteria List Container -->
+      <div class="space-y-4" id="criteria-cards-list">
+        <!-- Rendered by JS -->
+      </div>
+
+    </section>
+
+    <!-- ================= TAB 4: EVIDENCE REPOSITORY & SUBSTITUTIONS ================= -->
+    <section id="tab-evidence" class="tab-content hidden space-y-6">
+      
+      <!-- Evidence Header -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <h2 class="text-lg font-extrabold text-slate-800 flex items-center">
+            <i class="fa-solid fa-folder-tree text-indigo-600 mr-2"></i>Kho Dữ liệu Minh chứng Số hóa & Quản lý Phân quyền
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Quy tắc mã hóa chuẩn: <code>MC.(Tiêu chuẩn).(Tiêu chí).(Số thứ tự)</code>. Hỗ trợ Tệp tải lên, Liên kết điện tử (Drive) và Bản giấy lưu kho.
+          </p>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="openAddEvidenceModal()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-md shadow-indigo-500/20 transition flex items-center">
+            <i class="fa-solid fa-plus mr-1.5"></i>Thêm Minh chứng Mới
+          </button>
+          <button onclick="openSpecialContextModal()" class="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-500/20 transition flex items-center">
+            <i class="fa-solid fa-shuffle mr-1.5"></i>Gợi ý MC Đặc thù
+          </button>
+        </div>
+      </div>
+
+      <!-- Evidence Filters -->
+      <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex items-center space-x-1">
+            <label class="font-bold text-slate-700">Lọc theo Tiêu chí:</label>
+            <select id="evidence-filter-tc" onchange="renderEvidenceTable()" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs">
+              <option value="all">Tất cả Tiêu chí</option>
+              <!-- Populated by JS -->
+            </select>
+          </div>
+          <div class="flex items-center space-x-1">
+            <label class="font-bold text-slate-700">Định dạng:</label>
+            <select id="evidence-filter-type" onchange="renderEvidenceTable()" class="bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs">
+              <option value="all">Tất cả định dạng</option>
+              <option value="link">Liên kết số (Google Drive, CSDL)</option>
+              <option value="file">Tệp tải lên (PDF, DOCX)</option>
+              <option value="paper">Bản giấy lưu tủ hồ sơ</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="text-slate-500 font-medium" id="evidence-table-stats">
+          Hiển thị 18 minh chứng
+        </div>
+      </div>
+
+      <!-- Evidence Table -->
+      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="bg-slate-100/80 text-slate-600 font-bold border-b border-slate-200">
+              <tr>
+                <th class="py-3 px-4">Mã MC</th>
+                <th class="py-3 px-4">Tên Minh chứng</th>
+                <th class="py-3 px-4">Tiêu chí áp dụng</th>
+                <th class="py-3 px-4">Hình thức & Vị trí lưu trữ</th>
+                <th class="py-3 px-4">Bộ phận chủ trì</th>
+                <th class="py-3 px-4">Hạn nộp</th>
+                <th class="py-3 px-4 text-center">Trạng thái</th>
+                <th class="py-3 px-4 text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="evidence-table-tbody" class="divide-y divide-slate-100">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= TAB 5: MULTI-LEVEL UNIFIED SCHOOL ENGINE ================= -->
+    <section id="tab-liencap" class="tab-content hidden space-y-6">
+      
+      <!-- Multi-level School Rules Banner -->
+      <div class="bg-gradient-to-r from-amber-500 to-indigo-700 rounded-2xl p-6 text-white shadow-lg">
+        <div class="flex items-start justify-between">
+          <div class="space-y-2">
+            <div class="flex items-center space-x-2">
+              <span class="px-2.5 py-1 bg-white/20 backdrop-blur rounded-lg text-xs font-bold uppercase tracking-wider">Động cơ Đánh giá Trường Liên cấp</span>
+              <span class="text-xs bg-amber-400 text-slate-900 px-2 py-0.5 rounded font-black">Điều 15, Khoản 2d TT 57</span>
+            </div>
+            <h2 class="text-xl font-black">Quy tắc Tính Mức Đạt Toàn trường theo Cấp học Thấp nhất</h2>
+            <p class="text-xs text-indigo-100 max-w-3xl leading-relaxed">
+              Đối với trường phổ thông có nhiều cấp học (Ví dụ: Trường Tiểu học & THCS, hoặc Trường Mầm non - Phổ thông), 
+              kết quả Tự đánh giá và Công nhận Đạt chuẩn Quốc gia toàn trường được xác định <strong>theo cấp học có kết quả đánh giá thấp nhất</strong>.
+            </p>
+          </div>
+          <div class="hidden lg:block text-5xl opacity-30">
+            <i class="fa-solid fa-school-flag"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Side-by-Side Comparison of Levels -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Preschool Level Status in Unified School -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center space-x-2">
+              <span class="w-8 h-8 rounded-lg bg-pink-100 text-pink-600 flex items-center justify-center font-bold text-sm">MN</span>
+              <div>
+                <h4 class="font-bold text-slate-800 text-sm">Cấp Mầm non</h4>
+                <p class="text-[11px] text-slate-400">Phụ lục I TT 57</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800" id="liencap-status-mn">Đạt Mức 2</span>
+          </div>
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between text-slate-600">
+              <span>08 Tiêu chí Bắt buộc:</span>
+              <strong class="text-emerald-600">8/8 Đạt Mức 1</strong>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Tổng tiêu chí đạt Mức 2:</span>
+              <strong>14/15 tiêu chí</strong>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Tiêu chí đạt Mức 3:</span>
+              <strong>6/15 tiêu chí</strong>
+            </div>
+          </div>
+          <button onclick="setWorkspace('MAM_NON'); showTab('criteria');" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition">
+            Vào Workspace Mầm non
+          </button>
+        </div>
+
+        <!-- Primary School Level Status in Unified School -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center space-x-2">
+              <span class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">TH</span>
+              <div>
+                <h4 class="font-bold text-slate-800 text-sm">Cấp Tiểu học</h4>
+                <p class="text-[11px] text-slate-400">Phụ lục II & TT 27</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800" id="liencap-status-th">Đạt Mức 1</span>
+          </div>
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between text-slate-600">
+              <span>08 Tiêu chí Bắt buộc:</span>
+              <strong class="text-emerald-600">8/8 Đạt Mức 1</strong>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Tổng tiêu chí đạt Mức 2:</span>
+              <strong>10/15 tiêu chí</strong>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Tiêu chí đạt Mức 3:</span>
+              <strong>2/15 tiêu chí</strong>
+            </div>
+          </div>
+          <button onclick="setWorkspace('TIEU_HOC'); showTab('criteria');" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition">
+            Vào Workspace Tiểu học
+          </button>
+        </div>
+
+        <!-- Lower Secondary Level Status in Unified School -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div class="flex items-center space-x-2">
+              <span class="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm">THCS</span>
+              <div>
+                <h4 class="font-bold text-slate-800 text-sm">Cấp THCS</h4>
+                <p class="text-[11px] text-slate-400">Phụ lục II & TT 22</p>
+              </div>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800" id="liencap-status-thcs">Đạt Mức 2</span>
+          </div>
+          <div class="space-y-2 text-xs">
+            <div class="flex justify-between text-slate-600">
+              <span>08 Tiêu chí Bắt buộc:</span>
+              <strong class="text-emerald-600">8/8 Đạt Mức 1</strong>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Tổng tiêu chí đạt Mức 2:</span>
+              <strong>15/15 tiêu chí</strong>
+            </div>
+            <div class="flex justify-between text-slate-600">
+              <span>Tiêu chí đạt Mức 3:</span>
+              <strong>8/15 tiêu chí</strong>
+            </div>
+          </div>
+          <button onclick="setWorkspace('THCS'); showTab('criteria');" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition">
+            Vào Workspace THCS
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Conclusion & Unified Accreditation Level -->
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200">
+        <h3 class="font-extrabold text-slate-800 text-base mb-3 flex items-center">
+          <i class="fa-solid fa-stamp text-indigo-600 mr-2"></i>Kết luận Mức Bảo đảm Chất lượng Giáo dục Toàn Trường Liên cấp
+        </h3>
+        
+        <div class="bg-slate-50 rounded-xl p-5 border border-slate-200 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div class="space-y-1">
+            <div class="text-xs text-slate-500 font-semibold uppercase">Mức Đạt Chung Toàn Trường:</div>
+            <div class="text-2xl font-black text-indigo-700 flex items-center space-x-2">
+              <span>MỨC 1 (ĐẠT CHUẨN KIỂM ĐỊNH)</span>
+              <span class="text-xs bg-indigo-100 text-indigo-800 px-2.5 py-1 rounded-full font-bold">Theo Cấp Tiểu học (Mức thấp nhất)</span>
+            </div>
+            <p class="text-xs text-slate-600 mt-2 leading-relaxed">
+              Giải thích căn cứ pháp lý: Cấp Mầm non đạt Mức 2, Cấp THCS đạt Mức 2, nhưng Cấp Tiểu học đạt Mức 1. 
+              Áp dụng quy định tại Điều 15 Khoản 2d Thông tư 57/2026/TT-BGDĐT, kết quả BĐCLGD toàn trường được xác định là <strong>Mức 1</strong>.
+            </p>
+          </div>
+
+          <div class="text-center md:text-right whitespace-nowrap">
+            <button onclick="showTab('reports')" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-500/20 transition">
+              <i class="fa-solid fa-file-contract mr-1.5"></i>Xuất Báo cáo TĐG Liên cấp
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= TAB 6: REPORT GENERATOR (PHỤ LỤC V & IV) ================= -->
+    <section id="tab-reports" class="tab-content hidden space-y-6">
+      
+      <!-- Report Generator Options -->
+      <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center md:justify-between gap-4 no-print">
+        <div>
+          <h2 class="text-lg font-extrabold text-slate-800 flex items-center">
+            <i class="fa-solid fa-file-lines text-indigo-600 mr-2"></i>Xuất Hồ sơ & Báo cáo Tự đánh giá Chuẩn Thông tư 57/2026/TT-BGDĐT
+          </h2>
+          <p class="text-xs text-slate-500 mt-1">
+            Tự động điền theo Biểu mẫu số 1, Biểu mẫu số 2 (Phụ lục V) và Bảng mã hóa danh mục minh chứng (Phụ lục IV).
+          </p>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button onclick="printReport()" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition flex items-center shadow-sm">
+            <i class="fa-solid fa-print mr-1.5"></i>In / Lưu PDF
+          </button>
+          <button onclick="exportWordHtml()" class="px-4 py-2 bg-blue-700 hover:bg-blue-800 text-white rounded-xl text-xs font-bold transition flex items-center shadow-sm">
+            <i class="fa-solid fa-file-word mr-1.5"></i>Tải file Word (.doc)
+          </button>
+          <button onclick="copyReportText()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition flex items-center shadow-sm">
+            <i class="fa-solid fa-copy mr-1.5"></i>Sao chép Văn bản
+          </button>
+        </div>
+      </div>
+
+      <!-- Report Type Selector -->
+      <div class="flex space-x-2 no-print">
+        <button onclick="setReportType('form1')" id="btn-rep-form1" class="rep-type-btn px-4 py-2 rounded-xl text-xs font-bold bg-indigo-600 text-white shadow-sm">
+          Mẫu số 1: Báo cáo Tự đánh giá Hằng năm (Phụ lục V)
+        </button>
+        <button onclick="setReportType('form2')" id="btn-rep-form2" class="rep-type-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50">
+          Mẫu số 2: Kế hoạch Cải tiến Chất lượng Giáo dục (Phụ lục V)
+        </button>
+        <button onclick="setReportType('appendix4')" id="btn-rep-appendix4" class="rep-type-btn px-4 py-2 rounded-xl text-xs font-bold bg-white text-slate-700 border border-slate-200 hover:bg-slate-50">
+          Phụ lục IV: Bảng Danh mục Mã hóa Minh chứng kèm Hyperlink
+        </button>
+      </div>
+
+      <!-- Printable Report Canvas -->
+      <div id="report-canvas" class="bg-white rounded-2xl p-8 sm:p-12 shadow-sm border border-slate-200 text-slate-900 text-sm leading-relaxed max-w-4xl mx-auto">
+        <!-- Rendered dynamically by JS -->
+      </div>
+
+    </section>
+
+    <!-- ================= TAB 7: SETTINGS & DEPLOYMENT ================= -->
+    <section id="tab-settings" class="tab-content hidden space-y-6">
+      
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+        <h2 class="text-lg font-extrabold text-slate-800 flex items-center">
+          <i class="fa-solid fa-cloud-arrow-up text-indigo-600 mr-2"></i>Hướng dẫn Triển khai Trên GitHub Pages, Máy chủ Web & Google Web App
+        </h2>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Phần mềm QA-EDUSYS được thiết kế theo kiến trúc <strong>Decoupled Architecture</strong>: Toàn bộ cấu hình định danh, tên trường, danh sách giáo viên và email Google được lưu tại tệp <code>ketnoi.js</code> (Client) và <code>cauhinh.gs</code> (Server). Khi nâng cấp giao diện, tính năng hay cấu trúc bảng biểu, bạn không cần chỉnh sửa lại các thông tin này!
+        </p>
+
+        <!-- Current Configuration Status Panel -->
+        <div class="p-4 bg-indigo-50 border border-indigo-200 rounded-xl space-y-3">
+          <h3 class="font-bold text-indigo-900 text-xs flex items-center">
+            <i class="fa-solid fa-circle-info mr-2 text-indigo-600"></i>Thông Tin Cấu Hình Hiện Tại (Đang đọc từ ketnoi.js):
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div>
+              <span class="text-slate-500">Tên cơ sở giáo dục:</span>
+              <strong class="text-slate-800 block text-sm" id="cfg-display-school-name">...</strong>
+            </div>
+            <div>
+              <span class="text-slate-500">Mã định danh CSDL ngành:</span>
+              <strong class="text-slate-800 block font-mono" id="cfg-display-school-code">...</strong>
+            </div>
+            <div>
+              <span class="text-slate-500">Địa chỉ / Huyện tỉnh:</span>
+              <strong class="text-slate-800 block" id="cfg-display-school-address">...</strong>
+            </div>
+            <div>
+              <span class="text-slate-500">Năm học đánh giá:</span>
+              <strong class="text-slate-800 block" id="cfg-display-school-year">...</strong>
+            </div>
+          </div>
+          <div class="pt-2 border-t border-indigo-200/60 text-[11px] text-indigo-700 flex items-center justify-between">
+            <span><i class="fa-solid fa-file-code mr-1"></i>Chỉnh sửa tên trường & email giáo viên trong file <strong>ketnoi.js</strong></span>
+            <span><i class="fa-solid fa-database mr-1"></i>Chỉnh sửa ID Google Sheet & Drive trong file <strong>cauhinh.gs</strong></span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          
+          <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-2">
+            <div class="flex items-center space-x-2 text-indigo-600 font-bold text-sm">
+              <i class="fa-brands fa-github text-lg"></i>
+              <span>1. GitHub Pages (Miễn phí)</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Tạo repository GitHub mới -> Tải tệp <code>index.html</code> và <code>ketnoi.js</code> lên -> Vào <strong>Settings > Pages</strong> -> Chọn nhánh <strong>main</strong> và lưu. Trang web sẽ hoạt động ngay lập tức qua liên kết <code>https://&lt;username&gt;.github.io/&lt;repo&gt;</code>.
+            </p>
+          </div>
+
+          <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-2">
+            <div class="flex items-center space-x-2 text-emerald-600 font-bold text-sm">
+              <i class="fa-solid fa-server text-lg"></i>
+              <span>2. Máy chủ Web Độc lập</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Đặt tệp <code>index.html</code> và <code>ketnoi.js</code> vào thư mục web của Nginx (<code>/var/www/html</code>) hoặc Apache, hoặc chạy nhanh bằng lệnh Python: <code>python3 -m http.server 8080</code>.
+            </p>
+          </div>
+
+          <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-2">
+            <div class="flex items-center space-x-2 text-blue-600 font-bold text-sm">
+              <i class="fa-brands fa-google text-lg"></i>
+              <span>3. Google Apps Script Web App</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              Tạo Google Sheet -> Vào <strong>Tiện ích mở rộng > Apps Script</strong> -> Tạo <code>cauhinh.gs</code>, <code>Code.gs</code> và <code>index.html</code> (có thể chèn nội dung <code>ketnoi.js</code>) -> Nhấn <strong>Triển khai (Deploy) > Ứng dụng web mới</strong>.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="border-t border-slate-200 pt-4 flex flex-wrap items-center justify-between gap-3 text-xs">
+          <div class="flex items-center space-x-2">
+            <button onclick="exportBackupData()" class="px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition flex items-center">
+              <i class="fa-solid fa-download mr-1.5"></i>Sao lưu Dữ liệu (Backup JSON)
+            </button>
+            <label class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl transition cursor-pointer flex items-center">
+              <i class="fa-solid fa-upload mr-1.5"></i>Phục hồi Dữ liệu (Restore JSON)
+              <input type="file" id="restore-file-input" onchange="importBackupData(event)" accept=".json" class="hidden">
+            </label>
+            <button onclick="resetToDefaultData()" class="px-3.5 py-2 bg-rose-50 text-rose-700 hover:bg-rose-100 border border-rose-200 font-bold rounded-xl transition flex items-center">
+              <i class="fa-solid fa-rotate-left mr-1.5"></i>Khôi phục Dữ liệu Gốc TT 57
+            </button>
+          </div>
+
+          <span class="text-slate-400">Phiên bản QA-EDUSYS v2026.1 (Thông tư 57/2026/TT-BGDĐT)</span>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ================= MODALS ================= -->
+
+  <!-- 1. 3-WAY VISUAL DIFF MERGE MODAL -->
+  <div id="conflict-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-5xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-4 bg-gradient-to-r from-rose-600 to-indigo-700 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-code-branch"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm">Phát hiện Xung đột Chỉnh sửa Đồng thời (Optimistic Concurrency 409)</h3>
+            <p class="text-[11px] text-rose-100">Đồng nghiệp của bạn vừa lưu nội dung trước đó vài giây. Hãy chọn phương án hợp nhất an toàn để KHÔNG BỊ GHI ĐÈ.</p>
+          </div>
+        </div>
+        <button onclick="closeConflictModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- 3-Way Diff View Grid -->
+      <div class="p-6 overflow-y-auto custom-scroll space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          
+          <!-- Column 1: Server Version -->
+          <div class="border border-slate-200 rounded-xl p-3 bg-slate-50 flex flex-col">
+            <div class="font-bold text-slate-700 mb-2 flex items-center justify-between pb-2 border-b border-slate-200">
+              <span class="flex items-center"><i class="fa-solid fa-server mr-1.5 text-blue-600"></i>1. Bản trên Máy chủ (Gốc)</span>
+              <span class="text-[10px] bg-slate-200 px-1.5 py-0.5 rounded text-slate-600">v1.2</span>
+            </div>
+            <div id="diff-server-text" class="text-slate-600 font-mono text-[11px] p-2 bg-white rounded border border-slate-200 flex-grow whitespace-pre-wrap leading-relaxed">
+              Nhà trường đã xây dựng chiến lược phát triển giai đoạn 2025-2030 theo đúng quy định.
+            </div>
+            <button onclick="applyMergeChoice('server')" class="mt-3 w-full py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg font-semibold transition">
+              Giữ Bản Máy chủ
+            </button>
+          </div>
+
+          <!-- Column 2: Current User's Version -->
+          <div class="border border-indigo-200 rounded-xl p-3 bg-indigo-50/50 flex flex-col">
+            <div class="font-bold text-indigo-700 mb-2 flex items-center justify-between pb-2 border-b border-indigo-200">
+              <span class="flex items-center"><i class="fa-solid fa-user mr-1.5 text-indigo-600"></i>2. Bản của BẠN (Vừa sửa)</span>
+              <span class="text-[10px] bg-indigo-200 px-1.5 py-0.5 rounded text-indigo-800">Bản nháp</span>
+            </div>
+            <div id="diff-user-text" class="text-indigo-900 font-mono text-[11px] p-2 bg-white rounded border border-indigo-200 flex-grow whitespace-pre-wrap leading-relaxed">
+              Nhà trường đã xây dựng chiến lược phát triển 2025-2030, bổ sung kế hoạch chuyển đổi số và bồi dưỡng giáo viên Tin học.
+            </div>
+            <button onclick="applyMergeChoice('user')" class="mt-3 w-full py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition">
+              Giữ Bản của BẠN
+            </button>
+          </div>
+
+          <!-- Column 3: Collaborator's Version -->
+          <div class="border border-emerald-200 rounded-xl p-3 bg-emerald-50/50 flex flex-col">
+            <div class="font-bold text-emerald-700 mb-2 flex items-center justify-between pb-2 border-b border-emerald-200">
+              <span class="flex items-center"><i class="fa-solid fa-user-group mr-1.5 text-emerald-600"></i>3. Bản của Đồng nghiệp (Cô Thu)</span>
+              <span class="text-[10px] bg-emerald-200 px-1.5 py-0.5 rounded text-emerald-800">v1.3</span>
+            </div>
+            <div id="diff-collab-text" class="text-emerald-900 font-mono text-[11px] p-2 bg-white rounded border border-emerald-200 flex-grow whitespace-pre-wrap leading-relaxed">
+              Nhà trường đã xây dựng kế hoạch 5 năm, hoàn thiện lấy ý kiến 100% cán bộ giáo viên và thông qua Hội đồng trường ngày 15/9.
+            </div>
+            <button onclick="applyMergeChoice('collab')" class="mt-3 w-full py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-semibold transition">
+              Giữ Bản Đồng nghiệp
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Smart 3-Way Combined Merge Solution -->
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+          <div class="flex items-center justify-between mb-2">
+            <div class="font-bold text-amber-900 text-xs flex items-center">
+              <i class="fa-solid fa-wand-magic-sparkles mr-2 text-amber-600"></i>Đề xuất Hợp nhất Thông minh (Merge Both - Không mất câu chữ nào của nhau)
+            </div>
+            <button onclick="applyMergeChoice('both')" class="px-4 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-bold text-xs shadow transition">
+              Chấp nhận Hợp nhất Cả Hai
+            </button>
+          </div>
+          <textarea id="diff-merged-preview" rows="3" class="w-full text-xs font-mono p-2.5 bg-white border border-amber-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+        </div>
+      </div>
+
+      <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end space-x-2">
+        <button onclick="closeConflictModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-semibold">
+          Đóng & Xem lại sau
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. SPECIAL CONTEXT & FLEXIBLE EVIDENCE MODAL -->
+  <div id="special-context-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-4 bg-gradient-to-r from-blue-700 to-indigo-800 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center font-bold text-sm">
+            <i class="fa-solid fa-shapes"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm">Kho Minh chứng Gợi ý Thay thế cho Hoàn cảnh Đặc thù</h3>
+            <p class="text-[11px] text-blue-100">Căn cứ Phần III & Phụ lục IV Thông tư 57/2026/TT-BGDĐT</p>
+          </div>
+        </div>
+        <button onclick="closeSpecialContextModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto custom-scroll space-y-4" id="special-context-content">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end">
+        <button onclick="closeSpecialContextModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-semibold">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ADD / EDIT EVIDENCE MODAL -->
+  <div id="evidence-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-4 bg-indigo-700 text-white flex items-center justify-between">
+        <h3 class="font-bold text-sm flex items-center" id="evidence-modal-title">
+          <i class="fa-solid fa-file-circle-plus mr-2"></i>Thêm Mới Minh chứng Số hóa
+        </h3>
+        <button onclick="closeEvidenceModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form id="evidence-form" onsubmit="saveEvidence(event)" class="p-6 overflow-y-auto custom-scroll space-y-4 text-xs">
+        <input type="hidden" id="modal-ev-index">
+        
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Mã Minh chứng (Chuẩn TT 57):</label>
+            <input type="text" id="modal-ev-code" required placeholder="VD: MC.1.3.01" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono font-bold text-indigo-700">
+            <span class="text-[10px] text-slate-500">Cấu trúc: MC.(Tiêu chuẩn).(Tiêu chí).(Số TT)</span>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Thuộc Tiêu chí:</label>
+            <select id="modal-ev-criterion" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-medium">
+              <!-- Populated by JS -->
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Tên Minh chứng cụ thể:</label>
+          <textarea id="modal-ev-name" rows="2" required placeholder="Nhập tên gọi chính thức của minh chứng..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-medium"></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Hình thức Minh chứng:</label>
+            <select id="modal-ev-type" onchange="toggleEvLocationInput(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-medium">
+              <option value="link">Liên kết điện tử (Google Drive / Website / CSDL ngành)</option>
+              <option value="file">Tệp tải lên (File PDF / DOCX / Ảnh)</option>
+              <option value="paper">Bản giấy (Mô tả vị trí lưu trữ tại văn phòng)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1" id="label-ev-location">Đường dẫn Liên kết (Hyperlink) / Vị trí:</label>
+            <input type="text" id="modal-ev-url" required placeholder="https://drive.google.com/... hoặc Tủ hồ sơ số 01" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Giai đoạn hoàn thành:</label>
+            <select id="modal-ev-stage" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-medium">
+              <option value="1">GĐ 1 (Tháng 8 - 9)</option>
+              <option value="2">GĐ 2 (Tháng 10 - 12)</option>
+              <option value="3">GĐ 3 (Tháng 1 - 4)</option>
+              <option value="4">GĐ 4 (Tháng 5)</option>
+              <option value="5">GĐ 5 (Tháng 6 - 7)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Hạn chót hoàn thành:</label>
+            <input type="date" id="modal-ev-deadline" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-medium">
+          </div>
+
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Trạng thái:</label>
+            <select id="modal-ev-status" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-bold text-slate-700">
+              <option value="completed">Đã hoàn thành</option>
+              <option value="in_progress">Đang thực hiện</option>
+              <option value="pending">Chưa thực hiện</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Bộ phận chịu trách nhiệm:</label>
+          <input type="text" id="modal-ev-dept" placeholder="VD: Ban Giám hiệu / Tổ Chuyên môn..." class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2">
+        </div>
+
+        <!-- Cross-criterion linking checkbox -->
+        <div class="p-3 bg-indigo-50/70 border border-indigo-200 rounded-xl space-y-1.5">
+          <label class="font-bold text-indigo-950 flex items-center">
+            <i class="fa-solid fa-link mr-1.5 text-indigo-600"></i>Minh chứng dùng chung (Gán cho nhiều Tiêu chí):
+          </label>
+          <p class="text-[11px] text-slate-600">Chọn thêm các tiêu chí khác có sử dụng chung minh chứng này để tránh trùng lặp dữ liệu:</p>
+          <div id="cross-criteria-checkboxes" class="grid grid-cols-4 gap-2 pt-1">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-200 flex justify-end space-x-2">
+          <button type="button" onclick="closeEvidenceModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl font-semibold">
+            Hủy
+          </button>
+          <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md shadow-indigo-500/20">
+            Lưu Minh chứng
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. TRASH BIN & RESTORE MODAL -->
+  <div id="trash-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-4 bg-slate-800 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-rose-500/30 flex items-center justify-center font-bold text-rose-300 text-sm">
+            <i class="fa-solid fa-trash-can"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm">Thùng rác Hệ thống & Phục hồi Dữ liệu (Soft-Delete)</h3>
+            <p class="text-[11px] text-slate-300">Không có dữ liệu nào bị xóa vĩnh viễn. Ban Giám hiệu có thể khôi phục lại bất kỳ lúc nào.</p>
+          </div>
+        </div>
+        <button onclick="closeTrashModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto custom-scroll" id="trash-content-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end">
+        <button onclick="closeTrashModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-semibold">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. AUDIT LOG & VERSION HISTORY MODAL -->
+  <div id="audit-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-4xl w-full shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+      <div class="p-4 bg-slate-800 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-indigo-500/30 flex items-center justify-center font-bold text-indigo-300 text-sm">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm">Nhật ký Hoạt động & Lịch sử Phiên bản (Audit Trail)</h3>
+            <p class="text-[11px] text-slate-300">Theo dõi toàn bộ thao tác của giáo viên, thư ký và ban giám hiệu thời gian thực.</p>
+          </div>
+        </div>
+        <button onclick="closeAuditModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="p-6 overflow-y-auto custom-scroll space-y-3" id="audit-timeline-container">
+        <!-- Rendered by JS -->
+      </div>
+
+      <div class="p-3 bg-slate-50 border-t border-slate-200 flex justify-end">
+        <button onclick="closeAuditModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-xl text-xs font-semibold">
+          Đóng
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= EMBEDDED JAVASCRIPT LOGIC ================= -->
+  <script>
+    // Master Injected Data from Circular 57
+    const DEFAULT_MASTER_DATA = {"metadata": {"app_name": "QA-EDUSYS", "title": "Hệ thống Quản lý Bảo đảm chất lượng & Tự đánh giá Giáo dục", "legal_doc": "Thông tư số 57/2026/TT-BGDĐT ngày 07/07/2026 của Bộ GD&ĐT", "scope": ["Mầm non", "Tiểu học", "THCS", "Trường Liên cấp"], "version": "2026.1.0", "mandatory_criteria": ["1.3", "1.4", "2.1", "2.2", "3.1", "3.2", "4.1", "4.2"]}, "standards": [{"id": 1, "code": "TC 1", "name": "Tổ chức và quản trị nhà trường"}, {"id": 2, "code": "TC 2", "name": "Cán bộ quản lý, giáo viên, nhân viên"}, {"id": 3, "code": "TC 3", "name": "Hoạt động giáo dục và kết quả giáo dục"}, {"id": 4, "code": "TC 4", "name": "Cơ sở vật chất, thiết bị và môi trường giáo dục"}], "stages": [{"stage": 1, "name": "Giai đoạn 1: Khởi động Tự đánh giá", "time": "Tháng 8 - Tháng 9", "months": [8, 9], "desc": "Thành lập Hội đồng TĐG; Ban hành Kế hoạch TĐG năm học; Tập huấn mã hóa minh chứng.", "deliverables": "Quyết định thành lập HĐ TĐG; Kế hoạch TĐG năm học; Phân công nhiệm vụ.", "leader": "Hiệu trưởng / Chủ tịch HĐ TĐG"}, {"stage": 2, "name": "Giai đoạn 2: Thu thập & Mã hóa Đợt 1", "time": "Tháng 10 - Tháng 12", "months": [10, 11, 12], "desc": "Mã hóa minh chứng Tiêu chuẩn 1 & 2; Thu thập minh chứng Học kỳ I (Giáo án, an toàn, y tế).", "deliverables": "Danh mục mã hóa MC Đợt 1; Thư mục dữ liệu số trên CSDL/Drive.", "leader": "Thư ký HĐ & Các Tổ chuyên môn"}, {"stage": 3, "name": "Giai đoạn 3: Rà soát & Thu thập Đợt 2", "time": "Tháng 1 - Tháng 4", "months": [1, 2, 3, 4], "desc": "Đánh giá tiến độ giữa kỳ; Sơ kết HK I; Cập nhật kết quả phong trào, hội thi, kiểm kê tài sản & CSVC.", "deliverables": "Báo cáo sơ kết tiến độ TĐG HK I; Danh mục MC bổ sung Đợt 2.", "leader": "Các Tổ Chuyên môn & Tổ Văn phòng"}, {"stage": 4, "name": "Giai đoạn 4: Tổng hợp & Dự thảo Báo cáo", "time": "Tháng 5", "months": [5], "desc": "Viết dự thảo Báo cáo TĐG hằng năm (Mẫu số 1) & Kế hoạch cải tiến (Mẫu số 2); Họp thông qua HĐ TĐG.", "deliverables": "Dự thảo Báo cáo TĐG; Dự thảo Kế hoạch cải tiến; Biên bản họp HĐ.", "leader": "Thư ký HĐ TĐG & BGH"}, {"stage": 5, "name": "Giai đoạn 5: Phê duyệt, Cập nhật & Công khai", "time": "Tháng 6 - Tháng 7", "months": [6, 7], "desc": "Hiệu trưởng duyệt báo cáo; Cập nhật lên CSDL ngành trước 15/6; Công khai kết quả.", "deliverables": "Báo cáo TĐG chính thức (PDF); Dữ liệu cập nhật CSDL ngành; Hồ sơ công khai.", "leader": "Hiệu trưởng / Văn phòng"}], "special_contexts": [{"context_id": "vung_kho_khan", "name": "Trường Nông thôn / Vùng khó khăn (Thiếu hạ tầng số)", "standard_evidence": "Sổ điểm / học bạ điện tử tích hợp chữ ký số; Phần mềm thương mại chuyên dụng.", "substitute_evidence": "Sổ theo dõi đánh giá học sinh bản giấy có đủ chữ ký GV & BGH + Báo cáo trích xuất định kỳ từ CSDL ngành.", "legal_basis": "Phụ lục IV Thông tư 57/2026/TT-BGDĐT: Cho phép dùng minh chứng bản giấy kèm mô tả cụ thể vị trí lưu trữ tại cơ sở giáo dục."}, {"context_id": "tu_thuc", "name": "Trường Tư thục / Dân lập (Không có ngân sách nhà nước)", "standard_evidence": "Báo cáo quyết toán ngân sách nhà nước; Quyết định bổ nhiệm công chức/viên chức.", "substitute_evidence": "Báo cáo tài chính đã được kiểm toán độc lập / xác nhận của HĐQT + Hợp đồng lao động hợp pháp kèm chứng từ đóng BHXH đầy đủ.", "legal_basis": "Điều 4 Thông tư 57/2026/TT-BGDĐT: Thừa nhận hồ sơ quản lý tài chính và nhân sự hợp pháp theo Luật Doanh nghiệp."}, {"context_id": "diem_truong_le", "name": "Trường có nhiều Điểm trường lẻ (Điểm bản vùng cao)", "standard_evidence": "Thư viện kiên cố đạt chuẩn riêng cho từng điểm lẻ; Phòng bộ môn riêng biệt tại từng điểm.", "substitute_evidence": "Mô hình 'Thư viện xanh' / Tủ sách dùng chung lớp học + Kế hoạch luân chuyển thiết bị dạy học định kỳ từ điểm chính sang điểm lẻ.", "legal_basis": "Phụ lục II Tiêu chuẩn 4 Thông tư 57: Đánh giá theo điều kiện khai thác và sử dụng thực tế linh hoạt của cơ sở."}, {"context_id": "sap_nhap_chia_tach", "name": "Trường mới Sáp nhập / Chia tách (Dưới 3 năm)", "standard_evidence": "Dữ liệu tự đánh giá 3 đến 5 năm liên tiếp dưới mã định danh và tên trường mới.", "substitute_evidence": "Hồ sơ, dữ liệu chất lượng kế thừa từ các trường tiền thân trước khi sáp nhập + Biên bản bàn giao hồ sơ chất lượng nguyên trạng.", "legal_basis": "Điều 15 Thông tư 57/2026/TT-BGDĐT: Cho phép kế thừa kết quả và dữ liệu BĐCLGD của các đơn vị tiền thân."}, {"context_id": "chua_phat_sinh", "name": "Nội dung chưa phát sinh (Chưa có HS khuyết tật / bán trú)", "standard_evidence": "Hồ sơ theo dõi học sinh hòa nhập; Giấy chứng nhận ATTP bếp ăn bán trú.", "substitute_evidence": "Văn bản xác nhận của nhà trường về việc chưa có đối tượng phát sinh + Kế hoạch, quy chế dự phòng sẵn sàng triển khai khi có phát sinh.", "legal_basis": "Phụ lục IV Thông tư 57: Đánh giá dựa trên thực tế triển khai và phương án chuẩn bị dự phòng của nhà trường."}], "workspaces": {"MAM_NON": {"name": "Cấp Mầm non", "legal_basis": "Phụ lục I - Thông tư 57/2026/TT-BGDĐT", "criteria": [{"id": "1.1", "std": 1, "code": "TC 1.1", "name": "Phương hướng, chiến lược xây dựng và phát triển nhà trường", "mandatory": false, "stage": 1, "month": 9, "dept": "Ban Giám hiệu", "default_evidence": [{"code": "MC.1.1.01", "name": "Nghị quyết Hội đồng trường; Kế hoạch phát triển nhà trường giai đoạn 5 năm và hằng năm", "type": "link", "url": "https://csdl.moet.gov.vn/kehoach/1.1", "stage": 1, "deadline": "2026-09-30", "status": "completed", "dept": "Ban Giám hiệu"}], "description": "Chiến lược phát triển trường mầm non phù hợp với điều kiện kinh tế - xã hội địa phương và mục tiêu nuôi dưỡng, chăm sóc, giáo dục trẻ."}, {"id": "1.2", "std": 1, "code": "TC 1.2", "name": "Hội đồng trường và các tổ chức, đoàn thể, bộ phận", "mandatory": false, "stage": 1, "month": 9, "dept": "Văn phòng / BGH", "default_evidence": [{"code": "MC.1.2.01", "name": "Sơ đồ cơ cấu tổ chức; Quyết định thành lập Hội đồng trường, Tổ chuyên môn, Tổ nuôi dưỡng", "type": "file", "url": "MC.1.2.01_CoCauToChuc.pdf", "stage": 1, "deadline": "2026-09-15", "status": "completed", "dept": "Văn phòng"}], "description": "Cơ cấu tổ chức bộ máy nhà trường gồm các nhóm trẻ, lớp mẫu giáo, tổ chuyên môn và tổ nuôi dưỡng hoạt động hiệu quả."}, {"id": "1.3", "std": 1, "code": "TC 1.3", "name": "Quản lý kế hoạch, nguồn lực, thông tin và dữ liệu (CSDL ngành)", "mandatory": true, "stage": 2, "month": 11, "dept": "BGH / Kế toán / VP", "default_evidence": [{"code": "MC.1.3.01", "name": "Hồ sơ quản lý kế hoạch bán trú, CSDL nhóm/lớp trẻ, nhân sự, tài chính trên hệ thống CSDL ngành", "type": "link", "url": "https://csdl.moet.gov.vn/dulieu/mamnon", "stage": 2, "deadline": "2026-11-20", "status": "completed", "dept": "BGH / Kế toán"}], "description": "Cập nhật 100% dữ liệu trẻ mầm non, đội ngũ cán bộ giáo viên, cơ sở vật chất và bữa ăn bán trú lên CSDL ngành đầy đủ, chính xác."}, {"id": "1.4", "std": 1, "code": "TC 1.4", "name": "Tự đánh giá, cải tiến chất lượng, công khai và trách nhiệm giải trình", "mandatory": true, "stage": 5, "month": 6, "dept": "Hội đồng TĐG / BGH", "default_evidence": [{"code": "MC.1.4.01", "name": "Báo cáo tự đánh giá chất lượng trường mầm non hằng năm (Mẫu số 1 Phụ lục V)", "type": "file", "url": "MC.1.4.01_BaoCaoTDG_MN.pdf", "stage": 4, "deadline": "2027-05-25", "status": "pending", "dept": "Hội đồng TĐG"}, {"code": "MC.1.4.02", "name": "Kế hoạch cải tiến chất lượng nuôi dưỡng, chăm sóc, GD trẻ (Mẫu số 2 Phụ lục V) & Hồ sơ 3 công khai", "type": "link", "url": "https://mamnon.edu.vn/congkhai", "stage": 5, "deadline": "2027-06-10", "status": "pending", "dept": "BGH"}], "description": "Thực hiện tự đánh giá hằng năm theo đúng Thông tư 57/2026/TT-BGDĐT, niêm yết công khai chất lượng nuôi dưỡng và học phí."}, {"id": "2.1", "std": 2, "code": "TC 2.1", "name": "Cán bộ quản lý cơ sở giáo dục (Chuẩn Hiệu trưởng/Phó HT)", "mandatory": true, "stage": 2, "month": 10, "dept": "BGH / Văn phòng", "default_evidence": [{"code": "MC.2.1.01", "name": "Hồ sơ Hiệu trưởng, Phó HT mầm non: Quyết định bổ nhiệm, bằng cử nhân GD Mầm non, chứng chỉ QLGD, đánh giá chuẩn HT", "type": "link", "url": "https://csdl.moet.gov.vn/cbql/mamnon", "stage": 2, "deadline": "2026-10-30", "status": "completed", "dept": "Văn phòng"}], "description": "Hiệu trưởng và Phó Hiệu trưởng đạt chuẩn trình độ đào tạo giáo dục mầm non, xếp loại Chuẩn nghề nghiệp đạt mức Khá trở lên."}, {"id": "2.2", "std": 2, "code": "TC 2.2", "name": "Giáo viên (Đạt chuẩn trình độ đào tạo & Chuẩn nghề nghiệp)", "mandatory": true, "stage": 2, "month": 11, "dept": "Tổ Chuyên môn / VP", "default_evidence": [{"code": "MC.2.2.01", "name": "Danh sách trích ngang GV; Bảng tổng hợp trình độ CĐSP/ĐHSP mầm non (Luật GD 2019); Đánh giá TEMIS", "type": "link", "url": "https://temis.csdl.edu.vn/mamnon", "stage": 2, "deadline": "2026-11-15", "status": "completed", "dept": "Chuyên môn"}], "description": "100% giáo viên mầm non đạt chuẩn trình độ đào tạo (cao đẳng sư phạm mầm non trở lên); tỷ lệ giáo viên/nhóm lớp đáp ứng quy định."}, {"id": "2.3", "std": 2, "code": "TC 2.3", "name": "Nhân viên và nhân sự hỗ trợ giáo dục", "mandatory": false, "stage": 2, "month": 12, "dept": "Văn phòng / Tổ Nuôi dưỡng", "default_evidence": [{"code": "MC.2.3.01", "name": "Hồ sơ nhân viên nuôi dưỡng, cấp dưỡng (chứng chỉ nấu ăn, khám sức khỏe định kỳ), nhân viên y tế học đường", "type": "paper", "url": "Tủ hồ sơ VP số 02 - Ngăn Nuôi dưỡng", "stage": 2, "deadline": "2026-12-15", "status": "completed", "dept": "Tổ Nuôi dưỡng"}], "description": "Nhân viên nuôi dưỡng, kế toán, văn thư, y tế học đường có văn bằng chứng chỉ phù hợp vị trí việc làm."}, {"id": "3.1", "std": 3, "code": "TC 3.1", "name": "Tổ chức thực hiện chương trình giáo dục mầm non", "mandatory": true, "stage": 1, "month": 9, "dept": "BGH / Tổ Chuyên môn", "default_evidence": [{"code": "MC.3.1.01", "name": "Kế hoạch nuôi dưỡng, chăm sóc, giáo dục trẻ năm học; Kế hoạch hoạt động của nhóm trẻ và các lớp mẫu giáo", "type": "file", "url": "MC.3.1.01_KHGD_MamNon.docx", "stage": 1, "deadline": "2026-09-25", "status": "completed", "dept": "Tổ Chuyên môn"}], "description": "Thực hiện đúng Chương trình Giáo dục mầm non do Bộ GDĐT ban hành; xây dựng môi trường giáo dục lấy trẻ làm trung tâm."}, {"id": "3.2", "std": 3, "code": "TC 3.2", "name": "Đổi mới phương pháp chăm sóc, giáo dục và theo dõi sự phát triển của trẻ", "mandatory": true, "stage": 3, "month": 1, "dept": "Tổ Chuyên môn / GV", "default_evidence": [{"code": "MC.3.2.01", "name": "Kế hoạch giáo dục ngày/tuần; Biên bản sinh hoạt chuyên môn đổi mới phương pháp giáo dục steam/trải nghiệm mầm non", "type": "file", "url": "MC.3.2.01_GiaoAn_MN.pdf", "stage": 2, "deadline": "2026-12-20", "status": "completed", "dept": "Tổ Chuyên môn"}, {"code": "MC.3.2.02", "name": "Phiếu theo dõi sự phát triển của trẻ hằng ngày và theo giai đoạn; Đánh giá trẻ 5 tuổi theo Bộ chuẩn PT trẻ", "type": "paper", "url": "Hồ sơ lớp học các nhóm trẻ/lớp mẫu giáo", "stage": 3, "deadline": "2027-01-15", "status": "in_progress", "dept": "GV các lớp"}], "description": "Ứng dụng phương pháp giáo dục tiên tiến; theo dõi đánh giá trẻ hằng ngày và cuối độ tuổi chính xác, nhân văn."}, {"id": "3.3", "std": 3, "code": "TC 3.3", "name": "Hoạt động trải nghiệm, kỹ năng sống và phong trào giáo dục mầm non", "mandatory": false, "stage": 3, "month": 3, "dept": "Đoàn Thanh niên / GV", "default_evidence": [{"code": "MC.3.3.01", "name": "Hồ sơ tổ chức 'Ngày hội bé đến trường', 'Bé vui khỏe - Bé tài năng', hoạt động tham quan trải nghiệm thực tế", "type": "link", "url": "https://mamnon.edu.vn/hoatdong/trainghiem", "stage": 3, "deadline": "2027-03-25", "status": "pending", "dept": "Đoàn TN"}], "description": "Tổ chức đa dạng các ngày hội, ngày lễ, hoạt động trải nghiệm rèn luyện kỹ năng tự phục vụ cho trẻ."}, {"id": "3.4", "std": 3, "code": "TC 3.4", "name": "Chăm sóc, giáo dục trẻ khuyết tật và hoàn cảnh đặc biệt", "mandatory": false, "stage": 3, "month": 2, "dept": "GV Chủ nhiệm / Y tế", "default_evidence": [{"code": "MC.3.4.01", "name": "Sổ theo dõi trẻ khuyết tật học hòa nhập; Kế hoạch giáo dục cá nhân (hoặc văn bản xác nhận chưa có trẻ khuyết tật)", "type": "paper", "url": "Tủ hồ sơ Ban giám hiệu - Ngăn Hòa nhập", "stage": 3, "deadline": "2027-02-28", "status": "completed", "dept": "Y tế / GV"}], "description": "Bảo đảm quyền học tập hòa nhập của trẻ khuyết tật; có kế hoạch can thiệp sớm và hỗ trợ phù hợp."}, {"id": "3.5", "std": 3, "code": "TC 3.5", "name": "Kết quả phát triển thể chất và chất lượng đầu ra hằng năm", "mandatory": false, "stage": 4, "month": 5, "dept": "Chuyên môn / Nuôi dưỡng", "default_evidence": [{"code": "MC.3.5.01", "name": "Bảng tổng hợp đánh giá trẻ cuối năm: Tỷ lệ bé ngoan, chuyên cần (5T ≥ 90%), tỷ lệ suy dinh dưỡng dưới 3%", "type": "link", "url": "https://csdl.moet.gov.vn/mamnon/danhgiatre", "stage": 4, "deadline": "2027-05-20", "status": "pending", "dept": "Chuyên môn"}], "description": "Tỷ lệ chuyên cần đạt chuẩn; trẻ phát triển hài hòa về thể chất, tâm lý, nhận thức, ngôn ngữ và tình cảm xã hội."}, {"id": "4.1", "std": 4, "code": "TC 4.1", "name": "Cơ sở vật chất, thiết bị, đồ chơi và bếp ăn bán trú", "mandatory": true, "stage": 3, "month": 4, "dept": "Bộ phận CSVC / Nuôi dưỡng", "default_evidence": [{"code": "MC.4.1.01", "name": "Danh mục phòng học nhóm/lớp, sân chơi ngoài trời có cây xanh, đồ chơi tối thiểu, bếp ăn bán trú 1 chiều đạt chuẩn", "type": "file", "url": "MC.4.1.01_CSVC_MamNon.pdf", "stage": 3, "deadline": "2027-04-20", "status": "completed", "dept": "Tổ CSVC"}], "description": "Khuôn viên xanh - sạch - đẹp, sân chơi an toàn; bếp ăn thiết kế một chiều bảo đảm vệ sinh; đủ đồ dùng đồ chơi."}, {"id": "4.2", "std": 4, "code": "TC 4.2", "name": "Môi trường giáo dục an toàn, sức khỏe và hạnh phúc", "mandatory": true, "stage": 2, "month": 10, "dept": "Ban An toàn / Y tế", "default_evidence": [{"code": "MC.4.2.01", "name": "Giấy chứng nhận cơ sở đủ điều kiện ATTP bếp ăn; Hợp đồng cung ứng thực phẩm sạch có nguồn gốc rõ ràng", "type": "file", "url": "MC.4.2.01_ATTP_KiemDinh.pdf", "stage": 2, "deadline": "2026-10-15", "status": "completed", "dept": "Nuôi dưỡng"}, {"code": "MC.4.2.02", "name": "Biên bản kiểm tra an toàn PCCC, hồ sơ phòng chống tai nạn thương tích, biên bản khám sức khỏe định kỳ cho trẻ", "type": "file", "url": "MC.4.2.02_PCCC_YTe.pdf", "stage": 2, "deadline": "2026-10-25", "status": "completed", "dept": "Y tế"}], "description": "Không xảy ra tai nạn thương tích và ngộ độc thực phẩm; 100% trẻ được theo dõi sức khỏe và khám định kỳ 2 lần/năm."}, {"id": "4.3", "std": 4, "code": "TC 4.3", "name": "Phối hợp Nhà trường - Gia đình - Xã hội", "mandatory": false, "stage": 3, "month": 1, "dept": "BGH / Ban ĐD Cha mẹ trẻ", "default_evidence": [{"code": "MC.4.3.01", "name": "Biên bản họp Ban đại diện cha mẹ trẻ; Góc tuyên truyền dinh dưỡng và phối hợp chăm sóc trẻ", "type": "paper", "url": "Sổ biên bản họp phụ huynh tại VP", "stage": 3, "deadline": "2027-01-10", "status": "completed", "dept": "BGH"}], "description": "Thực hiện phối hợp chặt chẽ giữa nhà trường và phụ huynh trong chế độ dinh dưỡng, chăm sóc và phòng bệnh cho trẻ."}]}, "TIEU_HOC": {"name": "Cấp Tiểu học", "legal_basis": "Phụ lục II - Thông tư 57/2026/TT-BGDĐT & Thông tư 27/2020/TT-BGDĐT", "criteria": [{"id": "1.1", "std": 1, "code": "TC 1.1", "name": "Phương hướng, chiến lược xây dựng và phát triển nhà trường", "mandatory": false, "stage": 1, "month": 9, "dept": "Ban Giám hiệu", "default_evidence": [{"code": "MC.1.1.01", "name": "Nghị quyết Hội đồng trường; Kế hoạch phát triển nhà trường 5 năm và hằng năm", "type": "file", "url": "MC.1.1.01_KHChienLuoc.pdf", "stage": 1, "deadline": "2026-09-25", "status": "completed", "dept": "Ban Giám hiệu"}], "description": "Chiến lược phát triển trường tiểu học phù hợp mục tiêu CTGDPT 2018 và quy hoạch phát triển giáo dục địa phương."}, {"id": "1.2", "std": 1, "code": "TC 1.2", "name": "Hội đồng trường và các tổ chức, đoàn thể, bộ phận", "mandatory": false, "stage": 1, "month": 9, "dept": "Văn phòng / BGH", "default_evidence": [{"code": "MC.1.2.01", "name": "Sơ đồ tổ chức; Quyết định thành lập các tổ chuyên môn, tổ văn phòng, các hội đồng", "type": "link", "url": "https://csdl.moet.gov.vn/tieuhoc/tochuc", "stage": 1, "deadline": "2026-09-15", "status": "completed", "dept": "Văn phòng"}], "description": "Hội đồng trường, các tổ chuyên môn (Khối 1, 2, 3, 4, 5) và tổ văn phòng thực hiện đúng chức năng, nhiệm vụ."}, {"id": "1.3", "std": 1, "code": "TC 1.3", "name": "Quản lý kế hoạch, nguồn lực, thông tin và dữ liệu (CSDL ngành)", "mandatory": true, "stage": 2, "month": 11, "dept": "BGH / Kế toán / VP", "default_evidence": [{"code": "MC.1.3.01", "name": "Hồ sơ quản lý kế hoạch GD, tài chính, nhân sự, học sinh, CSVC trên CSDL ngành", "type": "link", "url": "https://csdl.moet.gov.vn/tieuhoc/csdl", "stage": 2, "deadline": "2026-11-20", "status": "completed", "dept": "BGH, Kế toán, VP"}], "description": "Ứng dụng CSDL ngành trong quản lý học bạ điện tử, hồ sơ nhân sự, kế toán tài chính và thiết bị dạy học."}, {"id": "1.4", "std": 1, "code": "TC 1.4", "name": "Tự đánh giá, cải tiến chất lượng, công khai và trách nhiệm giải trình", "mandatory": true, "stage": 5, "month": 6, "dept": "Hội đồng TĐG / BGH", "default_evidence": [{"code": "MC.1.4.01", "name": "Báo cáo tự đánh giá chất lượng giáo dục hằng năm (Biểu mẫu 1 Phụ lục V)", "type": "file", "url": "MC.1.4.01_BaoCaoTDG_TH.pdf", "stage": 4, "deadline": "2027-05-25", "status": "pending", "dept": "Hội đồng TĐG"}, {"code": "MC.1.4.02", "name": "Kế hoạch cải tiến chất lượng giáo dục (Biểu mẫu 2 Phụ lục V) & Hồ sơ công khai", "type": "link", "url": "https://tieuhoc.edu.vn/cong-khai-tt57", "stage": 5, "deadline": "2027-06-10", "status": "pending", "dept": "Ban Giám hiệu"}], "description": "Hoàn thành tự đánh giá theo 5 giai đoạn năm học; công khai cam kết chất lượng giáo dục và kết quả tự đánh giá."}, {"id": "2.1", "std": 2, "code": "TC 2.1", "name": "Cán bộ quản lý cơ sở giáo dục (Chuẩn Hiệu trưởng/Phó HT)", "mandatory": true, "stage": 2, "month": 10, "dept": "BGH / Văn phòng", "default_evidence": [{"code": "MC.2.1.01", "name": "Hồ sơ cán bộ quản lý (Hiệu trưởng, Phó HT): Bổ nhiệm, văn bằng chứng chỉ đạt chuẩn cử nhân, đánh giá HT", "type": "link", "url": "https://temis.csdl.edu.vn/cbql", "stage": 2, "deadline": "2026-10-30", "status": "completed", "dept": "BGH / Văn phòng"}], "description": "Hiệu trưởng và Phó Hiệu trưởng có trình độ cử nhân trở lên, năng lực quản trị trường học đáp ứng đổi mới GDPT."}, {"id": "2.2", "std": 2, "code": "TC 2.2", "name": "Giáo viên (Đạt chuẩn trình độ đào tạo & Chuẩn nghề nghiệp)", "mandatory": true, "stage": 2, "month": 11, "dept": "Văn phòng / CM", "default_evidence": [{"code": "MC.2.2.01", "name": "Danh sách trích ngang GV; Bảng tổng hợp trình độ đào tạo đạt chuẩn cử nhân trở lên; Kết quả TEMIS", "type": "link", "url": "https://temis.csdl.edu.vn/gv", "stage": 2, "deadline": "2026-11-15", "status": "completed", "dept": "Văn phòng / CM"}], "description": "Tỷ lệ giáo viên/lớp đạt định mức quy định dạy 2 buổi/ngày; 100% giáo viên đạt chuẩn trình độ theo Luật Giáo dục 2019."}, {"id": "2.3", "std": 2, "code": "TC 2.3", "name": "Nhân viên và nhân sự hỗ trợ giáo dục", "mandatory": false, "stage": 2, "month": 12, "dept": "Văn phòng / KT", "default_evidence": [{"code": "MC.2.3.01", "name": "Quyết định phân công/Hợp đồng lao động nhân sự hỗ trợ (Tổng TĐ, Kế toán, Y tế, Thư viện)", "type": "paper", "url": "Tủ hồ sơ văn phòng nhà trường", "stage": 2, "deadline": "2026-12-15", "status": "completed", "dept": "Văn phòng / KT"}], "description": "Có đủ nhân sự phụ trách kế toán, văn thư, y tế trường học, thư viện - thiết bị dạy học."}, {"id": "3.1", "std": 3, "code": "TC 3.1", "name": "Tổ chức thực hiện chương trình giáo dục tiểu học", "mandatory": true, "stage": 1, "month": 9, "dept": "BGH / Tổ CM", "default_evidence": [{"code": "MC.3.1.01", "name": "Kế hoạch giáo dục nhà trường cấp tiểu học; Kế hoạch dạy học môn học & Hoạt động GD 2 buổi/ngày", "type": "file", "url": "MC.3.1.01_KHGD_TieuHoc.pdf", "stage": 1, "deadline": "2026-09-20", "status": "completed", "dept": "Ban Giám hiệu / Tổ CM"}], "description": "Xây dựng và tổ chức thực hiện kế hoạch giáo dục theo CTGDPT 2018 bảo đảm tính vừa sức, phát triển phẩm chất, năng lực."}, {"id": "3.2", "std": 3, "code": "TC 3.2", "name": "Đổi mới phương pháp và theo dõi, đánh giá học sinh (Thông tư 27)", "mandatory": true, "stage": 3, "month": 1, "dept": "Tổ Chuyên môn / GV", "default_evidence": [{"code": "MC.3.2.01", "name": "Kế hoạch bài dạy (Giáo án); Biên bản sinh hoạt chuyên môn theo nghiên cứu bài học", "type": "file", "url": "MC.3.2.01_GiaoAn_SHCM.docx", "stage": 2, "deadline": "2026-12-25", "status": "completed", "dept": "Tổ Chuyên môn / GV"}, {"code": "MC.3.2.02", "name": "Hồ sơ đánh giá học sinh tiểu học (Thông tư 27); Học bạ điện tử & Bảng tổng hợp kết quả HK I và cả năm", "type": "link", "url": "https://csdl.moet.gov.vn/tieuhoc/danhgia", "stage": 3, "deadline": "2027-01-15", "status": "in_progress", "dept": "GV Chủ nhiệm"}], "description": "Thực hiện đổi mới phương pháp dạy học và đánh giá học sinh tiểu học theo Thông tư 27/2020/TT-BGDĐT."}, {"id": "3.3", "std": 3, "code": "TC 3.3", "name": "Hoạt động trải nghiệm, STEM/STEAM và phong trào giáo dục", "mandatory": false, "stage": 3, "month": 3, "dept": "Tổng TĐ / GVCN", "default_evidence": [{"code": "MC.3.3.01", "name": "Hồ sơ tổ chức hoạt động trải nghiệm, STEM/STEAM, kỹ năng sống, giáo dục thể chất", "type": "link", "url": "https://tieuhoc.edu.vn/stem-trainghiem", "stage": 3, "deadline": "2027-03-20", "status": "in_progress", "dept": "Tổng TĐ / GVCN"}], "description": "Tổ chức hoạt động trải nghiệm, STEM tiểu học, văn hóa văn nghệ, thể dục thể thao sôi nổi, bổ ích."}, {"id": "3.4", "std": 3, "code": "TC 3.4", "name": "Học sinh khuyết tật học hòa nhập và giáo dục hòa nhập", "mandatory": false, "stage": 3, "month": 2, "dept": "GVCN / Khuyết tật", "default_evidence": [{"code": "MC.3.4.01", "name": "Hồ sơ theo dõi học sinh khuyết tật học hòa nhập; Kế hoạch giáo dục cá nhân (KHDGCN)", "type": "paper", "url": "Sổ theo dõi học sinh hòa nhập điện tử CSDL", "stage": 3, "deadline": "2027-02-28", "status": "completed", "dept": "GVCN / Khuyết tật"}], "description": "Lập kế hoạch giáo dục cá nhân và đánh giá vì sự tiến bộ của học sinh khuyết tật học hòa nhập."}, {"id": "3.5", "std": 3, "code": "TC 3.5", "name": "Thống kê tỷ lệ học sinh hoàn thành chương trình lớp học & tiểu học", "mandatory": false, "stage": 4, "month": 5, "dept": "Chuyên môn / VP", "default_evidence": [{"code": "MC.3.5.01", "name": "Thống kê tỷ lệ học sinh hoàn thành chương trình lớp học (≥ 98%) và hoàn thành chương trình tiểu học (11 tuổi)", "type": "link", "url": "https://csdl.moet.gov.vn/tieuhoc/thongke", "stage": 4, "deadline": "2027-05-20", "status": "pending", "dept": "Chuyên môn / VP"}], "description": "Học sinh hoàn thành chương trình lớp học đạt tỷ lệ cao; 100% học sinh hoàn thành chương trình tiểu học được cấp giấy chứng nhận."}, {"id": "4.1", "std": 4, "code": "TC 4.1", "name": "Cơ sở vật chất, thiết bị, học liệu và thư viện đạt chuẩn", "mandatory": true, "stage": 3, "month": 4, "dept": "Bộ phận CSVC / Thư viện", "default_evidence": [{"code": "MC.4.1.01", "name": "Danh mục phòng học kiên cố, phòng chức năng, thư viện đạt chuẩn theo TT 16/2022, thiết bị dạy học tối thiểu", "type": "file", "url": "MC.4.1.01_CSVC_ThietBi.pdf", "stage": 3, "deadline": "2027-04-20", "status": "completed", "dept": "Bộ phận CSVC / Thư viện"}], "description": "Đủ phòng học đạt chuẩn kiên cố; thư viện thân thiện/thư viện đạt chuẩn; thiết bị dạy học đáp ứng CTGDPT 2018."}, {"id": "4.2", "std": 4, "code": "TC 4.2", "name": "Môi trường giáo dục an toàn, sức khỏe và hạnh phúc", "mandatory": true, "stage": 2, "month": 10, "dept": "Ban An toàn / Y tế / Tư vấn", "default_evidence": [{"code": "MC.4.2.01", "name": "Hồ sơ y tế trường học, an toàn vệ sinh thực phẩm (bán trú), PCCC, an ninh trật tự trường học", "type": "file", "url": "MC.4.2.01_YTe_ATTP_PCCC.pdf", "stage": 2, "deadline": "2026-10-20", "status": "completed", "dept": "Y tế / Ban An toàn"}, {"code": "MC.4.2.02", "name": "Kế hoạch & Minh chứng phòng chống bạo lực học đường, tổ tư vấn tâm lý học đường cho học sinh tiểu học", "type": "file", "url": "MC.4.2.02_TuVanTamLy.docx", "stage": 2, "deadline": "2026-10-30", "status": "completed", "dept": "Tổ Tư vấn tâm lý / TĐ"}], "description": "Trường học an toàn, phòng chống tai nạn thương tích; hoạt động tư vấn tâm lý học đường hỗ trợ học sinh kịp thời."}, {"id": "4.3", "std": 4, "code": "TC 4.3", "name": "Mối quan hệ Nhà trường - Gia đình - Xã hội", "mandatory": false, "stage": 3, "month": 1, "dept": "BGH / GVCN", "default_evidence": [{"code": "MC.4.3.01", "name": "Biên bản họp Ban đại diện cha mẹ học sinh; Quy chế phối hợp Nhà trường - Gia đình - Xã hội; Sổ liên lạc điện tử", "type": "paper", "url": "Sổ biên bản họp & Sổ liên lạc điện tử CSDL", "stage": 3, "deadline": "2027-01-10", "status": "completed", "dept": "Ban Giám hiệu / GVCN"}], "description": "Ban đại diện cha mẹ học sinh phối hợp chặt chẽ; huy động nguồn lực xã hội hóa giáo dục đúng quy định."}]}, "THCS": {"name": "Cấp Trung học cơ sở", "legal_basis": "Phụ lục II - Thông tư 57/2026/TT-BGDĐT & Thông tư 22/2021/TT-BGDĐT", "criteria": [{"id": "1.1", "std": 1, "code": "TC 1.1", "name": "Phương hướng, chiến lược xây dựng và phát triển nhà trường", "mandatory": false, "stage": 1, "month": 9, "dept": "Ban Giám hiệu", "default_evidence": [{"code": "MC.1.1.01", "name": "Nghị quyết Hội đồng trường; Kế hoạch phát triển trường THCS 5 năm và hằng năm có chỉ tiêu phân luồng", "type": "file", "url": "MC.1.1.01_ChienLuoc_THCS.pdf", "stage": 1, "deadline": "2026-09-25", "status": "completed", "dept": "Ban Giám hiệu"}], "description": "Chiến lược phát triển trường THCS gắn với mục tiêu giáo dục toàn diện, hướng nghiệp và phân luồng sau THCS."}, {"id": "1.2", "std": 1, "code": "TC 1.2", "name": "Hội đồng trường và các tổ chức, đoàn thể, bộ phận", "mandatory": false, "stage": 1, "month": 9, "dept": "Văn phòng / BGH", "default_evidence": [{"code": "MC.1.2.01", "name": "Sơ đồ cơ cấu tổ chức; Quyết định thành lập các tổ bộ môn (Toán, KHTN, Văn, Sử-Địa, Ngoại ngữ...)", "type": "link", "url": "https://csdl.moet.gov.vn/thcs/tochuc", "stage": 1, "deadline": "2026-09-15", "status": "completed", "dept": "Văn phòng"}], "description": "Các tổ chuyên môn bộ môn và tổ văn phòng hoạt động hiệu quả; Đoàn - Đội phát huy vai trò rèn luyện học sinh."}, {"id": "1.3", "std": 1, "code": "TC 1.3", "name": "Quản lý kế hoạch, nguồn lực, thông tin và dữ liệu (CSDL ngành)", "mandatory": true, "stage": 2, "month": 11, "dept": "BGH / Kế toán / VP", "default_evidence": [{"code": "MC.1.3.01", "name": "Hồ sơ quản lý kế hoạch GD, sổ điểm điện tử, học bạ số, kiểm tra định kỳ trên CSDL ngành", "type": "link", "url": "https://csdl.moet.gov.vn/thcs/csdl", "stage": 2, "deadline": "2026-11-20", "status": "completed", "dept": "BGH / Kế toán / VP"}], "description": "Ứng dụng CSDL ngành quản lý điểm số, kiểm tra đánh giá, học bạ số và phân luồng học sinh sau tốt nghiệp."}, {"id": "1.4", "std": 1, "code": "TC 1.4", "name": "Tự đánh giá, cải tiến chất lượng, công khai và trách nhiệm giải trình", "mandatory": true, "stage": 5, "month": 6, "dept": "Hội đồng TĐG / BGH", "default_evidence": [{"code": "MC.1.4.01", "name": "Báo cáo tự đánh giá chất lượng trường THCS hằng năm (Mẫu số 1 Phụ lục V)", "type": "file", "url": "MC.1.4.01_BaoCaoTDG_THCS.pdf", "stage": 4, "deadline": "2027-05-25", "status": "pending", "dept": "Hội đồng TĐG"}, {"code": "MC.1.4.02", "name": "Kế hoạch cải tiến chất lượng giáo dục THCS (Mẫu số 2 Phụ lục V) & Hồ sơ công khai kết quả", "type": "link", "url": "https://thcs.edu.vn/cong-khai", "stage": 5, "deadline": "2027-06-10", "status": "pending", "dept": "Ban Giám hiệu"}], "description": "Thực hiện tự đánh giá hằng năm theo chu kỳ năm học; cải tiến chất lượng dạy học các môn thi vào lớp 10."}, {"id": "2.1", "std": 2, "code": "TC 2.1", "name": "Cán bộ quản lý cơ sở giáo dục (Chuẩn Hiệu trưởng/Phó HT)", "mandatory": true, "stage": 2, "month": 10, "dept": "BGH / Văn phòng", "default_evidence": [{"code": "MC.2.1.01", "name": "Hồ sơ Hiệu trưởng, Phó HT: Quyết định bổ nhiệm, bằng cử nhân/thạc sĩ sư phạm, chứng chỉ QLGD, kết quả đánh giá chuẩn HT", "type": "link", "url": "https://temis.csdl.edu.vn/thcs/cbql", "stage": 2, "deadline": "2026-10-30", "status": "completed", "dept": "BGH / Văn phòng"}], "description": "Hiệu trưởng và Phó Hiệu trưởng có trình độ cử nhân sư phạm trở lên; năng lực lãnh đạo đổi mới phương pháp dạy học THCS."}, {"id": "2.2", "std": 2, "code": "TC 2.2", "name": "Giáo viên (Đạt chuẩn trình độ đào tạo & Chuẩn nghề nghiệp)", "mandatory": true, "stage": 2, "month": 11, "dept": "Tổ Chuyên môn / VP", "default_evidence": [{"code": "MC.2.2.01", "name": "Danh sách trích ngang GV; Bảng tổng hợp trình độ cử nhân sư phạm các bộ môn; Đánh giá chuẩn nghề nghiệp TEMIS", "type": "link", "url": "https://temis.csdl.edu.vn/thcs/gv", "stage": 2, "deadline": "2026-11-15", "status": "completed", "dept": "Tổ Chuyên môn / VP"}], "description": "100% giáo viên đạt chuẩn trình độ cử nhân sư phạm đúng chuyên ngành đào tạo theo Luật Giáo dục 2019."}, {"id": "2.3", "std": 2, "code": "TC 2.3", "name": "Nhân viên và nhân sự hỗ trợ giáo dục", "mandatory": false, "stage": 2, "month": 12, "dept": "Văn phòng / Thiết bị", "default_evidence": [{"code": "MC.2.3.01", "name": "Hồ sơ nhân viên phụ trách phòng thí nghiệm - thực hành, thư viện, CNTT, kế toán, tư vấn học đường", "type": "paper", "url": "Tủ hồ sơ văn phòng trường THCS", "stage": 2, "deadline": "2026-12-15", "status": "completed", "dept": "Văn phòng / Thiết bị"}], "description": "Có nhân viên chuyên trách thiết bị thí nghiệm hỗ trợ thực hành môn KHTN, Tin học, Công nghệ."}, {"id": "3.1", "std": 3, "code": "TC 3.1", "name": "Tổ chức thực hiện chương trình giáo dục THCS", "mandatory": true, "stage": 1, "month": 9, "dept": "BGH / Tổ CM", "default_evidence": [{"code": "MC.3.1.01", "name": "Kế hoạch giáo dục nhà trường cấp THCS; Phân phối chương trình môn học và Hoạt động trải nghiệm, hướng nghiệp", "type": "file", "url": "MC.3.1.01_KHGD_THCS.pdf", "stage": 1, "deadline": "2026-09-20", "status": "completed", "dept": "BGH / Tổ CM"}], "description": "Tổ chức thực hiện CTGDPT 2018 cấp THCS đồng bộ các khối 6, 7, 8, 9; dạy học tích hợp môn KHTN, Lịch sử và Địa lý hiệu quả."}, {"id": "3.2", "std": 3, "code": "TC 3.2", "name": "Đổi mới phương pháp và đánh giá học sinh THCS (Thông tư 22)", "mandatory": true, "stage": 3, "month": 1, "dept": "Tổ Chuyên môn / GV", "default_evidence": [{"code": "MC.3.2.01", "name": "Kế hoạch bài dạy theo Công văn 5512/BGDĐT; Biên bản sinh hoạt chuyên môn cụm trường/tổ bộ môn", "type": "file", "url": "MC.3.2.01_KHBD_CV5512.docx", "stage": 2, "deadline": "2026-12-25", "status": "completed", "dept": "Tổ Chuyên môn / GV"}, {"code": "MC.3.2.02", "name": "Hồ sơ đánh giá học sinh THCS (Thông tư 22/2021/TT-BGDĐT); Ma trận, đề kiểm tra định kỳ; Học bạ điện tử", "type": "link", "url": "https://csdl.moet.gov.vn/thcs/danhgia-tt22", "stage": 3, "deadline": "2027-01-15", "status": "in_progress", "dept": "Tổ Chuyên môn"}], "description": "Đổi mới phương pháp dạy học phát triển phẩm chất, năng lực; thực hiện đánh giá học sinh theo đúng Thông tư 22/2021/TT-BGDĐT."}, {"id": "3.3", "std": 3, "code": "TC 3.3", "name": "Hoạt động trải nghiệm hướng nghiệp (HĐTN-HN) và nghiên cứu KHKT", "mandatory": false, "stage": 3, "month": 3, "dept": "Tổng TĐ / GVCN", "default_evidence": [{"code": "MC.3.3.01", "name": "Hồ sơ tổ chức Hoạt động trải nghiệm, hướng nghiệp (HĐTN-HN); Dự án nghiên cứu KHKT học sinh THCS cấp trường/huyện", "type": "link", "url": "https://thcs.edu.vn/khkt-hdtn", "stage": 3, "deadline": "2027-03-25", "status": "in_progress", "dept": "Tổng TĐ / GVCN"}], "description": "Tổ chức hoạt động hướng nghiệp và phân luồng học sinh; học sinh tham gia nghiên cứu khoa học kỹ thuật."}, {"id": "3.4", "std": 3, "code": "TC 3.4", "name": "Giáo dục hòa nhập và tư vấn tâm lý lứa tuổi vị thành niên", "mandatory": false, "stage": 3, "month": 2, "dept": "Tổ Tư vấn / GVCN", "default_evidence": [{"code": "MC.3.4.01", "name": "Sổ theo dõi học sinh hòa nhập; Hồ sơ phòng tư vấn tâm lý học đường hỗ trợ học sinh tuổi dậy thì", "type": "paper", "url": "Phòng tư vấn tâm lý học đường tầng 2", "stage": 3, "deadline": "2027-02-28", "status": "completed", "dept": "Tổ Tư vấn / GVCN"}], "description": "Tư vấn tâm lý, giới tính và hỗ trợ học sinh lứa tuổi vị thành niên vượt qua khó khăn tâm lý."}, {"id": "3.5", "std": 3, "code": "TC 3.5", "name": "Kết quả học tập, rèn luyện và tốt nghiệp THCS, phân luồng", "mandatory": false, "stage": 4, "month": 5, "dept": "Chuyên môn / VP", "default_evidence": [{"code": "MC.3.5.01", "name": "Thống kê kết quả rèn luyện (Tốt/Khá ≥ 90%), học tập (Tốt/Khá ≥ 55%), tốt nghiệp THCS (≥ 98%), tỷ lệ phân luồng", "type": "link", "url": "https://csdl.moet.gov.vn/thcs/thongke-totnghiep", "stage": 4, "deadline": "2027-05-20", "status": "pending", "dept": "Chuyên môn / VP"}], "description": "Tỷ lệ rèn luyện và học tập đạt chỉ tiêu kế hoạch; tỷ lệ tốt nghiệp THCS cao và thực hiện tốt định hướng phân luồng."}, {"id": "4.1", "std": 4, "code": "TC 4.1", "name": "Phòng học bộ môn, phòng thí nghiệm thực hành đạt chuẩn", "mandatory": true, "stage": 3, "month": 4, "dept": "Bộ phận CSVC / Thiết bị", "default_evidence": [{"code": "MC.4.1.01", "name": "Danh mục phòng học bộ môn KHTN, Tin học, Ngoại ngữ, Công nghệ đạt chuẩn TT 14/2020; Thiết bị thực hành TT 38/2021", "type": "file", "url": "MC.4.1.01_PhongBoMon_THCS.pdf", "stage": 3, "deadline": "2027-04-20", "status": "completed", "dept": "Bộ phận CSVC"}], "description": "Đủ phòng học bộ môn theo quy chuẩn; bảo đảm thiết bị thí nghiệm thực hành cho học sinh thực hiện bài học STEM."}, {"id": "4.2", "std": 4, "code": "TC 4.2", "name": "Môi trường giáo dục an toàn, phòng chống bạo lực học đường", "mandatory": true, "stage": 2, "month": 10, "dept": "Ban An toàn / Đoàn - Đội", "default_evidence": [{"code": "MC.4.2.01", "name": "Kế hoạch & Minh chứng trường học an toàn, biên bản PCCC, an ninh trật tự cổng trường, kiểm tra y tế", "type": "file", "url": "MC.4.2.01_AnToan_PCCC.pdf", "stage": 2, "deadline": "2026-10-20", "status": "completed", "dept": "Ban An toàn"}, {"code": "MC.4.2.02", "name": "Kế hoạch & biên bản tuyên truyền phòng chống bạo lực học đường, sử dụng mạng xã hội an toàn, hòm thư 'Điều em muốn nói'", "type": "file", "url": "MC.4.2.02_BaoLucHocDuong.docx", "stage": 2, "deadline": "2026-10-30", "status": "completed", "dept": "Đoàn - Đội / Tư vấn"}], "description": "Không xảy ra bạo lực học đường; học sinh được giáo dục kỹ năng sử dụng không gian mạng an toàn, lành mạnh."}, {"id": "4.3", "std": 4, "code": "TC 4.3", "name": "Mối quan hệ Nhà trường - Gia đình - Xã hội và Định hướng nghề", "mandatory": false, "stage": 3, "month": 1, "dept": "BGH / GVCN", "default_evidence": [{"code": "MC.4.3.01", "name": "Biên bản họp Ban đại diện CMHS; Kế hoạch phối hợp với doanh nghiệp/trung tâm GDNN-GDTX trong tư vấn phân luồng", "type": "paper", "url": "Sổ biên bản họp phụ huynh và liên kết GDNN", "stage": 3, "deadline": "2027-01-10", "status": "completed", "dept": "Ban Giám hiệu / GVCN"}], "description": "Phối hợp hiệu quả giữa nhà trường, gia đình và các cơ sở giáo dục nghề nghiệp trong tư vấn chọn trường, chọn nghề."}]}}};
+
+    // Lấy cấu hình độc lập từ ketnoi.js (hoặc dùng cấu hình mặc định an toàn)
+    const KETNOI = (typeof CAUHINH_KETNOI !== 'undefined') ? CAUHINH_KETNOI : {
+      THONG_TIN_TRUONG: {
+        TEN_TRUONG: "Trường Tiểu học & THCS Số 1",
+        MA_DINH_DANH_CSDL: "24018293",
+        CO_QUAN_QUAN_LY: "Phòng Giáo dục và Đào tạo",
+        TINH_THANH_PHO: "Tỉnh Lào Cai",
+        DIA_CHI: "Huyện Bắc Hà, Tỉnh Lào Cai",
+        NAM_HOC_DANH_GIA: "2026 - 2027",
+        CAP_HOC_MAC_DINH: "TIEU_HOC"
+      },
+      DANH_SACH_NGUOI_DUNG: [
+        { id: "nam", hoTen: "Thầy Nguyễn Văn Nam", chucVu: "Hiệu trưởng", vaiTroHoiDong: "Chủ tịch HĐ TĐG", roleType: "admin", googleEmail: "nguyenvannam.hieu_truong@gmail.com", initial: "N", avatarColor: "bg-indigo-600" },
+        { id: "thu", hoTen: "Cô Trần Thị Thu", chucVu: "Phó Hiệu trưởng", vaiTroHoiDong: "Phó Chủ tịch / Thư ký HĐ", roleType: "reviewer", googleEmail: "tranthithu.pht@gmail.com", initial: "T", avatarColor: "bg-emerald-600" },
+        { id: "long", hoTen: "Thầy Lê Hoàng Long", chucVu: "Tổ trưởng Chuyên môn", vaiTroHoiDong: "Ủy viên HĐ TĐG", roleType: "editor", googleEmail: "lehoanglong.gv@gmail.com", initial: "L", avatarColor: "bg-amber-600" },
+        { id: "mai", hoTen: "Cô Phạm Thị Mai", chucVu: "Giáo viên", vaiTroHoiDong: "Ủy viên HĐ TĐG", roleType: "editor", googleEmail: "phamthimai.gv@gmail.com", initial: "M", avatarColor: "bg-pink-600" }
+      ],
+      CAU_HINH_VAN_HANH: {
+        KENH_DONG_BO_BUS: "qa_edusys_bus",
+        THOI_GIAN_TU_DONG_LUU_MS: 10000
+      }
+    };
+
+    // Khởi tạo trạng thái ứng dụng (Application State)
+    let appState = {
+      workspace: KETNOI.THONG_TIN_TRUONG.CAP_HOC_MAC_DINH || 'TIEU_HOC',
+      currentUser: KETNOI.DANH_SACH_NGUOI_DUNG[0],
+      currentMonth: 10, // Tháng 10 (Hiện tại)
+      currentStageFilter: 'all',
+      currentStdFilter: 'all',
+      activeTab: 'dashboard',
+      reportType: 'form1',
+      workspaces: {},
+      trashBin: [],
+      auditLog: [],
+      activeLocks: {}
+    };
+
+    // BroadcastChannel đồng bộ đa tab/máy
+    let syncChannel;
+    try {
+      const channelName = KETNOI.CAU_HINH_VAN_HANH.KENH_DONG_BO_BUS || 'qa_edusys_bus';
+      syncChannel = new BroadcastChannel(channelName);
+      syncChannel.onmessage = function(event) {
+        handleSyncMessage(event.data);
+      };
+    } catch(e) {
+      console.log('BroadcastChannel fallback sang LocalStorage.');
+    }
+
+    // Initialize Application
+    document.addEventListener('DOMContentLoaded', () => {
+      initSchoolInfoDisplay();
+      initUserDropdown();
+      loadState();
+      renderAll();
+      setupAutoSave();
+
+      window.addEventListener('storage', (e) => {
+        if (e.key === 'qa_edusys_state') {
+          loadState(false);
+          renderAll();
+        }
+      });
+    });
+
+    // Cập nhật hiển thị thông tin trường từ ketnoi.js
+    function initSchoolInfoDisplay() {
+      const schoolInfo = KETNOI.THONG_TIN_TRUONG;
+      const topbarName = document.getElementById('topbar-school-name');
+      if (topbarName) topbarName.innerText = schoolInfo.TEN_TRUONG;
+
+      const dName = document.getElementById('cfg-display-school-name');
+      if (dName) dName.innerText = schoolInfo.TEN_TRUONG;
+
+      const dCode = document.getElementById('cfg-display-school-code');
+      if (dCode) dCode.innerText = schoolInfo.MA_DINH_DANH_CSDL;
+
+      const dAddr = document.getElementById('cfg-display-school-address');
+      if (dAddr) dAddr.innerText = `${schoolInfo.DIA_CHI} (${schoolInfo.CO_QUAN_QUAN_LY})`;
+
+      const dYear = document.getElementById('cfg-display-school-year');
+      if (dYear) dYear.innerText = schoolInfo.NAM_HOC_DANH_GIA;
+    }
+
+    // Khởi tạo menu người dùng từ ketnoi.js
+    function initUserDropdown() {
+      const menu = document.getElementById('user-dropdown-menu');
+      if (!menu) return;
+
+      const users = KETNOI.DANH_SACH_NGUOI_DUNG || [];
+      menu.innerHTML = `
+        <div class="p-2 border-b border-slate-800 text-[11px] text-slate-400 font-semibold uppercase tracking-wider">
+          Danh Sách Cán Bộ & Email Google (ketnoi.js)
+        </div>
+        ${users.map(u => `
+          <button onclick="switchUser('${u.id}')" class="w-full text-left p-2 rounded-lg hover:bg-slate-800 flex items-center space-x-2 text-white">
+            <span class="w-6 h-6 rounded ${u.avatarColor || 'bg-indigo-600'} text-center leading-6 font-bold flex-shrink-0">${u.initial}</span>
+            <div class="truncate">
+              <div class="font-bold truncate">${u.hoTen}</div>
+              <div class="text-[10px] text-slate-400 truncate">${u.chucVu} • <span class="text-indigo-400">${u.googleEmail}</span></div>
+            </div>
+          </button>
+        `).join('')}
+      `;
+
+      updateActiveUserDisplay();
+    }
+
+    function updateActiveUserDisplay() {
+      const u = appState.currentUser;
+      const nameEl = document.getElementById('user-name');
+      const roleEl = document.getElementById('user-role-badge');
+      const avatarEl = document.getElementById('user-avatar');
+
+      if (nameEl) nameEl.innerText = u.hoTen;
+      if (roleEl) roleEl.innerText = `${u.chucVu} (${u.vaiTroHoiDong})`;
+      if (avatarEl) {
+        avatarEl.innerText = u.initial;
+        avatarEl.className = `w-7 h-7 rounded-lg ${u.avatarColor || 'bg-indigo-600'} flex items-center justify-center text-white text-xs font-bold mr-2`;
+      }
+    }
+
+    function switchUser(userId) {
+      const target = KETNOI.DANH_SACH_NGUOI_DUNG.find(u => u.id === userId);
+      if (target) {
+        appState.currentUser = target;
+        updateActiveUserDisplay();
+        showToast(`Đã chuyển sang tài khoản: ${target.hoTen} (${target.googleEmail})`, 'success');
+        addAuditEntry('Đổi người dùng', `Đăng nhập phiên làm việc của ${target.hoTen} (${target.googleEmail})`);
+        renderAll();
+      }
+    }
+
+    // Load State from LocalStorage or Fallback
+    function loadState(pushAudit = true) {
+      const saved = localStorage.getItem('qa_edusys_state');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          appState.workspaces = parsed.workspaces || DEFAULT_MASTER_DATA.workspaces;
+          appState.trashBin = parsed.trashBin || [];
+          appState.auditLog = parsed.auditLog || [];
+        } catch (e) {
+          appState.workspaces = JSON.parse(JSON.stringify(DEFAULT_MASTER_DATA.workspaces));
+        }
+      } else {
+        appState.workspaces = JSON.parse(JSON.stringify(DEFAULT_MASTER_DATA.workspaces));
+        if (pushAudit) {
+          addAuditEntry('Khởi tạo hệ thống', `Nạp dữ liệu chuẩn Thông tư 57/2026 cho ${KETNOI.THONG_TIN_TRUONG.TEN_TRUONG}.`);
+        }
+      }
+      updateTrashBadge();
+    }
+
+    // Save State to LocalStorage & Broadcast
+    function saveState(broadcast = true) {
+      const payload = {
+        workspaces: appState.workspaces,
+        trashBin: appState.trashBin,
+        auditLog: appState.auditLog
+      };
+      localStorage.setItem('qa_edusys_state', JSON.stringify(payload));
+      
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString('vi-VN');
+      const saveEl = document.getElementById('save-time');
+      if (saveEl) saveEl.innerText = timeStr;
+
+      if (broadcast && syncChannel) {
+        syncChannel.postMessage({
+          type: 'STATE_UPDATED',
+          user: appState.currentUser.hoTen,
+          timestamp: Date.now()
+        });
+      }
+
+      // Check if running in Google Apps Script Web App
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(() => {
+          console.log('Synced to Google Sheets backend.');
+        }).apiSaveState(payload);
+      }
+    }
+
+    function setupAutoSave() {
+      const intervalMs = KETNOI.CAU_HINH_VAN_HANH.THOI_GIAN_TU_DONG_LUU_MS || 10000;
+      setInterval(() => {
+        saveState(false);
+      }, intervalMs);
+    }
+
+    function handleSyncMessage(data) {
+      if (data.type === 'STATE_UPDATED') {
+        loadState(false);
+        renderAll();
+        showToast(`Dữ liệu vừa được đồng bộ từ ${data.user}`, 'info');
+      } else if (data.type === 'LOCK_ACQUIRED') {
+        appState.activeLocks[data.criterionId] = { user: data.user, time: Date.now() };
+        renderLockIndicator();
+      } else if (data.type === 'LOCK_RELEASED') {
+        delete appState.activeLocks[data.criterionId];
+        renderLockIndicator();
+      }
+    }
+
+    // Set Workspace
+    function setWorkspace(wsKey) {
+      appState.workspace = wsKey;
+      
+      document.querySelectorAll('.ws-btn').forEach(b => {
+        b.classList.remove('bg-indigo-600', 'text-white', 'shadow-md');
+        b.classList.add('text-slate-300', 'hover:bg-slate-700/50');
+      });
+      const activeBtn = document.getElementById('btn-ws-' + wsKey);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-indigo-600', 'text-white', 'shadow-md');
+        activeBtn.classList.remove('text-slate-300', 'hover:bg-slate-700/50');
+      }
+
+      const labelEl = document.getElementById('current-ws-label');
+      const legalEl = document.getElementById('current-legal-label');
+      if (wsKey === 'MAM_NON') {
+        labelEl.innerText = 'Cấp Mầm non';
+        legalEl.innerText = 'Phụ lục I - Thông tư 57/2026/TT-BGDĐT';
+      } else if (wsKey === 'TIEU_HOC') {
+        labelEl.innerText = 'Cấp Tiểu học';
+        legalEl.innerText = 'Phụ lục II - Thông tư 57/2026/TT-BGDĐT & TT 27';
+      } else if (wsKey === 'THCS') {
+        labelEl.innerText = 'Cấp Trung học cơ sở';
+        legalEl.innerText = 'Phụ lục II - Thông tư 57/2026/TT-BGDĐT & TT 22';
+      } else if (wsKey === 'LIEN_CAP') {
+        labelEl.innerText = 'Trường Liên cấp (Nhiều cấp học)';
+        legalEl.innerText = 'Điều 15 Khoản 2d - Thông tư 57/2026/TT-BGDĐT';
+        showTab('liencap');
+      }
+
+      renderAll();
+    }
+
+    // Switch Tab
+    function showTab(tabId) {
+      appState.activeTab = tabId;
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById('tab-' + tabId);
+      if (target) target.classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white', 'shadow');
+        btn.classList.add('text-slate-300', 'hover:bg-slate-800');
+      });
+      const activeNav = document.getElementById('nav-' + tabId);
+      if (activeNav) {
+        activeNav.classList.add('bg-indigo-600', 'text-white', 'shadow');
+        activeNav.classList.remove('text-slate-300', 'hover:bg-slate-800');
+      }
+
+      if (tabId === 'dashboard') {
+        setTimeout(initRadarChart, 100);
+      }
+      if (tabId === 'reports') {
+        renderReportCanvas();
+      }
+    }
+
+    // Render Master Orchestrator
+    function renderAll() {
+      renderGatekeeper();
+      renderMandatoryCriteriaTable();
+      renderTimelineStagesCards();
+      renderTimelineList();
+      renderCriteriaList();
+      renderEvidenceTable();
+      updateStats();
+      initRadarChart();
+    }
+
+    // ================= 1. CORE 8 MANDATORY GATEKEEPER LOGIC =================
+    function getMandatoryStatus() {
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const criteria = appState.workspaces[ws]?.criteria || [];
+      const mandatoryList = criteria.filter(c => c.mandatory);
+      
+      let allPassed = true;
+      let failedList = [];
+
+      mandatoryList.forEach(c => {
+        const lvl = c.evaluation?.level ?? 1; 
+        if (lvl < 1) {
+          allPassed = false;
+          failedList.push(c.code);
+        }
+      });
+
+      return { allPassed, failedList, total: mandatoryList.length, passedCount: mandatoryList.length - failedList.length };
+    }
+
+    function renderGatekeeper() {
+      const banner = document.getElementById('gatekeeper-banner');
+      const badge = document.getElementById('mandatory-status-badge');
+      const { allPassed, failedList, total, passedCount } = getMandatoryStatus();
+
+      if (allPassed) {
+        banner.className = 'rounded-2xl p-5 shadow-sm border bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/5 border-emerald-300/80';
+        banner.innerHTML = `
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="flex items-start space-x-3.5">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl shadow-lg shadow-emerald-600/30 flex-shrink-0">
+                <i class="fa-solid fa-circle-check"></i>
+              </div>
+              <div>
+                <div class="flex items-center space-x-2">
+                  <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800 uppercase tracking-wide">Đủ Điều Kiện Tiên Quyết</span>
+                  <span class="text-xs text-slate-500 font-medium">Căn cứ Điều 5 & 15 TT 57/2026/TT-BGDĐT</span>
+                </div>
+                <h3 class="text-base font-extrabold text-slate-900 mt-1">
+                  Cơ sở Giáo dục Đã Đạt Mức 1 ở Toàn bộ 08/08 Tiêu chí Bắt buộc Cốt lõi
+                </h3>
+                <p class="text-xs text-slate-600 mt-1 leading-relaxed">
+                  Tất cả 08 tiêu chí điều kiện (1.3, 1.4, 2.1, 2.2, 3.1, 3.2, 4.1, 4.2) đều đạt chuẩn. Nhà trường đủ điều kiện để công nhận đạt kiểm định chất lượng giáo dục và xét chuẩn quốc gia.
+                </p>
+              </div>
+            </div>
+            <div class="text-right flex-shrink-0">
+              <span class="inline-flex items-center px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white text-xs font-bold shadow-md shadow-emerald-600/20">
+                <i class="fa-solid fa-award mr-1.5"></i>Đủ ĐK Chuẩn Quốc Gia
+              </span>
+            </div>
+          </div>
+        `;
+        if (badge) {
+          badge.innerText = 'ĐẠT 8/8 TIÊU CHÍ';
+          badge.className = 'text-[11px] text-emerald-700 font-semibold';
+        }
+      } else {
+        banner.className = 'rounded-2xl p-5 shadow-sm border bg-gradient-to-r from-rose-500/10 via-rose-500/5 to-amber-500/5 border-rose-300';
+        banner.innerHTML = `
+          <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="flex items-start space-x-3.5">
+              <div class="w-12 h-12 rounded-2xl bg-rose-600 text-white flex items-center justify-center text-2xl shadow-lg shadow-rose-600/30 flex-shrink-0">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+              </div>
+              <div>
+                <div class="flex items-center space-x-2">
+                  <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-100 text-rose-800 uppercase tracking-wide">Cảnh Báo Loại Trừ Bắt Buộc</span>
+                  <span class="text-xs text-rose-700 font-bold">Căn cứ Điều 5 & 15 TT 57/2026</span>
+                </div>
+                <h3 class="text-base font-extrabold text-rose-900 mt-1">
+                  Chưa Đủ Điều Kiện Xác Định Đạt Chuẩn BĐCLGD (Thiếu ${failedList.length} tiêu chí cốt lõi)
+                </h3>
+                <p class="text-xs text-slate-700 mt-1 leading-relaxed">
+                  Theo Thông tư 57, chỉ cần <strong>01 tiêu chí bắt buộc không đạt</strong> thì nhà trường <strong>KHÔNG được xem xét công nhận đạt chuẩn</strong>. Các tiêu chí chưa đạt: <strong class="text-rose-700">${failedList.join(', ')}</strong>.
+                </p>
+              </div>
+            </div>
+            <div class="text-right flex-shrink-0">
+              <button onclick="showTab('criteria')" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md shadow-rose-600/20 transition">
+                <i class="fa-solid fa-arrow-right mr-1"></i>Khắc phục ngay
+              </button>
+            </div>
+          </div>
+        `;
+        if (badge) {
+          badge.innerText = `Chưa đạt ${failedList.length} tiêu chí!`;
+          badge.className = 'text-[11px] text-rose-700 font-semibold';
+        }
+      }
+    }
+
+    function renderMandatoryCriteriaTable() {
+      const tbody = document.getElementById('mandatory-criteria-tbody');
+      if (!tbody) return;
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const criteria = appState.workspaces[ws]?.criteria || [];
+      const mandatoryList = criteria.filter(c => c.mandatory);
+
+      tbody.innerHTML = mandatoryList.map(c => {
+        const lvl = c.evaluation?.level ?? 1;
+        const isPassed = lvl >= 1;
+        const deadline = c.default_evidence?.[0]?.deadline || '2026-11-30';
+        return `
+          <tr class="hover:bg-slate-50/80 transition">
+            <td class="py-2.5 px-3 font-mono font-bold text-rose-600">${c.code} (*)</td>
+            <td class="py-2.5 px-3 font-semibold text-slate-800">${c.name}</td>
+            <td class="py-2.5 px-3 text-slate-500">${c.dept}</td>
+            <td class="py-2.5 px-3 font-mono text-[11px] text-slate-600">${formatDate(deadline)}</td>
+            <td class="py-2.5 px-3 text-center">
+              ${isPassed ? 
+                '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-check mr-1"></i>Đạt Mức ' + lvl + '</span>' :
+                '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800"><i class="fa-solid fa-xmark mr-1"></i>Chưa đạt</span>'
+              }
+            </td>
+            <td class="py-2.5 px-3 text-right">
+              <button onclick="showTab('criteria'); filterCriteriaStandard(${c.std});" class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs">
+                Chi tiết <i class="fa-solid fa-chevron-right ml-0.5 text-[10px]"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // ================= 2. SMART TIMELINE & EVIDENCE SCHEDULER LOGIC =================
+    function simulateMonth(m) {
+      appState.currentMonth = parseInt(m);
+      showToast(`Đã chuyển thời điểm mô phỏng sang: Tháng ${m}`, 'info');
+      renderTimelineStagesCards();
+      renderTimelineList();
+    }
+
+    function renderTimelineStagesCards() {
+      const container = document.getElementById('stages-cards-container');
+      if (!container) return;
+
+      const stages = DEFAULT_MASTER_DATA.stages;
+      container.innerHTML = stages.map(st => {
+        const isCurrent = st.months.includes(appState.currentMonth);
+        return `
+          <div onclick="filterTimelineStage(${st.stage})" class="cursor-pointer rounded-2xl p-4 border transition-all ${isCurrent ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 border-indigo-700 scale-[1.02]' : 'bg-white text-slate-800 hover:border-indigo-300 border-slate-200'}">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-[10px] font-bold uppercase tracking-wider ${isCurrent ? 'text-indigo-200' : 'text-slate-400'}">Giai đoạn ${st.stage}</span>
+              ${isCurrent ? '<span class="px-2 py-0.5 bg-white/20 text-white rounded-full text-[9px] font-bold">HIỆN TẠI</span>' : ''}
+            </div>
+            <div class="text-xs font-black leading-snug mb-1">${st.time}</div>
+            <p class="text-[11px] ${isCurrent ? 'text-indigo-100' : 'text-slate-500'} line-clamp-3 leading-relaxed">
+              ${st.desc}
+            </p>
+            <div class="mt-3 pt-2 border-t ${isCurrent ? 'border-white/20 text-indigo-200' : 'border-slate-100 text-slate-400'} text-[10px] font-medium flex items-center justify-between">
+              <span>${st.leader}</span>
+              <i class="fa-solid fa-arrow-right text-[9px]"></i>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      const curStage = stages.find(s => s.months.includes(appState.currentMonth)) || stages[1];
+      const curTitle = document.getElementById('current-stage-title');
+      const curTime = document.getElementById('current-stage-time');
+      if (curTitle) curTitle.innerText = `GĐ ${curStage.stage}: ${curStage.name.split(':')[1] || curStage.name}`;
+      if (curTime) curTime.innerText = curStage.time;
+    }
+
+    function filterTimelineStage(stage) {
+      appState.currentStageFilter = stage;
+      document.querySelectorAll('.stage-filter-btn').forEach(btn => {
+        btn.classList.remove('bg-indigo-600', 'text-white');
+        btn.classList.add('bg-slate-100', 'text-slate-700');
+      });
+      const targetBtn = document.getElementById('btn-stage-' + stage);
+      if (targetBtn) {
+        targetBtn.classList.add('bg-indigo-600', 'text-white');
+        targetBtn.classList.remove('bg-slate-100', 'text-slate-700');
+      }
+      renderTimelineList();
+    }
+
+    function renderTimelineList() {
+      const tbody = document.getElementById('timeline-tbody');
+      if (!tbody) return;
+
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const criteria = appState.workspaces[ws]?.criteria || [];
+      const urgency = document.getElementById('urgency-filter')?.value || 'all';
+
+      let items = [];
+      criteria.forEach(c => {
+        (c.default_evidence || []).forEach(ev => {
+          items.push({
+            ...ev,
+            criterionId: c.id,
+            criterionCode: c.code,
+            criterionName: c.name,
+            mandatory: c.mandatory
+          });
+        });
+      });
+
+      if (appState.currentStageFilter !== 'all') {
+        items = items.filter(i => i.stage === parseInt(appState.currentStageFilter));
+      }
+
+      items = items.filter(i => {
+        const status = calculateUrgency(i.deadline, i.status);
+        if (urgency === 'all') return true;
+        if (urgency === 'overdue') return status.type === 'overdue';
+        if (urgency === 'due_soon') return status.type === 'due_soon';
+        if (urgency === 'completed') return status.type === 'completed';
+        return true;
+      });
+
+      const countLabel = document.getElementById('timeline-count-label');
+      if (countLabel) countLabel.innerText = `Hiển thị ${items.length} minh chứng`;
+
+      if (items.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">Không có minh chứng nào phù hợp với bộ lọc đã chọn.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = items.map(i => {
+        const urgencyStatus = calculateUrgency(i.deadline, i.status);
+        const stageObj = DEFAULT_MASTER_DATA.stages.find(s => s.stage === i.stage) || DEFAULT_MASTER_DATA.stages[0];
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition">
+            <td class="py-3 px-4 whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-800">
+                GĐ ${i.stage} (${stageObj.time})
+              </span>
+            </td>
+            <td class="py-3 px-4 font-mono font-bold text-indigo-700 whitespace-nowrap">${i.code}</td>
+            <td class="py-3 px-4 font-semibold text-slate-800">
+              ${i.name}
+              ${i.mandatory ? '<span class="ml-1 text-[10px] text-rose-600 font-bold" title="Tiêu chí bắt buộc">(*)</span>' : ''}
+            </td>
+            <td class="py-3 px-4 whitespace-nowrap text-slate-600 font-medium">${i.criterionCode}</td>
+            <td class="py-3 px-4 text-slate-500 whitespace-nowrap">${i.dept || 'Ban Giám hiệu'}</td>
+            <td class="py-3 px-4 font-mono whitespace-nowrap text-[11px]">${formatDate(i.deadline)}</td>
+            <td class="py-3 px-4 text-center whitespace-nowrap">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold ${urgencyStatus.badgeClass}">
+                ${urgencyStatus.icon} ${urgencyStatus.text}
+              </span>
+            </td>
+            <td class="py-3 px-4 text-right whitespace-nowrap">
+              <button onclick="toggleEvidenceComplete('${i.criterionId}', '${i.code}')" class="px-2.5 py-1 rounded-lg text-xs font-semibold ${i.status === 'completed' ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm'}">
+                ${i.status === 'completed' ? 'Mở lại' : '<i class="fa-solid fa-check mr-1"></i>Hoàn thành'}
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function calculateUrgency(deadlineStr, currentStatus) {
+      if (currentStatus === 'completed') {
+        return {
+          type: 'completed',
+          text: 'Đã hoàn thành',
+          icon: '<i class="fa-solid fa-circle-check mr-1"></i>',
+          badgeClass: 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+        };
+      }
+
+      const simMonth = appState.currentMonth;
+      const simYear = simMonth >= 8 ? 2026 : 2027;
+      const simDate = new Date(simYear, simMonth - 1, 15);
+
+      const deadline = new Date(deadlineStr);
+      const diffTime = deadline - simDate;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      if (diffDays < 0) {
+        return {
+          type: 'overdue',
+          text: `Quá hạn ${Math.abs(diffDays)} ngày`,
+          icon: '<i class="fa-solid fa-circle-exclamation mr-1"></i>',
+          badgeClass: 'bg-rose-100 text-rose-800 border border-rose-300 font-bold'
+        };
+      } else if (diffDays <= 30) {
+        return {
+          type: 'due_soon',
+          text: `Sắp đến hạn (${diffDays} ngày)`,
+          icon: '<i class="fa-solid fa-clock mr-1"></i>',
+          badgeClass: 'bg-amber-100 text-amber-800 border border-amber-300 font-bold'
+        };
+      } else {
+        return {
+          type: 'pending',
+          text: `Còn ${diffDays} ngày`,
+          icon: '<i class="fa-solid fa-hourglass-start mr-1"></i>',
+          badgeClass: 'bg-slate-100 text-slate-700 border border-slate-200'
+        };
+      }
+    }
+
+    function toggleEvidenceComplete(cId, evCode) {
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const criteria = appState.workspaces[ws]?.criteria || [];
+      const c = criteria.find(item => item.id === cId);
+      if (c && c.default_evidence) {
+        const ev = c.default_evidence.find(e => e.code === evCode);
+        if (ev) {
+          const oldStatus = ev.status;
+          ev.status = (ev.status === 'completed') ? 'pending' : 'completed';
+          addAuditEntry('Cập nhật Minh chứng', `${appState.currentUser.hoTen} đổi trạng thái ${ev.code} từ ${oldStatus} sang ${ev.status}`);
+          saveState();
+          renderAll();
+          showToast(`Đã cập nhật minh chứng ${ev.code}`, 'success');
+        }
+      }
+    }
+
+    // ================= 3. 15 CRITERIA ASSESSMENT & CONCURRENCY =================
+    function filterCriteriaStandard(std) {
+      appState.currentStdFilter = std;
+      document.querySelectorAll('.std-filter-btn').forEach(b => {
+        b.classList.remove('bg-indigo-600', 'text-white');
+        b.classList.add('bg-white', 'text-slate-700');
+      });
+      const active = document.getElementById('btn-std-' + std);
+      if (active) {
+        active.classList.add('bg-indigo-600', 'text-white');
+        active.classList.remove('bg-white', 'text-slate-700');
+      }
+      renderCriteriaList();
+    }
+
+    function renderCriteriaList() {
+      const container = document.getElementById('criteria-cards-list');
+      if (!container) return;
+
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      let criteria = appState.workspaces[ws]?.criteria || [];
+
+      if (appState.currentStdFilter !== 'all') {
+        criteria = criteria.filter(c => c.std === parseInt(appState.currentStdFilter));
+      }
+
+      container.innerHTML = criteria.map(c => {
+        const isMandatory = c.mandatory;
+        const currentLvl = c.evaluation?.level ?? 1;
+        const desc = c.description || 'Mô tả hiện trạng tiêu chí.';
+        const strengths = c.evaluation?.strengths || 'Đạt chuẩn theo quy định hiện hành của Thông tư 57.';
+        const weaknesses = c.evaluation?.weaknesses || 'Cần tiếp tục tăng cường ứng dụng chuyển đổi số và nâng cao tỷ lệ minh chứng số.';
+        const actionPlan = c.evaluation?.actionPlan || 'Duy trì bồi dưỡng thường xuyên và kiểm tra định kỳ theo 5 giai đoạn năm học.';
+        const isLocked = appState.activeLocks[c.id];
+
+        return `
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 transition hover:border-slate-300">
+            <!-- Header Row -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+              <div class="flex items-start space-x-3">
+                <span class="w-10 h-10 rounded-xl ${isMandatory ? 'bg-rose-50 text-rose-600 border border-rose-200' : 'bg-indigo-50 text-indigo-600 border border-indigo-200'} flex items-center justify-center font-black text-sm flex-shrink-0">
+                  ${c.code}
+                </span>
+                <div>
+                  <div class="flex items-center space-x-2">
+                    <h3 class="font-bold text-slate-900 text-sm">${c.name}</h3>
+                    ${isMandatory ? '<span class="bg-rose-100 text-rose-800 text-[10px] font-extrabold px-2 py-0.5 rounded-full border border-rose-200">(*) BẮT BUỘC</span>' : ''}
+                  </div>
+                  <div class="text-[11px] text-slate-500 mt-0.5 flex items-center space-x-3">
+                    <span><i class="fa-solid fa-users-gear mr-1"></i>${c.dept}</span>
+                    <span>•</span>
+                    <span><i class="fa-solid fa-calendar mr-1"></i>Hạn: Tháng ${c.month} (GĐ ${c.stage})</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Level Evaluator -->
+              <div class="flex items-center space-x-2">
+                <label class="text-xs text-slate-500 font-semibold">Tự đánh giá:</label>
+                <select onchange="updateCriterionLevel('${c.id}', this.value)" class="text-xs bg-slate-50 border border-slate-300 font-bold rounded-lg px-2.5 py-1.5 ${currentLvl >= 1 ? 'text-indigo-700' : 'text-rose-700'}">
+                  <option value="0" ${currentLvl === 0 ? 'selected' : ''}>Chưa đạt Mức 1 (Trượt)</option>
+                  <option value="1" ${currentLvl === 1 ? 'selected' : ''}>Đạt Mức 1 (Chuẩn BĐCLGD)</option>
+                  <option value="2" ${currentLvl === 2 ? 'selected' : ''}>Đạt Mức 2 (Chuẩn QG Mức 1)</option>
+                  <option value="3" ${currentLvl === 3 ? 'selected' : ''}>Đạt Mức 3 (Chuẩn QG Mức 2)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Soft Lock Warning Banner -->
+            ${isLocked ? `
+              <div class="my-3 p-2 bg-amber-50 border border-amber-200 text-amber-900 rounded-lg text-xs flex items-center">
+                <i class="fa-solid fa-lock text-amber-600 mr-2"></i>
+                <span><strong>${isLocked.user}</strong> đang chỉnh sửa tiêu chí này. Hệ thống kích hoạt khóa mềm để bảo vệ dữ liệu.</span>
+              </div>
+            ` : ''}
+
+            <!-- Editable Content Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-4 text-xs">
+              <div class="space-y-1">
+                <label class="font-bold text-slate-700 flex items-center">
+                  <i class="fa-solid fa-align-left mr-1 text-slate-400"></i>1. Mô tả Hiện trạng & Căn cứ:
+                </label>
+                <textarea rows="3" onfocus="acquireLock('${c.id}')" onblur="releaseLock('${c.id}')" onchange="updateCriterionField('${c.id}', 'description', this.value)" class="w-full bg-slate-50/60 border border-slate-200 rounded-xl p-2.5 text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-500">${desc}</textarea>
+              </div>
+
+              <div class="space-y-1">
+                <label class="font-bold text-slate-700 flex items-center">
+                  <i class="fa-solid fa-arrow-trend-up mr-1 text-emerald-500"></i>2. Điểm mạnh Nổi bật:
+                </label>
+                <textarea rows="3" onfocus="acquireLock('${c.id}')" onblur="releaseLock('${c.id}')" onchange="updateCriterionField('${c.id}', 'strengths', this.value)" class="w-full bg-slate-50/60 border border-slate-200 rounded-xl p-2.5 text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-500">${strengths}</textarea>
+              </div>
+
+              <div class="space-y-1">
+                <label class="font-bold text-slate-700 flex items-center">
+                  <i class="fa-solid fa-triangle-exclamation mr-1 text-amber-500"></i>3. Điểm yếu / Tồn tại:
+                </label>
+                <textarea rows="2" onfocus="acquireLock('${c.id}')" onblur="releaseLock('${c.id}')" onchange="updateCriterionField('${c.id}', 'weaknesses', this.value)" class="w-full bg-slate-50/60 border border-slate-200 rounded-xl p-2.5 text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-500">${weaknesses}</textarea>
+              </div>
+
+              <div class="space-y-1">
+                <label class="font-bold text-slate-700 flex items-center">
+                  <i class="fa-solid fa-bullseye mr-1 text-blue-500"></i>4. Kế hoạch Cải tiến Chất lượng:
+                </label>
+                <textarea rows="2" onfocus="acquireLock('${c.id}')" onblur="releaseLock('${c.id}')" onchange="updateCriterionField('${c.id}', 'actionPlan', this.value)" class="w-full bg-slate-50/60 border border-slate-200 rounded-xl p-2.5 text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-500">${actionPlan}</textarea>
+              </div>
+            </div>
+
+            <!-- Associated Evidence List -->
+            <div class="pt-3 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+              <div class="flex items-center space-x-2">
+                <span class="font-bold text-slate-700"><i class="fa-solid fa-paperclip mr-1 text-indigo-500"></i>Minh chứng liên kết:</span>
+                ${(c.default_evidence || []).map(ev => `
+                  <a href="${ev.url}" target="_blank" class="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 font-mono text-[11px] font-bold">
+                    <span>${ev.code}</span>
+                    <i class="fa-solid fa-arrow-up-right-from-square text-[9px]"></i>
+                  </a>
+                `).join('')}
+              </div>
+
+              <button onclick="openAddEvidenceModal('${c.id}')" class="text-indigo-600 hover:text-indigo-800 font-bold flex items-center">
+                <i class="fa-solid fa-plus-circle mr-1"></i>Thêm Minh chứng cho ${c.code}
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Soft-Locking Presence Functions
+    function acquireLock(cId) {
+      appState.activeLocks[cId] = { user: appState.currentUser.hoTen, time: Date.now() };
+      renderLockIndicator();
+      if (syncChannel) {
+        syncChannel.postMessage({ type: 'LOCK_ACQUIRED', criterionId: cId, user: appState.currentUser.hoTen });
+      }
+    }
+
+    function releaseLock(cId) {
+      delete appState.activeLocks[cId];
+      renderLockIndicator();
+      if (syncChannel) {
+        syncChannel.postMessage({ type: 'LOCK_RELEASED', criterionId: cId });
+      }
+    }
+
+    function renderLockIndicator() {
+      const el = document.getElementById('active-editors-indicator');
+      if (!el) return;
+      const keys = Object.keys(appState.activeLocks);
+      if (keys.length === 0) {
+        el.innerHTML = '<i class="fa-solid fa-user-pen mr-1"></i>Không có ai đang khóa trường';
+        el.className = 'text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 flex items-center';
+      } else {
+        const u = appState.activeLocks[keys[0]].user;
+        el.innerHTML = `<i class="fa-solid fa-lock text-amber-600 mr-1"></i>${u} đang sửa TC ${keys[0]}`;
+        el.className = 'text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200 flex items-center font-bold';
+      }
+    }
+
+    // Update Criteria Fields with Concurrency Version Tracking
+    function updateCriterionField(cId, field, value) {
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const c = appState.workspaces[ws]?.criteria.find(item => item.id === cId);
+      if (c) {
+        if (!c.evaluation) c.evaluation = {};
+        c.version_id = (c.version_id || 1) + 1;
+        c.updated_at = Date.now();
+        c.last_editor = appState.currentUser.hoTen;
+
+        if (field === 'description') {
+          c.description = value;
+        } else {
+          c.evaluation[field] = value;
+        }
+
+        addAuditEntry('Sửa tiêu chí', `${appState.currentUser.hoTen} cập nhật trường [${field}] của ${c.code} (v${c.version_id})`);
+        saveState();
+        showToast(`Đã lưu nội dung ${c.code}`, 'success');
+      }
+    }
+
+    function updateCriterionLevel(cId, levelVal) {
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const c = appState.workspaces[ws]?.criteria.find(item => item.id === cId);
+      if (c) {
+        if (!c.evaluation) c.evaluation = {};
+        const oldLvl = c.evaluation.level ?? 1;
+        c.evaluation.level = parseInt(levelVal);
+        c.version_id = (c.version_id || 1) + 1;
+        c.updated_at = Date.now();
+        c.last_editor = appState.currentUser.hoTen;
+
+        addAuditEntry('Đánh giá mức', `${appState.currentUser.hoTen} đổi mức ${c.code} từ Mức ${oldLvl} sang Mức ${levelVal}`);
+        saveState();
+        renderGatekeeper();
+        renderMandatoryCriteriaTable();
+        initRadarChart();
+        showToast(`Đã cập nhật đánh giá ${c.code} đạt Mức ${levelVal}`, 'success');
+      }
+    }
+
+    // ================= 4. CONCURRENCY CONFLICT (3-WAY DIFF MERGE) =================
+    function triggerSimulatedConflict() {
+      const serverText = "Nhà trường đã xây dựng chiến lược phát triển giai đoạn 2025-2030, thông qua Hội đồng trường và niêm yết tại văn phòng.";
+      const userText = "Nhà trường đã xây dựng chiến lược 2025-2030, bổ sung kế hoạch chuyển đổi số và bồi dưỡng giáo viên dạy môn Tin học theo CTGDPT 2018.";
+      const collabText = "Nhà trường đã xây dựng kế hoạch 5 năm, hoàn thiện lấy ý kiến 100% cán bộ giáo viên và được Hội đồng trường phê duyệt ngày 15/9.";
+
+      document.getElementById('diff-server-text').innerText = serverText;
+      document.getElementById('diff-user-text').innerText = userText;
+      document.getElementById('diff-collab-text').innerText = collabText;
+
+      const mergedText = `${userText}\n(Ghi nhận bổ sung từ Cô Thu: ${collabText})`;
+      document.getElementById('diff-merged-preview').value = mergedText;
+
+      document.getElementById('conflict-modal').classList.remove('hidden');
+    }
+
+    function closeConflictModal() {
+      document.getElementById('conflict-modal').classList.add('hidden');
+    }
+
+    function applyMergeChoice(choice) {
+      let chosenText = '';
+      if (choice === 'server') chosenText = document.getElementById('diff-server-text').innerText;
+      if (choice === 'user') chosenText = document.getElementById('diff-user-text').innerText;
+      if (choice === 'collab') chosenText = document.getElementById('diff-collab-text').innerText;
+      if (choice === 'both') chosenText = document.getElementById('diff-merged-preview').value;
+
+      updateCriterionField('1.1', 'description', chosenText);
+      renderCriteriaList();
+      closeConflictModal();
+      showToast('Đã giải quyết xung đột thành công!', 'success');
+    }
+
+    // ================= 5. EVIDENCE MANAGEMENT & SOFT DELETE =================
+    function renderEvidenceTable() {
+      const tbody = document.getElementById('evidence-table-tbody');
+      if (!tbody) return;
+
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const criteria = appState.workspaces[ws]?.criteria || [];
+      const filterTc = document.getElementById('evidence-filter-tc')?.value || 'all';
+      const filterType = document.getElementById('evidence-filter-type')?.value || 'all';
+
+      // Populate filter dropdown if empty
+      const sel = document.getElementById('evidence-filter-tc');
+      if (sel && sel.options.length <= 1) {
+        criteria.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.id;
+          opt.innerText = `${c.code} - ${c.name}`;
+          sel.appendChild(opt);
+        });
+      }
+
+      let list = [];
+      criteria.forEach(c => {
+        (c.default_evidence || []).forEach(ev => {
+          list.push({ ...ev, criterionId: c.id, criterionCode: c.code });
+        });
+      });
+
+      if (filterTc !== 'all') {
+        list = list.filter(i => i.criterionId === filterTc);
+      }
+      if (filterType !== 'all') {
+        list = list.filter(i => i.type === filterType);
+      }
+
+      const statsEl = document.getElementById('evidence-table-stats');
+      if (statsEl) statsEl.innerText = `Hiển thị ${list.length} minh chứng`;
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-slate-400">Không có minh chứng nào phù hợp.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(ev => {
+        let typeBadge = '';
+        if (ev.type === 'link') typeBadge = '<span class="text-blue-600 font-semibold"><i class="fa-solid fa-link mr-1"></i>Hyperlink</span>';
+        else if (ev.type === 'file') typeBadge = '<span class="text-purple-600 font-semibold"><i class="fa-solid fa-file-pdf mr-1"></i>Tệp số</span>';
+        else typeBadge = '<span class="text-amber-700 font-semibold"><i class="fa-solid fa-box-archive mr-1"></i>Bản giấy</span>';
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition">
+            <td class="py-3 px-4 font-mono font-bold text-indigo-700 whitespace-nowrap">${ev.code}</td>
+            <td class="py-3 px-4 font-semibold text-slate-800">
+              ${ev.name}
+            </td>
+            <td class="py-3 px-4 whitespace-nowrap text-slate-600 font-bold">${ev.criterionCode}</td>
+            <td class="py-3 px-4 text-xs">
+              <div>${typeBadge}</div>
+              <div class="text-[11px] text-slate-500 truncate max-w-xs" title="${ev.url}">${ev.url}</div>
+            </td>
+            <td class="py-3 px-4 text-slate-500 whitespace-nowrap">${ev.dept}</td>
+            <td class="py-3 px-4 font-mono text-[11px] whitespace-nowrap">${formatDate(ev.deadline)}</td>
+            <td class="py-3 px-4 text-center whitespace-nowrap">
+              ${ev.status === 'completed' ? 
+                '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-check mr-1"></i>Hoàn thành</span>' :
+                '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-800"><i class="fa-solid fa-spinner mr-1"></i>Chờ nộp</span>'
+              }
+            </td>
+            <td class="py-3 px-4 text-right whitespace-nowrap space-x-1">
+              <a href="${ev.url}" target="_blank" class="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 inline-block" title="Xem liên kết/tệp">
+                <i class="fa-solid fa-arrow-up-right-from-square text-xs"></i>
+              </a>
+              <button onclick="softDeleteEvidence('${ev.criterionId}', '${ev.code}')" class="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-600 inline-block" title="Xóa vào Thùng rác">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Soft-Delete
+    function softDeleteEvidence(cId, evCode) {
+      if (!confirm(`Bạn có chắc chắn muốn đưa minh chứng ${evCode} vào Thùng rác? Bạn có thể khôi phục lại bất kỳ lúc nào.`)) return;
+
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const c = appState.workspaces[ws]?.criteria.find(item => item.id === cId);
+      if (c && c.default_evidence) {
+        const idx = c.default_evidence.findIndex(e => e.code === evCode);
+        if (idx !== -1) {
+          const removed = c.default_evidence.splice(idx, 1)[0];
+          
+          appState.trashBin.unshift({
+            item: removed,
+            criterionId: cId,
+            workspace: ws,
+            deleted_by: appState.currentUser.hoTen,
+            deleted_at: Date.now()
+          });
+
+          addAuditEntry('Xóa vào Thùng rác', `${appState.currentUser.hoTen} xóa minh chứng [${evCode}] của ${c.code}`);
+          saveState();
+          renderAll();
+          updateTrashBadge();
+          showToast(`Đã chuyển minh chứng ${evCode} vào Thùng rác`, 'warning');
+        }
+      }
+    }
+
+    function updateTrashBadge() {
+      const badge = document.getElementById('trash-badge');
+      if (!badge) return;
+      const count = appState.trashBin.length;
+      badge.innerText = count;
+      if (count > 0) badge.classList.remove('hidden');
+      else badge.classList.add('hidden');
+    }
+
+    function openTrashModal() {
+      const container = document.getElementById('trash-content-container');
+      if (appState.trashBin.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-12 text-slate-400">
+            <i class="fa-solid fa-trash-can text-4xl mb-3 opacity-30"></i>
+            <p class="font-bold">Thùng rác trống!</p>
+            <p class="text-xs mt-1">Chưa có minh chứng hay dữ liệu nào bị xóa.</p>
+          </div>
+        `;
+      } else {
+        container.innerHTML = `
+          <div class="space-y-3">
+            ${appState.trashBin.map((t, idx) => `
+              <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between text-xs">
+                <div class="space-y-0.5">
+                  <div class="font-bold text-slate-800">${t.item.code} - ${t.item.name}</div>
+                  <div class="text-slate-500 text-[11px]">
+                    Người xóa: <strong>${t.deleted_by}</strong> • Thời gian: ${new Date(t.deleted_at).toLocaleString('vi-VN')}
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <button onclick="restoreTrashItem(${idx})" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold">
+                    <i class="fa-solid fa-rotate-left mr-1"></i>Khôi phục
+                  </button>
+                  <button onclick="purgeTrashItem(${idx})" class="px-3 py-1.5 bg-rose-100 hover:bg-rose-200 text-rose-700 rounded-lg font-bold">
+                    Xóa vĩnh viễn
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+      document.getElementById('trash-modal').classList.remove('hidden');
+    }
+
+    function closeTrashModal() {
+      document.getElementById('trash-modal').classList.add('hidden');
+    }
+
+    function restoreTrashItem(idx) {
+      const restored = appState.trashBin.splice(idx, 1)[0];
+      if (restored) {
+        const c = appState.workspaces[restored.workspace]?.criteria.find(item => item.id === restored.criterionId);
+        if (c) {
+          if (!c.default_evidence) c.default_evidence = [];
+          c.default_evidence.push(restored.item);
+        }
+        addAuditEntry('Khôi phục từ Thùng rác', `${appState.currentUser.hoTen} khôi phục [${restored.item.code}]`);
+        saveState();
+        renderAll();
+        openTrashModal();
+        showToast(`Đã khôi phục thành công ${restored.item.code}`, 'success');
+      }
+    }
+
+    function purgeTrashItem(idx) {
+      if (appState.currentUser.roleType !== 'admin') {
+        alert('Chỉ Ban Giám hiệu (Hiệu trưởng / Admin) mới có quyền xóa vĩnh viễn dữ liệu.');
+        return;
+      }
+      if (!confirm('Hành động này sẽ xóa vĩnh viễn và không thể khôi phục lại. Bạn có chắc chắn?')) return;
+      const purged = appState.trashBin.splice(idx, 1)[0];
+      addAuditEntry('Xóa vĩnh viễn', `${appState.currentUser.hoTen} dọn sạch vĩnh viễn [${purged.item.code}]`);
+      saveState();
+      updateTrashBadge();
+      openTrashModal();
+    }
+
+    // ================= 6. SPECIAL CONTEXT SUBSTITUTIONS MODAL =================
+    function openSpecialContextModal() {
+      const container = document.getElementById('special-context-content');
+      const list = DEFAULT_MASTER_DATA.special_contexts;
+
+      container.innerHTML = list.map(sc => `
+        <div class="border border-slate-200 rounded-2xl p-4 bg-slate-50 space-y-3">
+          <div class="flex items-center justify-between pb-2 border-b border-slate-200">
+            <h4 class="font-extrabold text-slate-800 text-sm flex items-center text-indigo-700">
+              <i class="fa-solid fa-school-circle-exclamation mr-2"></i>${sc.name}
+            </h4>
+            <span class="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded font-bold">TT 57 Hợp pháp</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="p-2.5 bg-rose-50/60 rounded-xl border border-rose-200">
+              <div class="font-bold text-rose-800 mb-1 flex items-center"><i class="fa-solid fa-xmark mr-1"></i>Minh chứng Mẫu Chuẩn (Thường thiếu điều kiện):</div>
+              <p class="text-slate-700 text-[11px]">${sc.standard_evidence}</p>
+            </div>
+            <div class="p-2.5 bg-emerald-50/60 rounded-xl border border-emerald-200">
+              <div class="font-bold text-emerald-800 mb-1 flex items-center"><i class="fa-solid fa-check mr-1"></i>Minh chứng Thay thế Linh hoạt (Được công nhận):</div>
+              <p class="text-slate-700 text-[11px] font-semibold">${sc.substitute_evidence}</p>
+            </div>
+          </div>
+
+          <div class="text-[11px] text-slate-500 italic bg-white p-2 rounded-lg border border-slate-200">
+            <strong class="text-slate-700 not-italic">Căn cứ pháp lý:</strong> ${sc.legal_basis}
+          </div>
+        </div>
+      `).join('');
+
+      document.getElementById('special-context-modal').classList.remove('hidden');
+    }
+
+    function closeSpecialContextModal() {
+      document.getElementById('special-context-modal').classList.add('hidden');
+    }
+
+    // ================= 7. ADD EVIDENCE MODAL =================
+    function openAddEvidenceModal(prefillCriterionId) {
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const criteria = appState.workspaces[ws]?.criteria || [];
+      const sel = document.getElementById('modal-ev-criterion');
+
+      sel.innerHTML = criteria.map(c => `
+        <option value="${c.id}" ${c.id === prefillCriterionId ? 'selected' : ''}>${c.code} - ${c.name}</option>
+      `).join('');
+
+      const currentSelected = prefillCriterionId || criteria[0]?.id || '1.1';
+      suggestEvCode(currentSelected);
+
+      sel.onchange = function() {
+        suggestEvCode(this.value);
+      };
+
+      const crossDiv = document.getElementById('cross-criteria-checkboxes');
+      crossDiv.innerHTML = criteria.map(c => `
+        <label class="inline-flex items-center space-x-1 text-[11px] text-slate-700 cursor-pointer">
+          <input type="checkbox" value="${c.id}" class="rounded text-indigo-600 focus:ring-indigo-500">
+          <span>${c.code}</span>
+        </label>
+      `).join('');
+
+      document.getElementById('evidence-form').reset();
+      document.getElementById('modal-ev-deadline').value = '2026-11-30';
+      document.getElementById('evidence-modal').classList.remove('hidden');
+    }
+
+    function suggestEvCode(cId) {
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const criteria = appState.workspaces[ws]?.criteria || [];
+      const c = criteria.find(item => item.id === cId);
+      const count = (c?.default_evidence?.length || 0) + 1;
+      const numStr = count < 10 ? '0' + count : '' + count;
+      document.getElementById('modal-ev-code').value = `MC.${cId}.${numStr}`;
+    }
+
+    function toggleEvLocationInput(type) {
+      const label = document.getElementById('label-ev-location');
+      const input = document.getElementById('modal-ev-url');
+      if (type === 'link') {
+        label.innerText = 'Đường dẫn Liên kết (Hyperlink Drive/Website):';
+        input.placeholder = 'https://drive.google.com/file/d/...';
+      } else if (type === 'file') {
+        label.innerText = 'Tên tệp lưu trữ số:';
+        input.placeholder = 'MC.1.3.01_QuyetDinh.pdf';
+      } else {
+        label.innerText = 'Mô tả vị trí lưu bản giấy:';
+        input.placeholder = 'Tủ hồ sơ số 01 - Ngăn Văn phòng nhà trường';
+      }
+    }
+
+    function closeEvidenceModal() {
+      document.getElementById('evidence-modal').classList.add('hidden');
+    }
+
+    function saveEvidence(e) {
+      e.preventDefault();
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const cId = document.getElementById('modal-ev-criterion').value;
+      const code = document.getElementById('modal-ev-code').value.trim();
+      const name = document.getElementById('modal-ev-name').value.trim();
+      const type = document.getElementById('modal-ev-type').value;
+      const url = document.getElementById('modal-ev-url').value.trim();
+      const stage = parseInt(document.getElementById('modal-ev-stage').value);
+      const deadline = document.getElementById('modal-ev-deadline').value;
+      const status = document.getElementById('modal-ev-status').value;
+      const dept = document.getElementById('modal-ev-dept').value.trim() || 'Ban Giám hiệu';
+
+      const criteria = appState.workspaces[ws]?.criteria || [];
+      const c = criteria.find(item => item.id === cId);
+      if (c) {
+        if (!c.default_evidence) c.default_evidence = [];
+        const newEv = { code, name, type, url, stage, deadline, status, dept };
+        c.default_evidence.push(newEv);
+
+        const checkedCross = Array.from(document.querySelectorAll('#cross-criteria-checkboxes input:checked')).map(cb => cb.value);
+        checkedCross.forEach(crossId => {
+          if (crossId !== cId) {
+            const crossC = criteria.find(item => item.id === crossId);
+            if (crossC) {
+              if (!crossC.default_evidence) crossC.default_evidence = [];
+              crossC.default_evidence.push({ ...newEv, isCrossLinked: true, originalCriterion: c.code });
+            }
+          }
+        });
+
+        addAuditEntry('Thêm minh chứng', `${appState.currentUser.hoTen} tạo mới minh chứng [${code}] cho ${c.code}`);
+        saveState();
+        renderAll();
+        closeEvidenceModal();
+        showToast(`Đã thêm thành công minh chứng ${code}`, 'success');
+      }
+    }
+
+    // ================= 8. AUDIT LOG & VERSION HISTORY =================
+    function addAuditEntry(action, details) {
+      appState.auditLog.unshift({
+        user: appState.currentUser.hoTen,
+        role: appState.currentUser.chucVu || appState.currentUser.role,
+        action,
+        details,
+        timestamp: Date.now()
+      });
+      if (appState.auditLog.length > 100) appState.auditLog.pop();
+    }
+
+    function openAuditModal() {
+      const container = document.getElementById('audit-timeline-container');
+      if (appState.auditLog.length === 0) {
+        container.innerHTML = '<div class="text-center py-8 text-slate-400">Chưa có nhật ký hoạt động.</div>';
+      } else {
+        container.innerHTML = appState.auditLog.map(log => `
+          <div class="flex items-start space-x-3 p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs">
+            <div class="w-8 h-8 rounded-lg bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs flex-shrink-0">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </div>
+            <div class="flex-grow space-y-0.5">
+              <div class="flex items-center justify-between">
+                <span class="font-bold text-slate-900">${log.action}</span>
+                <span class="text-[10px] text-slate-400 font-mono">${new Date(log.timestamp).toLocaleString('vi-VN')}</span>
+              </div>
+              <p class="text-slate-600">${log.details}</p>
+              <div class="text-[10px] text-indigo-600 font-medium">Thực hiện bởi: ${log.user} (${log.role})</div>
+            </div>
+          </div>
+        `).join('');
+      }
+      document.getElementById('audit-modal').classList.remove('hidden');
+    }
+
+    function closeAuditModal() {
+      document.getElementById('audit-modal').classList.add('hidden');
+    }
+
+    // ================= 9. REPORT GENERATOR (PHỤ LỤC V & IV) =================
+    function setReportType(type) {
+      appState.reportType = type;
+      document.querySelectorAll('.rep-type-btn').forEach(b => {
+        b.classList.remove('bg-indigo-600', 'text-white', 'shadow-sm');
+        b.classList.add('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+      });
+      const active = document.getElementById('btn-rep-' + type);
+      if (active) {
+        active.classList.add('bg-indigo-600', 'text-white', 'shadow-sm');
+        active.classList.remove('bg-white', 'text-slate-700', 'border', 'border-slate-200');
+      }
+      renderReportCanvas();
+    }
+
+    function renderReportCanvas() {
+      const canvas = document.getElementById('report-canvas');
+      if (!canvas) return;
+
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const schoolInfo = KETNOI.THONG_TIN_TRUONG;
+      const schoolTitle = schoolInfo.TEN_TRUONG;
+      const criteria = appState.workspaces[ws]?.criteria || [];
+
+      // Find principal and secretary from user list in ketnoi.js
+      const principal = KETNOI.DANH_SACH_NGUOI_DUNG.find(u => u.roleType === 'admin') || KETNOI.DANH_SACH_NGUOI_DUNG[0];
+      const secretary = KETNOI.DANH_SACH_NGUOI_DUNG.find(u => u.roleType === 'reviewer') || KETNOI.DANH_SACH_NGUOI_DUNG[1] || KETNOI.DANH_SACH_NGUOI_DUNG[0];
+
+      if (appState.reportType === 'form1') {
+        canvas.innerHTML = `
+          <div class="text-center space-y-1 mb-8">
+            <div class="text-xs uppercase font-semibold text-slate-500">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+            <div class="text-xs font-bold text-slate-700">Độc lập - Tự do - Hạnh phúc</div>
+            <div class="w-24 h-0.5 bg-slate-300 mx-auto my-2"></div>
+            <div class="text-xs text-slate-500 italic mt-3">${schoolInfo.DIA_CHI.split(',')[0] || 'Địa phương'}, ngày ${new Date().getDate()} tháng ${new Date().getMonth() + 1} năm ${new Date().getFullYear()}</div>
+            <h1 class="text-xl font-black text-slate-900 uppercase mt-4">
+              BÁO CÁO TỰ ĐÁNH GIÁ CHẤT LƯỢNG GIÁO DỤC NĂM HỌC ${schoolInfo.NAM_HOC_DANH_GIA}
+            </h1>
+            <p class="text-xs text-slate-600 font-semibold italic">(Ban hành kèm theo Mẫu số 1, Phụ lục V - Thông tư số 57/2026/TT-BGDĐT)</p>
+          </div>
+
+          <div class="space-y-6">
+            <section class="space-y-2">
+              <h2 class="text-sm font-extrabold uppercase text-indigo-900 border-b pb-1">I. THÔNG TIN CHUNG VỀ CƠ SỞ GIÁO DỤC</h2>
+              <table class="w-full text-xs text-left">
+                <tr><td class="py-1 w-52 font-bold">Tên cơ sở giáo dục:</td><td class="font-bold text-indigo-900">${schoolTitle}</td></tr>
+                <tr><td class="py-1 font-bold">Mã số trường (CSDL ngành):</td><td class="font-mono">${schoolInfo.MA_DINH_DANH_CSDL}</td></tr>
+                <tr><td class="py-1 font-bold">Cơ quan quản lý cấp trên:</td><td>${schoolInfo.CO_QUAN_QUAN_LY}</td></tr>
+                <tr><td class="py-1 font-bold">Địa chỉ:</td><td>${schoolInfo.DIA_CHI}</td></tr>
+                <tr><td class="py-1 font-bold">Cấp học tự đánh giá:</td><td>${appState.workspace}</td></tr>
+                <tr><td class="py-1 font-bold">Căn cứ pháp lý:</td><td>Thông tư số 57/2026/TT-BGDĐT ngày 07/07/2026 của Bộ GD&ĐT</td></tr>
+                <tr><td class="py-1 font-bold">Chủ tịch Hội đồng TĐG:</td><td>${principal.hoTen} (${principal.chucVu})</td></tr>
+              </table>
+            </section>
+
+            <section class="space-y-2">
+              <h2 class="text-sm font-extrabold uppercase text-indigo-900 border-b pb-1">II. KẾT QUẢ ĐÁNH GIÁ CÁC TIÊU CHÍ (15 TIÊU CHÍ)</h2>
+              <div class="space-y-4">
+                ${criteria.map(c => `
+                  <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 space-y-2 text-xs">
+                    <div class="flex items-center justify-between font-bold text-slate-900">
+                      <span>${c.code}: ${c.name} ${c.mandatory ? '(* Bắt buộc)' : ''}</span>
+                      <span class="text-indigo-700 bg-indigo-100 px-2 py-0.5 rounded font-black">Mức ${c.evaluation?.level ?? 1}</span>
+                    </div>
+                    <div class="text-slate-700 leading-relaxed"><strong>1. Hiện trạng:</strong> ${c.description || 'Đạt theo quy định.'}</div>
+                    <div class="text-slate-700 leading-relaxed"><strong>2. Điểm mạnh:</strong> ${c.evaluation?.strengths || 'Đạt chuẩn.'}</div>
+                    <div class="text-slate-700 leading-relaxed"><strong>3. Điểm yếu:</strong> ${c.evaluation?.weaknesses || 'Cần cải tiến thêm.'}</div>
+                    <div class="text-slate-700 leading-relaxed"><strong>4. Kế hoạch cải tiến:</strong> ${c.evaluation?.actionPlan || 'Tiếp tục duy trì.'}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </section>
+
+            <section class="space-y-2 pt-4">
+              <h2 class="text-sm font-extrabold uppercase text-indigo-900 border-b pb-1">III. KẾT LUẬN CHUNG</h2>
+              <p class="text-xs text-slate-700 leading-relaxed">
+                Căn cứ Điều 5 và Điều 15 Thông tư 57/2026/TT-BGDĐT, nhà trường đã hoàn thành tự đánh giá năm học ${schoolInfo.NAM_HOC_DANH_GIA}:
+                <br>• Số tiêu chí bắt buộc đạt Mức 1: <strong>08/08 tiêu chí cốt lõi</strong>.
+                <br>• Kết luận mức độ đạt được: <strong>ĐẠT MỨC 1 (Đạt chuẩn Bảo đảm chất lượng giáo dục)</strong>.
+              </p>
+            </section>
+
+            <div class="grid grid-cols-2 pt-8 text-xs text-center">
+              <div>
+                <div class="font-bold">THƯ KÝ HỘI ĐỒNG TĐG</div>
+                <div class="italic text-slate-400 mt-16">(Ký và ghi rõ họ tên)</div>
+                <div class="font-bold mt-2">${secretary.hoTen}</div>
+              </div>
+              <div>
+                <div class="font-bold">HIỆU TRƯỞNG / CHỦ TỊCH HỘI ĐỒNG</div>
+                <div class="italic text-slate-400 mt-16">(Ký, đóng dấu và ghi rõ họ tên)</div>
+                <div class="font-bold mt-2">${principal.hoTen}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (appState.reportType === 'form2') {
+        canvas.innerHTML = `
+          <div class="text-center space-y-1 mb-8">
+            <div class="text-xs uppercase font-semibold text-slate-500">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+            <div class="text-xs font-bold text-slate-700">Độc lập - Tự do - Hạnh phúc</div>
+            <div class="w-24 h-0.5 bg-slate-300 mx-auto my-2"></div>
+            <h1 class="text-xl font-black text-slate-900 uppercase mt-4">
+              KẾ HOẠCH CẢI TIẾN CHẤT LƯỢNG GIÁO DỤC NĂM HỌC ${schoolInfo.NAM_HOC_DANH_GIA}
+            </h1>
+            <p class="text-xs text-slate-600 font-semibold italic">(Biểu mẫu số 2, Phụ lục V - Thông tư 57/2026/TT-BGDĐT)</p>
+            <p class="text-xs font-bold text-indigo-900 mt-1">${schoolTitle}</p>
+          </div>
+
+          <div class="space-y-4 text-xs">
+            <p class="text-slate-700 leading-relaxed">
+              Trích xuất tự động các điểm hạn chế và giải pháp cải tiến chất lượng từ Báo cáo Tự đánh giá hằng năm:
+            </p>
+            <table class="w-full border border-slate-300 text-left">
+              <thead class="bg-slate-100 font-bold border-b border-slate-300">
+                <tr>
+                  <th class="p-2 border-r border-slate-300 w-16">Tiêu chí</th>
+                  <th class="p-2 border-r border-slate-300">Điểm yếu / Tồn tại cần khắc phục</th>
+                  <th class="p-2 border-r border-slate-300">Biện pháp cải tiến chất lượng</th>
+                  <th class="p-2 border-r border-slate-300 w-28">Thời gian</th>
+                  <th class="p-2 w-32">Bộ phận chủ trì</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200">
+                ${criteria.map(c => `
+                  <tr>
+                    <td class="p-2 border-r border-slate-200 font-bold text-indigo-700">${c.code}</td>
+                    <td class="p-2 border-r border-slate-200">${c.evaluation?.weaknesses || 'Cần bổ sung hồ sơ số.'}</td>
+                    <td class="p-2 border-r border-slate-200">${c.evaluation?.actionPlan || 'Tập huấn và kiểm tra định kỳ.'}</td>
+                    <td class="p-2 border-r border-slate-200 font-mono">GĐ ${c.stage}</td>
+                    <td class="p-2">${c.dept}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `;
+      } else {
+        canvas.innerHTML = `
+          <div class="text-center space-y-1 mb-8">
+            <h1 class="text-xl font-black text-slate-900 uppercase">
+              BẢNG DANH MỤC MÃ HÓA MINH CHỨNG VÀ LIÊN KẾT ĐIỆN TỬ
+            </h1>
+            <p class="text-xs text-slate-600 font-semibold italic">(Căn cứ Phụ lục IV - Thông tư số 57/2026/TT-BGDĐT)</p>
+            <p class="text-xs font-bold text-indigo-900 mt-1">${schoolTitle} • Mã CSDL: ${schoolInfo.MA_DINH_DANH_CSDL}</p>
+          </div>
+
+          <table class="w-full border border-slate-300 text-left text-xs">
+            <thead class="bg-slate-100 font-bold border-b border-slate-300">
+              <tr>
+                <th class="p-2 border-r border-slate-300 w-24">Mã MC</th>
+                <th class="p-2 border-r border-slate-300">Tên Minh chứng cụ thể</th>
+                <th class="p-2 border-r border-slate-300 w-20">Tiêu chí</th>
+                <th class="p-2 border-r border-slate-300">Vị trí lưu trữ / Hyperlink điện tử</th>
+                <th class="p-2 w-32">Bộ phận quản lý</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200">
+              ${criteria.flatMap(c => (c.default_evidence || []).map(ev => `
+                <tr>
+                  <td class="p-2 border-r border-slate-200 font-mono font-bold text-indigo-700">${ev.code}</td>
+                  <td class="p-2 border-r border-slate-200 font-semibold">${ev.name}</td>
+                  <td class="p-2 border-r border-slate-200 font-bold">${c.code}</td>
+                  <td class="p-2 border-r border-slate-200 font-mono text-[11px] text-blue-600">
+                    <a href="${ev.url}" target="_blank" class="underline hover:text-blue-800">${ev.url}</a>
+                  </td>
+                  <td class="p-2">${ev.dept}</td>
+                </tr>
+              `)).join('')}
+            </tbody>
+          </table>
+        `;
+      }
+    }
+
+    function printReport() {
+      window.print();
+    }
+
+    function copyReportText() {
+      const canvas = document.getElementById('report-canvas');
+      if (canvas) {
+        navigator.clipboard.writeText(canvas.innerText);
+        showToast('Đã sao chép toàn bộ văn bản báo cáo!', 'success');
+      }
+    }
+
+    function exportWordHtml() {
+      const canvas = document.getElementById('report-canvas');
+      if (!canvas) return;
+      const htmlContent = `
+        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+        <head><meta charset='utf-8'><title>Bao_Cao_TDG_TT57</title></head>
+        <body style="font-family: Times New Roman, serif;">${canvas.innerHTML}</body>
+        </html>
+      `;
+      const blob = new Blob(['\ufeff' + htmlContent], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `Bao_Cao_TDG_TT57_${appState.workspace}.doc`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Đã tải xuống tệp Word (.doc)', 'success');
+    }
+
+    // ================= 10. BACKUP, RESTORE & DATA RESET =================
+    function exportBackupData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appState.workspaces, null, 2));
+      const a = document.createElement('a');
+      a.setAttribute("href", dataStr);
+      a.setAttribute("download", `QA_EDUSYS_Backup_${new Date().toISOString().slice(0,10)}.json`);
+      a.click();
+      showToast('Đã xuất file sao lưu dữ liệu JSON thành công', 'success');
+    }
+
+    function importBackupData(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          appState.workspaces = parsed;
+          saveState();
+          renderAll();
+          showToast('Đã phục hồi dữ liệu từ file sao lưu thành công', 'success');
+        } catch(err) {
+          alert('Tệp sao lưu không hợp lệ.');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function resetToDefaultData() {
+      if (!confirm('Bạn có chắc chắn muốn khôi phục lại toàn bộ dữ liệu gốc từ Thông tư 57? Toàn bộ các chỉnh sửa của bạn sẽ được thiết lập lại.')) return;
+      appState.workspaces = JSON.parse(JSON.stringify(DEFAULT_MASTER_DATA.workspaces));
+      saveState();
+      renderAll();
+      showToast('Đã khôi phục dữ liệu gốc thành công', 'info');
+    }
+
+    // ================= 11. STATS & CHARTS =================
+    let chartInstance = null;
+    function initRadarChart() {
+      const canvas = document.getElementById('standardsChart');
+      if (!canvas) return;
+
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const criteria = appState.workspaces[ws]?.criteria || [];
+
+      const scores = [0, 0, 0, 0];
+      const counts = [0, 0, 0, 0];
+
+      criteria.forEach(c => {
+        const stdIdx = c.std - 1;
+        const lvl = c.evaluation?.level ?? 1;
+        scores[stdIdx] += lvl;
+        counts[stdIdx] += 1;
+      });
+
+      const avgScores = scores.map((s, i) => (counts[i] ? (s / counts[i]).toFixed(1) : 1));
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(canvas, {
+        type: 'radar',
+        data: {
+          labels: ['TC 1: Tổ chức & QT', 'TC 2: Đội ngũ', 'TC 3: Hoạt động GD', 'TC 4: CSVC & MT'],
+          datasets: [{
+            label: 'Mức Đánh giá Trung bình',
+            data: avgScores,
+            backgroundColor: 'rgba(79, 70, 229, 0.2)',
+            borderColor: 'rgba(79, 70, 229, 1)',
+            borderWidth: 2,
+            pointBackgroundColor: 'rgba(79, 70, 229, 1)'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              min: 0,
+              max: 3,
+              ticks: { stepSize: 1 }
+            }
+          },
+          plugins: {
+            legend: { display: false }
+          }
+        }
+      });
+    }
+
+    function updateStats() {
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const criteria = appState.workspaces[ws]?.criteria || [];
+      let totalEv = 0;
+      let completedEv = 0;
+
+      criteria.forEach(c => {
+        (c.default_evidence || []).forEach(ev => {
+          totalEv++;
+          if (ev.status === 'completed') completedEv++;
+        });
+      });
+
+      const totalEl = document.getElementById('total-evidence-count');
+      const percentEl = document.getElementById('completed-evidence-percent');
+      if (totalEl) totalEl.innerText = totalEv;
+      if (percentEl) {
+        const pct = totalEv ? Math.round((completedEv / totalEv) * 100) : 0;
+        percentEl.innerText = `${pct}% hoàn thành (${completedEv}/${totalEv})`;
+      }
+    }
+
+    // Utility: Format Date
+    function formatDate(dStr) {
+      if (!dStr) return '';
+      const parts = dStr.split('-');
+      if (parts.length === 3) return `${parts[2]}/${parts[1]}/${parts[0]}`;
+      return dStr;
+    }
+
+    // Utility: Toast Notification
+    function showToast(msg, type = 'info') {
+      const existing = document.getElementById('toast-notification');
+      if (existing) existing.remove();
+
+      const toast = document.createElement('div');
+      toast.id = 'toast-notification';
+      let bg = 'bg-slate-900 text-white';
+      if (type === 'success') bg = 'bg-emerald-600 text-white';
+      if (type === 'warning') bg = 'bg-amber-600 text-white';
+      if (type === 'error') bg = 'bg-rose-600 text-white';
+
+      toast.className = `fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-xl shadow-2xl text-xs font-semibold flex items-center space-x-2 ${bg} transition-all duration-300 transform translate-y-0`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-info mr-1.5"></i><span>${msg}</span>`;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
