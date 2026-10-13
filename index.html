@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QA-EDUSYS | Phần Mềm Kiểm Định & Tự Đánh Giá Giáo Dục (TT 57/2026/TT-BGDĐT)</title>
   <!-- Nạp Tệp Cấu Hình Riêng Biệt (Không bị ảnh hưởng khi nâng cấp giao diện) -->
+  <link rel="stylesheet" href="style.css">
   <script src="ketnoi.js"></script>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -179,107 +180,123 @@
         <!-- Rendered dynamically by JS -->
       </div>
 
-      <!-- Overview Metric Cards -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3">
-          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+      <!-- Overview Metric Cards (Perfect Grid Balance) -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3.5 hover:border-slate-300 transition">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl flex-shrink-0">
             <i class="fa-solid fa-list-check"></i>
           </div>
-          <div>
+          <div class="min-w-0">
             <div class="text-xs text-slate-500 font-medium">Tổng số Tiêu chí</div>
-            <div class="text-2xl font-black text-slate-800">15 <span class="text-xs font-normal text-slate-500">tiêu chí</span></div>
-            <div class="text-[11px] text-blue-600 font-semibold">04 Tiêu chuẩn</div>
+            <div class="text-2xl font-black text-slate-800 leading-tight">15 <span class="text-xs font-normal text-slate-500">tiêu chí</span></div>
+            <div class="text-[11px] text-blue-600 font-semibold truncate">04 Tiêu chuẩn chất lượng</div>
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3">
-          <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl">
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3.5 hover:border-slate-300 transition">
+          <div class="w-12 h-12 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-xl flex-shrink-0">
             <i class="fa-solid fa-shield-halved"></i>
           </div>
-          <div>
+          <div class="min-w-0">
             <div class="text-xs text-slate-500 font-medium">Tiêu chí Bắt buộc</div>
-            <div class="text-2xl font-black text-rose-600">08 <span class="text-xs font-normal text-slate-500">cốt lõi</span></div>
-            <div class="text-[11px] text-rose-700 font-semibold" id="mandatory-status-badge">Đang kiểm tra...</div>
+            <div class="text-2xl font-black text-rose-600 leading-tight">08 <span class="text-xs font-normal text-slate-500">cốt lõi</span></div>
+            <div class="text-[11px] text-rose-700 font-semibold truncate" id="mandatory-status-badge">Đang kiểm tra...</div>
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3">
-          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3.5 hover:border-slate-300 transition">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl flex-shrink-0">
             <i class="fa-solid fa-file-shield"></i>
           </div>
-          <div>
+          <div class="min-w-0">
             <div class="text-xs text-slate-500 font-medium">Minh chứng đã lập</div>
-            <div class="text-2xl font-black text-emerald-600" id="total-evidence-count">0</div>
-            <div class="text-[11px] text-emerald-700 font-semibold" id="completed-evidence-percent">0% hoàn thành</div>
+            <div class="text-2xl font-black text-emerald-600 leading-tight" id="total-evidence-count">0</div>
+            <div class="text-[11px] text-emerald-700 font-semibold truncate" id="completed-evidence-percent">0% hoàn thành</div>
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3">
-          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-slate-200 flex items-center space-x-3.5 hover:border-slate-300 transition">
+          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl flex-shrink-0">
             <i class="fa-solid fa-clock-rotate-left"></i>
           </div>
-          <div>
+          <div class="min-w-0">
             <div class="text-xs text-slate-500 font-medium">Giai đoạn hiện tại</div>
-            <div class="text-lg font-black text-amber-600" id="current-stage-title">GĐ 2: Thu thập Đ1</div>
-            <div class="text-[11px] text-amber-700 font-semibold" id="current-stage-time">Tháng 10 - Tháng 12</div>
+            <div class="text-lg font-black text-amber-600 leading-tight truncate" id="current-stage-title">GĐ 2: Thu thập Đ1</div>
+            <div class="text-[11px] text-amber-700 font-semibold truncate" id="current-stage-time">Tháng 10 - Tháng 12</div>
           </div>
         </div>
       </div>
 
-      <!-- Charts & Core 8 Status Breakdown Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- CHARTS & CORE 8 BREAKDOWN GRID (REBALANCED TO 5:7 FOR HARMONIOUS PROPORTIONS) -->
+      <div class="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
         
-        <!-- Radar / Progress Chart -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between">
+        <!-- LEFT CARD: Radar Progress Chart & Detailed 4-Standards Breakdown (5 Cols) -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between xl:col-span-5 hover:border-slate-300 transition">
           <div>
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-bold text-slate-800 text-sm flex items-center">
-                <i class="fa-solid fa-chart-radar text-indigo-600 mr-2"></i>Tiến độ 04 Tiêu chuẩn Chất lượng
-              </h3>
-              <span class="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded">Tự đánh giá</span>
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100 mb-3">
+              <div>
+                <h3 class="font-extrabold text-slate-800 text-sm flex items-center">
+                  <i class="fa-solid fa-chart-radar text-indigo-600 mr-2 text-base"></i>Tiến độ 04 Tiêu chuẩn Chất lượng
+                </h3>
+                <p class="text-[11px] text-slate-500 mt-0.5">Biểu đồ mạng nhện đánh giá mức độ hoàn thành</p>
+              </div>
+              <span class="text-xs bg-indigo-50 text-indigo-700 font-semibold px-2.5 py-1 rounded-lg border border-indigo-100 flex-shrink-0">
+                Tự đánh giá
+              </span>
             </div>
-            <div class="relative h-60 flex items-center justify-center">
+            
+            <!-- Radar Canvas Container (Expanded & Centered) -->
+            <div class="relative h-64 sm:h-72 w-full flex items-center justify-center my-1">
               <canvas id="standardsChart"></canvas>
             </div>
           </div>
-          <div class="border-t border-slate-100 pt-3 text-xs text-slate-500 flex justify-between">
-            <span>TC 1: Tổ chức & QT</span>
-            <span>TC 2: Đội ngũ</span>
-            <span>TC 3: GD & Đào tạo</span>
-            <span>TC 4: CSVC & MT</span>
+
+          <!-- Bottom: 4 Standards Breakdown Progress Rows (Fills dead space elegantly) -->
+          <div class="border-t border-slate-100 pt-3 mt-2 space-y-2.5" id="standards-breakdown-container">
+            <!-- Dynamically populated by JS -->
           </div>
         </div>
 
-        <!-- 8 Mandatory Criteria Live Status Table -->
-        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 lg:col-span-2">
-          <div class="flex items-center justify-between mb-4">
-            <div>
-              <h3 class="font-bold text-slate-800 text-sm flex items-center">
-                <i class="fa-solid fa-star text-rose-500 mr-2"></i>Bảng Kiểm soát 08 Tiêu chí Bắt buộc (Điều kiện Tiên quyết)
-              </h3>
-              <p class="text-xs text-slate-500 mt-0.5">Bắt buộc 100% đạt Mức 1 để được xét BĐCLGD & Chuẩn quốc gia</p>
+        <!-- RIGHT CARD: 8 Mandatory Criteria Live Status Table (7 Cols) -->
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col justify-between xl:col-span-7 hover:border-slate-300 transition">
+          <div>
+            <div class="flex items-start justify-between pb-3 border-b border-slate-100 mb-3">
+              <div>
+                <h3 class="font-extrabold text-slate-900 text-sm flex items-center">
+                  <i class="fa-solid fa-shield-halved text-rose-500 mr-2 text-base"></i>Bảng Kiểm soát 08 Tiêu chí Bắt buộc (Điều kiện Tiên quyết)
+                </h3>
+                <p class="text-xs text-slate-500 mt-0.5 font-medium">Bắt buộc 100% đạt Mức 1 để được xét BĐCLGD & Chuẩn quốc gia</p>
+              </div>
+              <span class="text-xs font-bold px-3 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 whitespace-nowrap flex-shrink-0">
+                <i class="fa-solid fa-triangle-exclamation mr-1"></i>Điều 5 & Điều 15 TT 57
+              </span>
             </div>
-            <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-rose-100 text-rose-700 border border-rose-200">
-              <i class="fa-solid fa-triangle-exclamation mr-1"></i>Điều 5 & Điều 15 TT 57
-            </span>
+
+            <!-- Enhanced Table with No Awkward Line Wrapping -->
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead class="bg-slate-50 text-slate-600 font-bold border-b border-slate-200">
+                  <tr>
+                    <th class="py-2.5 px-3 w-28 whitespace-nowrap">Mã TC</th>
+                    <th class="py-2.5 px-3">Tên Tiêu chí</th>
+                    <th class="py-2.5 px-3 w-36 whitespace-nowrap">Bộ phận phụ trách</th>
+                    <th class="py-2.5 px-3 w-28 whitespace-nowrap text-center">Hạn chót</th>
+                    <th class="py-2.5 px-3 w-28 whitespace-nowrap text-center">Trạng thái Mức 1</th>
+                    <th class="py-2.5 px-3 w-20 whitespace-nowrap text-right">Thao tác</th>
+                  </tr>
+                </thead>
+                <tbody id="mandatory-criteria-tbody" class="divide-y divide-slate-100">
+                  <!-- Rendered by JS -->
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-              <thead class="bg-slate-50 text-slate-600 font-semibold border-y border-slate-200">
-                <tr>
-                  <th class="py-2.5 px-3">Mã TC</th>
-                  <th class="py-2.5 px-3">Tên Tiêu chí</th>
-                  <th class="py-2.5 px-3">Bộ phận phụ trách</th>
-                  <th class="py-2.5 px-3">Hạn chót</th>
-                  <th class="py-2.5 px-3 text-center">Trạng thái Mức 1</th>
-                  <th class="py-2.5 px-3 text-right">Thao tác</th>
-                </tr>
-              </thead>
-              <tbody id="mandatory-criteria-tbody" class="divide-y divide-slate-100">
-                <!-- Rendered by JS -->
-              </tbody>
-            </table>
+          <div class="border-t border-slate-100 pt-3 mt-3 flex items-center justify-between text-[11px] text-slate-500">
+            <span><i class="fa-solid fa-circle-info mr-1 text-indigo-500"></i>Cần đạt chuẩn tối thiểu Mức 1 ở cả 8 tiêu chí trên</span>
+            <button onclick="showTab('criteria')" class="font-bold text-indigo-600 hover:text-indigo-800 transition">
+              Xem toàn bộ 15 tiêu chí <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
           </div>
         </div>
 
@@ -300,7 +317,7 @@
               Thông tư 57 cho phép sử dụng <strong>Minh chứng thay thế hợp pháp</strong>.
             </p>
           </div>
-          <button onclick="openSpecialContextModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 whitespace-nowrap transition flex items-center">
+          <button onclick="openSpecialContextModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-500/20 whitespace-nowrap transition flex items-center flex-shrink-0">
             <i class="fa-solid fa-wand-magic-sparkles mr-1.5"></i>Xem Gợi ý Minh chứng Thay thế
           </button>
         </div>
@@ -552,12 +569,12 @@
               <strong class="text-emerald-600">8/8 Đạt Mức 1</strong>
             </div>
             <div class="flex justify-between text-slate-600">
-              <span>Tổng tiêu chí đạt Mức 2:</span>
-              <strong>14/15 tiêu chí</strong>
+              <span>Tiêu chí đạt Mức 1:</span>
+              <strong class="text-emerald-600">15/15 tiêu chí (100%)</strong>
             </div>
             <div class="flex justify-between text-slate-600">
-              <span>Tiêu chí đạt Mức 3:</span>
-              <strong>6/15 tiêu chí</strong>
+              <span>Tiêu chí đạt Mức 2:</span>
+              <strong class="text-indigo-600">15/15 tiêu chí (100%)</strong>
             </div>
           </div>
           <button onclick="setWorkspace('MAM_NON'); showTab('criteria');" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition">
@@ -583,12 +600,12 @@
               <strong class="text-emerald-600">8/8 Đạt Mức 1</strong>
             </div>
             <div class="flex justify-between text-slate-600">
-              <span>Tổng tiêu chí đạt Mức 2:</span>
-              <strong>10/15 tiêu chí</strong>
+              <span>Tiêu chí đạt Mức 1:</span>
+              <strong class="text-emerald-600">15/15 tiêu chí (100%)</strong>
             </div>
             <div class="flex justify-between text-slate-600">
-              <span>Tiêu chí đạt Mức 3:</span>
-              <strong>2/15 tiêu chí</strong>
+              <span>Tiêu chí đạt Mức 2:</span>
+              <strong class="text-amber-600">11/15 tiêu chí (73.3%)</strong>
             </div>
           </div>
           <button onclick="setWorkspace('TIEU_HOC'); showTab('criteria');" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition">
@@ -614,12 +631,12 @@
               <strong class="text-emerald-600">8/8 Đạt Mức 1</strong>
             </div>
             <div class="flex justify-between text-slate-600">
-              <span>Tổng tiêu chí đạt Mức 2:</span>
-              <strong>15/15 tiêu chí</strong>
+              <span>Tiêu chí đạt Mức 1:</span>
+              <strong class="text-emerald-600">15/15 tiêu chí (100%)</strong>
             </div>
             <div class="flex justify-between text-slate-600">
-              <span>Tiêu chí đạt Mức 3:</span>
-              <strong>8/15 tiêu chí</strong>
+              <span>Tiêu chí đạt Mức 2:</span>
+              <strong class="text-indigo-600">15/15 tiêu chí (100%)</strong>
             </div>
           </div>
           <button onclick="setWorkspace('THCS'); showTab('criteria');" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-semibold transition">
@@ -1119,7 +1136,7 @@
     let appState = {
       workspace: KETNOI.THONG_TIN_TRUONG.CAP_HOC_MAC_DINH || 'TIEU_HOC',
       currentUser: KETNOI.DANH_SACH_NGUOI_DUNG[0],
-      currentMonth: 10, // Tháng 10 (Hiện tại)
+      currentMonth: 10,
       currentStageFilter: 'all',
       currentStdFilter: 'all',
       activeTab: 'dashboard',
@@ -1158,7 +1175,6 @@
       });
     });
 
-    // Cập nhật hiển thị thông tin trường từ ketnoi.js
     function initSchoolInfoDisplay() {
       const schoolInfo = KETNOI.THONG_TIN_TRUONG;
       const topbarName = document.getElementById('topbar-school-name');
@@ -1177,7 +1193,6 @@
       if (dYear) dYear.innerText = schoolInfo.NAM_HOC_DANH_GIA;
     }
 
-    // Khởi tạo menu người dùng từ ketnoi.js
     function initUserDropdown() {
       const menu = document.getElementById('user-dropdown-menu');
       if (!menu) return;
@@ -1226,7 +1241,6 @@
       }
     }
 
-    // Load State from LocalStorage or Fallback
     function loadState(pushAudit = true) {
       const saved = localStorage.getItem('qa_edusys_state');
       if (saved) {
@@ -1247,7 +1261,6 @@
       updateTrashBadge();
     }
 
-    // Save State to LocalStorage & Broadcast
     function saveState(broadcast = true) {
       const payload = {
         workspaces: appState.workspaces,
@@ -1269,7 +1282,6 @@
         });
       }
 
-      // Check if running in Google Apps Script Web App
       if (typeof google !== 'undefined' && google.script && google.script.run) {
         google.script.run.withSuccessHandler(() => {
           console.log('Synced to Google Sheets backend.');
@@ -1298,7 +1310,6 @@
       }
     }
 
-    // Set Workspace
     function setWorkspace(wsKey) {
       appState.workspace = wsKey;
       
@@ -1332,7 +1343,6 @@
       renderAll();
     }
 
-    // Switch Tab
     function showTab(tabId) {
       appState.activeTab = tabId;
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -1357,7 +1367,6 @@
       }
     }
 
-    // Render Master Orchestrator
     function renderAll() {
       renderGatekeeper();
       renderMandatoryCriteriaTable();
@@ -1424,7 +1433,7 @@
         `;
         if (badge) {
           badge.innerText = 'ĐẠT 8/8 TIÊU CHÍ';
-          badge.className = 'text-[11px] text-emerald-700 font-semibold';
+          badge.className = 'text-[11px] text-emerald-700 font-semibold truncate';
         }
       } else {
         banner.className = 'rounded-2xl p-5 shadow-sm border bg-gradient-to-r from-rose-500/10 via-rose-500/5 to-amber-500/5 border-rose-300';
@@ -1456,11 +1465,12 @@
         `;
         if (badge) {
           badge.innerText = `Chưa đạt ${failedList.length} tiêu chí!`;
-          badge.className = 'text-[11px] text-rose-700 font-semibold';
+          badge.className = 'text-[11px] text-rose-700 font-semibold truncate';
         }
       }
     }
 
+    // Render Mandatory Criteria Table (Fixed wrapping of TC code & polished cell alignment)
     function renderMandatoryCriteriaTable() {
       const tbody = document.getElementById('mandatory-criteria-tbody');
       if (!tbody) return;
@@ -1473,20 +1483,30 @@
         const isPassed = lvl >= 1;
         const deadline = c.default_evidence?.[0]?.deadline || '2026-11-30';
         return `
-          <tr class="hover:bg-slate-50/80 transition">
-            <td class="py-2.5 px-3 font-mono font-bold text-rose-600">${c.code} (*)</td>
-            <td class="py-2.5 px-3 font-semibold text-slate-800">${c.name}</td>
-            <td class="py-2.5 px-3 text-slate-500">${c.dept}</td>
-            <td class="py-2.5 px-3 font-mono text-[11px] text-slate-600">${formatDate(deadline)}</td>
-            <td class="py-2.5 px-3 text-center">
+          <tr class="hover:bg-slate-50/90 transition group">
+            <td class="py-2.5 px-3 whitespace-nowrap">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-md font-mono font-bold text-rose-600 bg-rose-50 border border-rose-200/80 text-[11px]">
+                ${c.code} <span class="ml-1 text-[10px] text-rose-500 font-extrabold" title="Tiêu chí bắt buộc">(*)</span>
+              </span>
+            </td>
+            <td class="py-2.5 px-3 font-semibold text-slate-800 leading-snug">
+              ${c.name}
+            </td>
+            <td class="py-2.5 px-3 text-slate-500 whitespace-nowrap text-[11px]">
+              <i class="fa-solid fa-building-user mr-1 text-slate-400"></i>${c.dept}
+            </td>
+            <td class="py-2.5 px-3 font-mono text-[11px] text-slate-600 whitespace-nowrap text-center">
+              ${formatDate(deadline)}
+            </td>
+            <td class="py-2.5 px-3 text-center whitespace-nowrap">
               ${isPassed ? 
-                '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800"><i class="fa-solid fa-check mr-1"></i>Đạt Mức ' + lvl + '</span>' :
-                '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-800"><i class="fa-solid fa-xmark mr-1"></i>Chưa đạt</span>'
+                '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200"><i class="fa-solid fa-circle-check mr-1.5 text-emerald-500"></i>Đạt Mức ' + lvl + '</span>' :
+                '<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200"><i class="fa-solid fa-circle-xmark mr-1.5 text-rose-500"></i>Chưa đạt</span>'
               }
             </td>
-            <td class="py-2.5 px-3 text-right">
-              <button onclick="showTab('criteria'); filterCriteriaStandard(${c.std});" class="text-indigo-600 hover:text-indigo-800 font-semibold text-xs">
-                Chi tiết <i class="fa-solid fa-chevron-right ml-0.5 text-[10px]"></i>
+            <td class="py-2.5 px-3 text-right whitespace-nowrap">
+              <button onclick="showTab('criteria'); filterCriteriaStandard(${c.std});" class="inline-flex items-center px-2 py-1 rounded-lg text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 font-bold text-xs transition">
+                Chi tiết <i class="fa-solid fa-chevron-right ml-1 text-[9px]"></i>
               </button>
             </td>
           </tr>
@@ -1743,10 +1763,9 @@
               <div class="flex items-center space-x-2">
                 <label class="text-xs text-slate-500 font-semibold">Tự đánh giá:</label>
                 <select onchange="updateCriterionLevel('${c.id}', this.value)" class="text-xs bg-slate-50 border border-slate-300 font-bold rounded-lg px-2.5 py-1.5 ${currentLvl >= 1 ? 'text-indigo-700' : 'text-rose-700'}">
-                  <option value="0" ${currentLvl === 0 ? 'selected' : ''}>Chưa đạt Mức 1 (Trượt)</option>
-                  <option value="1" ${currentLvl === 1 ? 'selected' : ''}>Đạt Mức 1 (Chuẩn BĐCLGD)</option>
-                  <option value="2" ${currentLvl === 2 ? 'selected' : ''}>Đạt Mức 2 (Chuẩn QG Mức 1)</option>
-                  <option value="3" ${currentLvl === 3 ? 'selected' : ''}>Đạt Mức 3 (Chuẩn QG Mức 2)</option>
+                  <option value="0" ${currentLvl === 0 ? 'selected' : ''}>Chưa đạt Mức 1 (Trượt BĐCLGD)</option>
+                  <option value="1" ${currentLvl === 1 ? 'selected' : ''}>Đạt Mức 1 (Chuẩn BĐCLGD & Chuẩn QG Mức 1)</option>
+                  <option value="2" ${currentLvl === 2 ? 'selected' : ''}>Đạt Mức 2 (Chuẩn Quốc gia Mức 2)</option>
                 </select>
               </div>
             </div>
@@ -1927,7 +1946,6 @@
       const filterTc = document.getElementById('evidence-filter-tc')?.value || 'all';
       const filterType = document.getElementById('evidence-filter-type')?.value || 'all';
 
-      // Populate filter dropdown if empty
       const sel = document.getElementById('evidence-filter-tc');
       if (sel && sel.options.length <= 1) {
         criteria.forEach(c => {
@@ -1998,7 +2016,6 @@
       }).join('');
     }
 
-    // Soft-Delete
     function softDeleteEvidence(cId, evCode) {
       if (!confirm(`Bạn có chắc chắn muốn đưa minh chứng ${evCode} vào Thùng rác? Bạn có thể khôi phục lại bất kỳ lúc nào.`)) return;
 
@@ -2304,7 +2321,6 @@
       const schoolTitle = schoolInfo.TEN_TRUONG;
       const criteria = appState.workspaces[ws]?.criteria || [];
 
-      // Find principal and secretary from user list in ketnoi.js
       const principal = KETNOI.DANH_SACH_NGUOI_DUNG.find(u => u.roleType === 'admin') || KETNOI.DANH_SACH_NGUOI_DUNG[0];
       const secretary = KETNOI.DANH_SACH_NGUOI_DUNG.find(u => u.roleType === 'reviewer') || KETNOI.DANH_SACH_NGUOI_DUNG[1] || KETNOI.DANH_SACH_NGUOI_DUNG[0];
 
@@ -2377,46 +2393,160 @@
           </div>
         `;
       } else if (appState.reportType === 'form2') {
+        // ĐỘNG CƠ TỰ ĐỘNG TRÍCH XUẤT KẾ HOẠCH CẢI TIẾN CHẤT LƯỢNG (MẪU SỐ 2, PHỤ LỤC V - TT 57)
+        // Kiểm tra chế độ lọc chỉ tiêu chí có tồn tại hay toàn bộ
+        if (typeof appState.filterImprovementOnlyWeaknesses === 'undefined') {
+          appState.filterImprovementOnlyWeaknesses = true; // Mặc định tự động lọc tiêu chí có tồn tại
+        }
+
+        // Lọc danh sách tiêu chí cần cải tiến
+        const targetCriteria = appState.filterImprovementOnlyWeaknesses 
+          ? criteria.filter(c => {
+              const weak = (c.evaluation?.weaknesses || '').trim();
+              const lvl = c.evaluation?.level ?? 1;
+              return (weak !== '' && weak !== 'Không có' && !weak.toLowerCase().includes('đạt chuẩn')) || lvl === 1 || lvl === 0;
+            })
+          : criteria;
+
+        const totalWithWeakness = criteria.filter(c => {
+          const weak = (c.evaluation?.weaknesses || '').trim();
+          return weak !== '' && weak !== 'Không có' && !weak.toLowerCase().includes('đạt chuẩn');
+        }).length;
+
         canvas.innerHTML = `
+          <!-- Toolbar Điều khiển Trích xuất Thông minh (Không in khi bấm In/PDF) -->
+          <div class="no-print mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div class="space-y-0.5">
+                <span class="inline-flex items-center text-xs font-extrabold text-indigo-900">
+                  <i class="fa-solid fa-wand-magic-sparkles text-indigo-600 mr-2 text-sm"></i>
+                  Động cơ Tự động Trích xuất Tồn tại & Lập Kế hoạch Cải tiến (Thông tư 57)
+                </span>
+                <p class="text-[11px] text-slate-600">
+                  Hệ thống tự động rà soát nội dung <strong>"Điểm yếu / Tồn tại"</strong> đã nhập ở 15 tiêu chí để trích xuất thành Kế hoạch cải tiến chính thức.
+                </p>
+              </div>
+
+              <!-- Nút chuyển chế độ lọc -->
+              <div class="flex items-center space-x-2">
+                <button onclick="toggleImprovementFilter(true)" class="px-3 py-1.5 rounded-lg text-xs font-bold transition ${appState.filterImprovementOnlyWeaknesses ? 'bg-indigo-600 text-white shadow' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'}">
+                  <i class="fa-solid fa-filter mr-1"></i>Chỉ lấy Tiêu chí có Tồn tại (${totalWithWeakness})
+                </button>
+                <button onclick="toggleImprovementFilter(false)" class="px-3 py-1.5 rounded-lg text-xs font-bold transition ${!appState.filterImprovementOnlyWeaknesses ? 'bg-indigo-600 text-white shadow' : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'}">
+                  Xem Toàn bộ 15 Tiêu chí
+                </button>
+              </div>
+            </div>
+
+            <!-- Thống kê Tiến độ Cải tiến -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 border-t border-blue-200/60 text-xs">
+              <div class="bg-white p-2 rounded-lg border border-slate-200">
+                <span class="text-slate-500 text-[10px] block">Tiêu chí có Tồn tại:</span>
+                <strong class="text-rose-600 text-sm">${totalWithWeakness} / 15 tiêu chí</strong>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200">
+                <span class="text-slate-500 text-[10px] block">Cần nâng lên Mức 2:</span>
+                <strong class="text-amber-600 text-sm">${criteria.filter(c => (c.evaluation?.level ?? 1) === 1).length} tiêu chí</strong>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200">
+                <span class="text-slate-500 text-[10px] block">Giai đoạn hoàn thành:</span>
+                <strong class="text-indigo-600 text-sm">GĐ 1 đến GĐ 5</strong>
+              </div>
+              <div class="bg-white p-2 rounded-lg border border-slate-200">
+                <span class="text-slate-500 text-[10px] block">Trạng thái Kế hoạch:</span>
+                <strong class="text-emerald-600 text-sm"><i class="fa-solid fa-circle-check mr-1"></i>Sẵn sàng ban hành</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Văn bản Kế hoạch Cải tiến Chất lượng Giáo dục Chuẩn Biểu mẫu Mẫu số 2 -->
           <div class="text-center space-y-1 mb-8">
-            <div class="text-xs uppercase font-semibold text-slate-500">CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-            <div class="text-xs font-bold text-slate-700">Độc lập - Tự do - Hạnh phúc</div>
-            <div class="w-24 h-0.5 bg-slate-300 mx-auto my-2"></div>
+            <div class="text-xs uppercase font-semibold text-slate-500">${schoolInfo.CO_QUAN_QUAN_LY.toUpperCase()}</div>
+            <div class="text-xs font-bold text-slate-800 uppercase tracking-wide">${schoolTitle.toUpperCase()}</div>
+            <div class="w-20 h-0.5 bg-slate-300 mx-auto my-1.5"></div>
+            <div class="text-xs text-slate-500 italic mt-2">${schoolInfo.DIA_CHI.split(',')[0] || 'Địa phương'}, ngày ${new Date().getDate()} tháng ${new Date().getMonth() + 1} năm ${new Date().getFullYear()}</div>
             <h1 class="text-xl font-black text-slate-900 uppercase mt-4">
               KẾ HOẠCH CẢI TIẾN CHẤT LƯỢNG GIÁO DỤC NĂM HỌC ${schoolInfo.NAM_HOC_DANH_GIA}
             </h1>
-            <p class="text-xs text-slate-600 font-semibold italic">(Biểu mẫu số 2, Phụ lục V - Thông tư 57/2026/TT-BGDĐT)</p>
-            <p class="text-xs font-bold text-indigo-900 mt-1">${schoolTitle}</p>
+            <p class="text-xs text-slate-600 font-semibold italic">(Biểu mẫu số 2, Phụ lục V - Thông tư số 57/2026/TT-BGDĐT ngày 07/07/2026 của Bộ GD&ĐT)</p>
           </div>
 
-          <div class="space-y-4 text-xs">
-            <p class="text-slate-700 leading-relaxed">
-              Trích xuất tự động các điểm hạn chế và giải pháp cải tiến chất lượng từ Báo cáo Tự đánh giá hằng năm:
+          <div class="space-y-4 text-xs leading-relaxed">
+            <p class="text-slate-700 text-justify">
+              Căn cứ kết quả Tự đánh giá chất lượng giáo dục năm học ${schoolInfo.NAM_HOC_DANH_GIA}, Hội đồng Tự đánh giá nhà trường xây dựng Kế hoạch cải tiến chất lượng giáo dục đối với các tiêu chí còn tồn tại, hạn chế nhằm nâng cao hiệu quả các hoạt động giáo dục và duy trì, nâng chuẩn kiểm định theo quy định tại Thông tư 57/2026/TT-BGDĐT:
             </p>
-            <table class="w-full border border-slate-300 text-left">
-              <thead class="bg-slate-100 font-bold border-b border-slate-300">
+
+            <table class="w-full border border-slate-300 text-left border-collapse">
+              <thead class="bg-slate-100 font-bold border-b border-slate-300 text-[11px] text-slate-800">
                 <tr>
-                  <th class="p-2 border-r border-slate-300 w-16">Tiêu chí</th>
-                  <th class="p-2 border-r border-slate-300">Điểm yếu / Tồn tại cần khắc phục</th>
-                  <th class="p-2 border-r border-slate-300">Biện pháp cải tiến chất lượng</th>
-                  <th class="p-2 border-r border-slate-300 w-28">Thời gian</th>
-                  <th class="p-2 w-32">Bộ phận chủ trì</th>
+                  <th class="p-2 border-r border-slate-300 w-10 text-center">STT</th>
+                  <th class="p-2 border-r border-slate-300 w-36">Tiêu chuẩn, Tiêu chí</th>
+                  <th class="p-2 border-r border-slate-300">Tồn tại, hạn chế cần khắc phục<br><span class="font-normal text-[10px] text-slate-500">(Trích xuất từ Tự đánh giá)</span></th>
+                  <th class="p-2 border-r border-slate-300">Mục tiêu & Biện pháp cải tiến chất lượng cụ thể</th>
+                  <th class="p-2 border-r border-slate-300 w-28 text-center">Thời gian hoàn thành</th>
+                  <th class="p-2 border-r border-slate-300 w-28">Người / Bộ phận thực hiện</th>
+                  <th class="p-2 border-r border-slate-300 w-28">Người kiểm tra, giám sát</th>
+                  <th class="p-2 w-28">Điều kiện thực hiện</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-slate-200">
-                ${criteria.map(c => `
-                  <tr>
-                    <td class="p-2 border-r border-slate-200 font-bold text-indigo-700">${c.code}</td>
-                    <td class="p-2 border-r border-slate-200">${c.evaluation?.weaknesses || 'Cần bổ sung hồ sơ số.'}</td>
-                    <td class="p-2 border-r border-slate-200">${c.evaluation?.actionPlan || 'Tập huấn và kiểm tra định kỳ.'}</td>
-                    <td class="p-2 border-r border-slate-200 font-mono">GĐ ${c.stage}</td>
-                    <td class="p-2">${c.dept}</td>
-                  </tr>
-                `).join('')}
+                ${targetCriteria.map((c, idx) => {
+                  const weakness = c.evaluation?.weaknesses || 'Hồ sơ minh chứng chưa số hóa đồng bộ; cần tiếp tục bồi dưỡng ứng dụng CNTT.';
+                  const action = c.evaluation?.actionPlan || 'Tập huấn nâng cao năng lực cho giáo viên; phân công chuyên trách kiểm tra định kỳ 5 giai đoạn năm học.';
+                  const stageObj = DEFAULT_MASTER_DATA.stages.find(s => s.stage === c.stage) || DEFAULT_MASTER_DATA.stages[1];
+                  const supervisor = (c.std === 1 || c.std === 2) ? 'Phó Hiệu trưởng' : (c.std === 3 ? 'Hiệu trưởng' : 'Ban Thanh tra ND / BGH');
+                  const resources = (c.std === 4) ? 'Kinh phí chi thường xuyên & CSVC' : 'Nguồn nhân lực & Học liệu số';
+
+                  return `
+                    <tr class="hover:bg-slate-50/70 transition">
+                      <td class="p-2 border-r border-slate-200 font-bold text-center text-slate-600">${idx + 1}</td>
+                      <td class="p-2 border-r border-slate-200">
+                        <span class="font-mono font-bold text-indigo-700 block">${c.code} ${c.mandatory ? '<span class="text-rose-600">(*)</span>' : ''}</span>
+                        <span class="text-slate-800 text-[11px] leading-tight block mt-0.5">${c.name}</span>
+                      </td>
+                      <td class="p-2 border-r border-slate-200 text-rose-900 bg-rose-50/30 font-medium">
+                        ${weakness}
+                      </td>
+                      <td class="p-2 border-r border-slate-200 text-slate-800 leading-normal">
+                        ${action}
+                      </td>
+                      <td class="p-2 border-r border-slate-200 text-center font-mono text-[11px] text-slate-700 whitespace-nowrap">
+                        <span class="px-1.5 py-0.5 rounded bg-slate-100 font-bold">GĐ ${c.stage}</span>
+                        <div class="text-[10px] text-slate-500 mt-0.5">${stageObj.time}</div>
+                      </td>
+                      <td class="p-2 border-r border-slate-200 text-slate-700">
+                        <strong>${c.dept}</strong>
+                      </td>
+                      <td class="p-2 border-r border-slate-200 text-slate-700">
+                        ${supervisor}
+                      </td>
+                      <td class="p-2 text-slate-600 text-[11px]">
+                        ${resources}
+                      </td>
+                    </tr>
+                  `;
+                }).join('')}
               </tbody>
             </table>
+
+            <!-- Ký duyệt chính thức -->
+            <div class="grid grid-cols-2 pt-8 text-xs text-center">
+              <div>
+                <div class="font-bold uppercase text-slate-800">NGƯỜI LẬP KẾ HOẠCH</div>
+                <div class="text-[11px] text-slate-500 italic mt-0.5">(Thư ký Hội đồng Tự đánh giá)</div>
+                <div class="italic text-slate-400 mt-14">(Ký và ghi rõ họ tên)</div>
+                <div class="font-bold mt-2 text-slate-900">${secretary.hoTen}</div>
+              </div>
+              <div>
+                <div class="font-bold uppercase text-slate-800">HIỆU TRƯỞNG PHÊ DUYỆT</div>
+                <div class="text-[11px] text-slate-500 italic mt-0.5">(Chủ tịch Hội đồng Tự đánh giá)</div>
+                <div class="italic text-slate-400 mt-14">(Ký, đóng dấu và ghi rõ họ tên)</div>
+                <div class="font-bold mt-2 text-slate-900">${principal.hoTen}</div>
+              </div>
+            </div>
           </div>
         `;
+      }
       } else {
         canvas.innerHTML = `
           <div class="text-center space-y-1 mb-8">
@@ -2453,6 +2583,13 @@
           </table>
         `;
       }
+    }
+
+    
+    function toggleImprovementFilter(onlyWeaknesses) {
+      appState.filterImprovementOnlyWeaknesses = onlyWeaknesses;
+      renderReportCanvas();
+      showToast(onlyWeaknesses ? 'Đã lọc danh sách tiêu chí có tồn tại' : 'Đang hiển thị toàn bộ 15 tiêu chí', 'info');
     }
 
     function printReport() {
@@ -2522,7 +2659,7 @@
       showToast('Đã khôi phục dữ liệu gốc thành công', 'info');
     }
 
-    // ================= 11. STATS & CHARTS =================
+    // ================= 11. STATS & CHARTS (HIGHLY POLISHED PROPORTIONS) =================
     let chartInstance = null;
     function initRadarChart() {
       const canvas = document.getElementById('standardsChart');
@@ -2547,17 +2684,27 @@
         chartInstance.destroy();
       }
 
+      // Ultra-clean modern Radar Chart styling with 2-line labels
       chartInstance = new Chart(canvas, {
         type: 'radar',
         data: {
-          labels: ['TC 1: Tổ chức & QT', 'TC 2: Đội ngũ', 'TC 3: Hoạt động GD', 'TC 4: CSVC & MT'],
+          labels: [
+            ['TC 1', 'Tổ chức & QT'],
+            ['TC 2', 'Đội ngũ'],
+            ['TC 3', 'Hoạt động GD'],
+            ['TC 4', 'CSVC & MT']
+          ],
           datasets: [{
-            label: 'Mức Đánh giá Trung bình',
+            label: 'Mức Đánh giá',
             data: avgScores,
-            backgroundColor: 'rgba(79, 70, 229, 0.2)',
+            backgroundColor: 'rgba(99, 102, 241, 0.22)',
             borderColor: 'rgba(79, 70, 229, 1)',
-            borderWidth: 2,
-            pointBackgroundColor: 'rgba(79, 70, 229, 1)'
+            borderWidth: 2.5,
+            pointBackgroundColor: 'rgba(79, 70, 229, 1)',
+            pointBorderColor: '#ffffff',
+            pointBorderWidth: 2,
+            pointRadius: 4.5,
+            pointHoverRadius: 6.5
           }]
         },
         options: {
@@ -2566,15 +2713,66 @@
           scales: {
             r: {
               min: 0,
-              max: 3,
-              ticks: { stepSize: 1 }
+              max: 2,
+              ticks: {
+                stepSize: 1,
+                display: true,
+                font: { size: 10, weight: 'bold' },
+                color: '#94a3b8',
+                backdropColor: 'transparent',
+                callback: function(val) {
+                  if (val === 0) return '0 (Chưa đạt)';
+                  if (val === 1) return 'Mức 1';
+                  if (val === 2) return 'Mức 2';
+                  return val;
+                }
+              },
+              grid: { color: '#e2e8f0' },
+              angleLines: { color: '#e2e8f0' },
+              pointLabels: {
+                font: { size: 11, weight: '600', family: 'Inter' },
+                color: '#334155'
+              }
             }
           },
           plugins: {
-            legend: { display: false }
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return ' Mức trung bình: ' + context.formattedValue + ' / 2.0';
+                }
+              }
+            }
           }
         }
       });
+
+      // Render Bottom Structured Progress Breakdown Cards
+      const breakdownEl = document.getElementById('standards-breakdown-container');
+      if (breakdownEl) {
+        const stdNames = [
+          'TC 1: Tổ chức và Quản trị nhà trường',
+          'TC 2: Cán bộ quản lý, giáo viên, nhân viên',
+          'TC 3: Hoạt động giáo dục và kết quả GD',
+          'TC 4: CSVC, thiết bị và môi trường GD'
+        ];
+        breakdownEl.innerHTML = stdNames.map((name, i) => {
+          const score = parseFloat(avgScores[i]);
+          const percent = Math.min(100, Math.round((score / 2) * 100));
+          return `
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-[11px]">
+                <span class="font-bold text-slate-700 truncate max-w-[240px]">${name}</span>
+                <span class="font-bold text-indigo-700 bg-indigo-50 px-1.5 py-0.2 rounded border border-indigo-100 text-[10px]">Mức ${score} / 2.0 (${percent}%)</span>
+              </div>
+              <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 h-1.5 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
     }
 
     function updateStats() {
