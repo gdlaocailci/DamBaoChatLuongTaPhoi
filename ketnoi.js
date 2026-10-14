@@ -108,7 +108,7 @@ const CAUHINH_KETNOI = {
   // 3. ĐƯỜNG DẪN KẾT NỐI HẠ TẦNG SỐ (URL ENDPOINTS & DRIVE CLOUD)
   KET_NOI_HA_TANG: {
     GOOGLE_WEB_APP_URL: "", 
-    GOOGLE_DRIVE_FOLDER_URL: "https://drive.google.com/drive/folders/YOUR_EVIDENCE_FOLDER_ID",
+    GOOGLE_DRIVE_FOLDER_URL: "14SLCUGa1Rke-DxRRnTLvCNxE-fii4807",
     CSDL_NGANH_URL: "https://csdl.moet.gov.vn",
     TEMIS_URL: "https://temis.csdl.edu.vn"
   },
