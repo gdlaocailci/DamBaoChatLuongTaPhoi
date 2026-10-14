@@ -8,6 +8,10 @@
   <link rel="stylesheet" href="style.css">
   <script src="ketnoi.js"></script>
   <script src="ke_hoach_cai_tien.js"></script>
+  <!-- Google Identity Services OAuth 2.0 SDK -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- Khối Quản lý Ma trận Phân quyền Hệ thống (Chuẩn đồng bộ PhanQuyenAdmin.js) -->
+  <script src="PhanQuyenAdmin.js"></script>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- Chart.js for visualization -->
@@ -142,7 +146,7 @@
           <i class="fa-solid fa-print"></i><span>Xuất Báo cáo Phụ lục V & IV</span>
         </button>
         <button onclick="showTab('settings')" id="nav-settings" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 whitespace-nowrap transition">
-          <i class="fa-solid fa-user-check"></i><span>Ma trận Phân quyền (Check & Sheet)</span>
+          <i class="fa-solid fa-shield-halved"></i><span>7. Ma trận Phân quyền Hệ thống</span>
         </button>
       </div>
     </nav>
@@ -769,40 +773,109 @@
           </div>
         </div>
 
-        <!-- BẢNG MA TRẬN PHÂN QUYỀN TƯƠNG TÁC CHECKBOX & ĐỒNG BỘ GOOGLE SHEET (MA_TRAN_PHAN_QUYEN) -->
-        <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
-          <div class="p-4 bg-slate-900 text-white flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+        <!-- KHỐI QUẢN LÝ MA TRẬN PHÂN QUYỀN HỆ THỐNG (CHUẨN ĐỒNG BỘ PhanQuyenAdmin.js & code_TKB_TP.gs) -->
+        <div id="khungPhanQuyen" class="border border-slate-300 rounded-2xl overflow-hidden bg-white shadow-sm flex flex-col font-sans">
+          
+          <!-- Header & Thanh công cụ 1-Click + Cấp quyền mới + Lưu Hệ Thống -->
+          <div class="p-4 bg-slate-900 text-white flex flex-col xl:flex-row justify-between items-start xl:items-center gap-3">
             <div>
-              <div class="flex items-center space-x-2">
-                <h3 class="font-extrabold text-sm flex items-center">
-                  <i class="fa-solid fa-table-cells-lock text-emerald-400 mr-2"></i>Bảng Check Ma trận Phân quyền 15 Tiêu chí & Đồng bộ Sheet (MA_TRAN_PHAN_QUYEN)
-                </h3>
-                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/40">Sheet + UI Check</span>
+              <div class="flex flex-wrap items-center gap-2">
+                <h2 class="text-base font-extrabold text-white uppercase tracking-wide flex items-center">
+                  <i class="fa-solid fa-user-shield text-emerald-400 mr-2"></i>MA TRẬN PHÂN QUYỀN HỆ THỐNG
+                </h2>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-mono font-bold bg-blue-500/20 text-blue-200 border border-blue-400/30">
+                  GOOGLE_CLIENT_ID: 1097384743947-1jdc5rhhmbu0s9jp5vgt814g4f4id7lu...
+                </span>
               </div>
-              <p class="text-[11px] text-slate-300 mt-1">
-                Đăng nhập quyền <strong>Hiệu trưởng (Admin)</strong> để tích chọn (<input type="checkbox" checked disabled class="rounded text-emerald-500">) phân công tiêu chí cho từng thành viên và đồng bộ 2 chiều với trang tính <code>MA_TRAN_PHAN_QUYEN</code> trên Google Sheets.
+              <p class="text-xs text-slate-300 font-medium mt-1">
+                Quản lý quyền <strong>15 Tiêu chí Kiểm định</strong>, <strong>Menu Hệ thống</strong>, <strong>Nút chức năng</strong> và chế độ <strong>* (Công khai toàn trường)</strong> trên Sheet <code>PHAN_QUYEN_ADMIN</code> & <code>CAI_DAT</code>
               </p>
             </div>
-            <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
-              <button onclick="openAddUserMatrixModal()" id="btn-add-matrix-user" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center shadow transition">
-                <i class="fa-solid fa-user-plus mr-1.5"></i>Thêm Cán bộ
+
+            <div class="flex flex-wrap items-center gap-2">
+              <!-- Nút 1-Click chuyển đổi công khai nhanh cho Menu Báo cáo & Kho Minh chứng -->
+              <button type="button" id="btnToggleCongKhai_BaoCao" onclick="chuyenDoiCongKhai1ClickUI('menu', 'menuReports', 'Menu 6. Xuất Báo cáo & KH Cải tiến')" class="px-3 py-1.5 text-xs font-bold rounded-lg shadow transition-colors flex items-center gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white" title="Bật/Tắt hiển thị công khai Menu Báo cáo & Kế hoạch cải tiến">
+                🌐 Báo cáo & KH: Đang nạp...
               </button>
-              <button onclick="saveAndSyncMatrixToSheet()" id="btn-save-matrix-sheet" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center shadow transition">
-                <i class="fa-solid fa-floppy-disk mr-1.5"></i>Lưu & Đồng bộ lên Sheet
+              <button type="button" id="btnToggleCongKhai_MinhChung" onclick="chuyenDoiCongKhai1ClickUI('menu', 'menuEvidence', 'Menu 4. Kho Minh chứng')" class="px-3 py-1.5 text-xs font-bold rounded-lg shadow transition-colors flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white" title="Bật/Tắt hiển thị công khai Kho Minh chứng">
+                🌐 Kho Minh chứng: Đang nạp...
               </button>
-              <button onclick="loadMatrixFromGoogleSheet()" class="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold text-xs flex items-center transition">
-                <i class="fa-solid fa-arrows-rotate mr-1.5"></i>Tải từ Sheet
+              <button type="button" onclick="taiDuLieuPhanQuyenTuMayChu()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold px-3 py-1.5 text-xs shadow transition duration-200 rounded-lg flex items-center gap-1.5">
+                <i class="fa-solid fa-arrows-rotate"></i> Tải lại
+              </button>
+              <button type="button" onclick="themDongPhanQuyenMoi()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-3 py-1.5 text-xs shadow transition duration-200 rounded-lg flex items-center gap-1.5">
+                <i class="fa-solid fa-plus"></i> + Cấp quyền mới
+              </button>
+              <button type="button" onclick="luuDuLieuPhanQuyenSangMayChu()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-1.5 text-xs shadow transition duration-200 rounded-lg flex items-center gap-1.5">
+                <i class="fa-solid fa-floppy-disk"></i> Lưu Hệ Thống
               </button>
             </div>
           </div>
 
           <!-- Banner trạng thái quyền chỉnh sửa Ma trận -->
           <div id="rbac-matrix-auth-banner" class="px-4 py-2.5 bg-amber-50 border-b border-amber-200 text-xs text-amber-900 flex items-center justify-between">
-            <!-- Rendered by JS -->
+            <!-- Rendered by PhanQuyenAdmin.js -->
           </div>
 
-          <div class="overflow-x-auto custom-scroll" id="rbac-matrix-table-container">
-            <!-- Rendered dynamically by JS with interactive checkboxes -->
+          <!-- Khung Quản lý Danh sách Tài khoản Quản trị Tối cao (DANH_SACH_QUAN_TRI - Cột E Sheet CAI_DAT) -->
+          <div class="px-4 py-3 bg-indigo-50/70 border-b border-indigo-200 flex flex-col lg:flex-row lg:items-center justify-between gap-3 text-xs">
+            <div class="space-y-1">
+              <div class="font-extrabold text-indigo-950 flex items-center gap-1.5">
+                <i class="fa-solid fa-crown text-amber-500"></i>
+                <span>Danh sách Email Quản trị Tối cao (<code>DANH_SACH_QUAN_TRI</code> - Cột E Sheet <code>CAI_DAT</code>):</span>
+              </div>
+              <div id="danh-sach-admin-badges" class="flex flex-wrap items-center gap-1.5 pt-0.5">
+                <!-- Rendered by PhanQuyenAdmin.js -->
+              </div>
+            </div>
+            <div class="flex items-center gap-2 flex-shrink-0">
+              <input type="email" id="input-them-admin-email" placeholder="Nhập email Google Admin mới..." class="border border-indigo-300 rounded-lg px-2.5 py-1.5 text-xs font-mono bg-white text-indigo-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 w-60">
+              <button type="button" onclick="themEmailQuanTriMoi()" class="px-3 py-1.5 bg-indigo-700 hover:bg-indigo-800 text-white font-bold rounded-lg text-xs shadow-sm whitespace-nowrap">
+                + Thêm Admin
+              </button>
+            </div>
+          </div>
+
+          <!-- Datalist gợi ý nhanh tài khoản khi nhập Cột 1 -->
+          <datalist id="goi-y-tai-khoan-pq">
+            <option value="* (Công khai)">🌐 Quyền Công khai toàn trường (Khách & GV chưa đăng nhập)</option>
+            <option value="tranthithu.pht@gmail.com">Cô Trần Thị Thu - Phó Hiệu trưởng</option>
+            <option value="lehoanglong.gv@gmail.com">Thầy Lê Hoàng Long - Tổ trưởng CM</option>
+            <option value="phamthimai.gv@gmail.com">Cô Phạm Thị Mai - Tổng phụ trách Đội</option>
+            <option value="dovanquan.csvc@gmail.com">Thầy Đỗ Văn Quân - Phụ trách CSVC</option>
+            <option value="kiemdinh.pgd@edu.vn">Đoàn Đánh giá ngoài - Phòng GD&ĐT</option>
+          </datalist>
+
+          <!-- Bảng Ma trận Phân quyền 5 Cột (Chuẩn PhanQuyenAdmin.js) -->
+          <div class="overflow-auto border-b border-gray-300 bg-white relative max-h-[560px] custom-scroll">
+            <table class="bang-excel w-full min-w-[1050px] text-left border-collapse">
+              <thead class="sticky top-0 z-20 bg-slate-200 text-slate-900 shadow-sm text-center text-xs font-extrabold border-b border-gray-400">
+                <tr>
+                  <th class="py-2.5 px-3 w-56">Tài khoản (Định danh / Email Google)</th>
+                  <th class="py-2.5 px-3 border-l border-gray-300">Quyền phụ trách & chấm 15 Tiêu chí (TT 57)</th>
+                  <th class="py-2.5 px-3 border-l border-gray-300 w-64">Phân quyền Menu</th>
+                  <th class="py-2.5 px-3 border-l border-gray-300 w-64">Phân quyền Nút chức năng</th>
+                  <th class="py-2.5 px-2 border-l border-gray-300 w-14 text-red-600">Xóa</th>
+                </tr>
+              </thead>
+              <tbody id="vungDuLieuPhanQuyen">
+                <tr><td colspan="5" class="text-center py-10 text-slate-500 font-bold">Vui lòng chờ, đang tải dữ liệu...</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Cấu hình URL API Máy chủ Google Apps Script trực tiếp trên UI -->
+          <div class="p-3 bg-slate-50 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs">
+            <div class="flex items-center gap-2 font-semibold text-slate-700">
+              <i class="fa-solid fa-link text-blue-600"></i>
+              <span>URL API Máy chủ (<code>URL_API_MAY_CHU</code> - Google Apps Script Web App):</span>
+            </div>
+            <div class="flex items-center gap-2 flex-grow max-w-xl">
+              <input type="url" id="ui-webapp-url-input" placeholder="Dán link https://script.google.com/macros/s/.../exec để đồng bộ trực tiếp Sheet" class="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 font-mono text-xs text-slate-800">
+              <button type="button" onclick="saveWebAppUrlFromUi(document.getElementById('ui-webapp-url-input').value)" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-lg whitespace-nowrap">
+                Lưu URL
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1183,17 +1256,17 @@
   </div>
 
 
-  <!-- 6. LOGIN AUTHENTICATION MODAL (XÁC ĐỊNH QUYỀN TRUY CẬP) -->
+  <!-- 6. LOGIN AUTHENTICATION MODAL (ĐĂNG NHẬP GOOGLE OAUTH 2.0 & MA TRẬN PHÂN QUYỀN) -->
   <div id="login-modal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
-      <div class="p-4 bg-gradient-to-r from-indigo-800 to-slate-900 text-white flex items-center justify-between">
+      <div class="p-4 bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 text-white flex items-center justify-between">
         <div class="flex items-center space-x-2.5">
-          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 font-bold">
-            <i class="fa-solid fa-user-lock"></i>
+          <div class="w-9 h-9 rounded-xl bg-white/15 border border-white/30 flex items-center justify-center text-white font-bold">
+            <i class="fa-brands fa-google text-lg"></i>
           </div>
           <div>
-            <h3 class="font-extrabold text-sm">Đăng nhập Xác định Quyền Hội đồng TĐG</h3>
-            <p class="text-[11px] text-slate-300">Nếu không đăng nhập, hệ thống ở chế độ <strong>Chỉ xem</strong></p>
+            <h3 class="font-extrabold text-sm">Đăng nhập Google Xác thực Phân quyền</h3>
+            <p class="text-[11px] text-blue-200">Nếu không đăng nhập, chỉ hiển thị theo quyền <strong>* (Công khai)</strong></p>
           </div>
         </div>
         <button onclick="closeLoginModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
@@ -1201,38 +1274,53 @@
         </button>
       </div>
 
-      <form onsubmit="handleLoginSubmit(event)" class="p-5 space-y-4 text-xs">
-        <div>
-          <label class="block font-bold text-slate-700 mb-1">Chọn Tài khoản hoặc Nhập Email Google:</label>
-          <select id="login-user-select" onchange="fillLoginEmailFromSelect(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-semibold text-slate-800 mb-2">
-            <!-- Populated dynamically -->
-          </select>
-          <input type="email" id="login-email-input" required placeholder="Nhập email Google (VD: nguyenvannam.hieu_truong@gmail.com)" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 font-mono text-indigo-700 font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
-        </div>
-
-        <div>
-          <div class="flex items-center justify-between mb-1">
-            <label class="font-bold text-slate-700">Mã PIN / Mật khẩu phân quyền:</label>
-            <span class="text-[10px] text-slate-500">Mặc định: <code class="font-bold text-indigo-600">123456</code></span>
+      <div class="p-5 space-y-4 text-xs">
+        <!-- Khối 1: Nút Đăng nhập Google Chính thức (Google Identity Services OAuth 2.0) -->
+        <div class="p-3.5 bg-blue-50/70 border border-blue-200 rounded-2xl text-center space-y-2.5">
+          <div class="font-extrabold text-blue-950 text-xs flex items-center justify-center gap-1.5">
+            <i class="fa-brands fa-google text-blue-600"></i>
+            <span>Đăng nhập bằng Tài khoản Google (OAuth 2.0)</span>
           </div>
-          <input type="password" id="login-pin-input" value="123456" required placeholder="Nhập mã PIN (Mặc định: 123456)" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 font-mono font-bold tracking-widest focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          <div id="google-signin-btn-wrapper" class="flex justify-center min-h-[42px] items-center">
+            <span class="text-[11px] text-slate-500">Đang khởi tạo nút Google Sign-In...</span>
+          </div>
+          <div class="text-[10px] font-mono text-slate-500 truncate px-2" title="Google OAuth Client ID đã cấu hình">
+            Client ID: <span id="display-google-client-id" class="font-bold text-indigo-700">1097384743947-1jdc5rhhmbu0s9jp5vgt814g4f4id7lu.apps.googleusercontent.com</span>
+          </div>
         </div>
 
-        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1">
-          <div class="font-bold text-slate-800"><i class="fa-solid fa-shield-halved text-indigo-600 mr-1"></i>Cơ chế Phân quyền Tự động:</div>
-          <div>• Sau khi đăng nhập, hệ thống đối chiếu Email với <strong>Ma trận Phân quyền (Sheet <code>MA_TRAN_PHAN_QUYEN</code>)</strong>.</div>
-          <div>• Bạn chỉ có thể sửa các tiêu chí được tích chọn (<input type="checkbox" checked disabled>); các tiêu chí khác tự động khóa <strong>Chỉ xem</strong>.</div>
+        <div class="relative flex py-0.5 items-center">
+          <div class="flex-grow border-t border-slate-200"></div>
+          <span class="flex-shrink mx-3 text-[10px] font-bold text-slate-400 uppercase">Hoặc chọn / nhập Email định danh trong Ma trận</span>
+          <div class="flex-grow border-t border-slate-200"></div>
         </div>
 
-        <div class="pt-2 flex items-center justify-between gap-2">
-          <button type="button" onclick="logoutUser(); closeLoginModal();" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold">
-            Tiếp tục Chỉ xem (Khách)
-          </button>
-          <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md shadow-indigo-500/20 flex items-center">
-            <i class="fa-solid fa-right-to-bracket mr-1.5"></i>Xác thực & Đăng nhập
-          </button>
-        </div>
-      </form>
+        <!-- Khối 2: Chọn nhanh hoặc nhập Email định danh (Hỗ trợ kiểm thử mọi tài khoản trong PHAN_QUYEN_ADMIN & CAI_DAT) -->
+        <form onsubmit="handleLoginSubmit(event)" class="space-y-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Chọn nhanh tài khoản mẫu hoặc nhập Email Google:</label>
+            <select id="login-user-select" onchange="fillLoginEmailFromSelect(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-semibold text-slate-800 mb-2">
+              <!-- Populated dynamically -->
+            </select>
+            <input type="text" id="login-email-input" required placeholder="Nhập Email Google (VD: nguyenvannam.hieu_truong@gmail.com)" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 font-mono text-indigo-700 font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+          </div>
+
+          <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1">
+            <div class="font-bold text-slate-800"><i class="fa-solid fa-shield-halved text-indigo-600 mr-1"></i>Nguyên tắc đối chiếu Phân quyền Hệ thống:</div>
+            <div>• <strong>Quản trị tối cao (Admin):</strong> Email nằm trong <code>DANH_SACH_QUAN_TRI</code> (Cột E Sheet <code>CAI_DAT</code>) có toàn quyền sửa 15 tiêu chí & cấu hình Ma trận.</div>
+            <div>• <strong>Cán bộ / Giáo viên:</strong> Đối chiếu Email trong Sheet <code>PHAN_QUYEN_ADMIN</code> để mở đúng các <strong>Tiêu chí</strong>, <strong>Menu</strong> và <strong>Nút chức năng</strong> được tích chọn (<input type="checkbox" checked disabled>).</div>
+          </div>
+
+          <div class="pt-1 flex items-center justify-between gap-2">
+            <button type="button" onclick="logoutUser(); closeLoginModal();" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold">
+              Chế độ Khách (* Công khai)
+            </button>
+            <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md shadow-indigo-500/20 flex items-center">
+              <i class="fa-solid fa-right-to-bracket mr-1.5"></i>Xác thực Định danh
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
 
@@ -1445,6 +1533,19 @@
         } catch(e) {}
       }
 
+      const savedEmail = sessionStorage.getItem('qa_edusys_logged_email');
+      if (savedEmail && typeof window.dangNhapBangEmailDinhDanh === "function") {
+        const savedUserJson = sessionStorage.getItem('qa_edusys_logged_user_json');
+        let parsedU = null;
+        try { parsedU = JSON.parse(savedUserJson); } catch(e) {}
+        window.emailGiaoVienToanCuc = savedEmail;
+        window.dinhDanhGiaoVienToanCuc = savedEmail;
+        if (parsedU) {
+          appState.isLoggedIn = true;
+          appState.currentUser = parsedU;
+        }
+        if (typeof apDungQuyenTheoTaiKhoanHienTai === "function") apDungQuyenTheoTaiKhoanHienTai();
+      }
       const savedAuthId = sessionStorage.getItem('qa_edusys_logged_user_id');
       if (savedAuthId) {
         const found = appState.usersMatrix.find(u => u.id === savedAuthId);
@@ -1523,6 +1624,7 @@
         emailInput.value = defaultU ? defaultU.googleEmail : '';
       }
       document.getElementById('login-modal').classList.remove('hidden');
+      if (typeof khoiTaoGoogleSignInButton === "function") setTimeout(khoiTaoGoogleSignInButton, 50);
     }
 
     function closeLoginModal() {
@@ -1539,41 +1641,35 @@
 
     function handleLoginSubmit(e) {
       e.preventDefault();
-      const email = (document.getElementById('login-email-input')?.value || '').trim().toLowerCase();
-      const pin = (document.getElementById('login-pin-input')?.value || '').trim();
-      const users = appState.usersMatrix || [];
-      const target = users.find(u => (u.googleEmail || '').toLowerCase() === email);
-
-      if (!target) {
-        alert('Không tìm thấy Email này trong Ma trận Phân quyền! Vui lòng kiểm tra lại hoặc liên hệ Hiệu trưởng.');
+      const email = (document.getElementById("login-email-input")?.value || "").trim().toLowerCase();
+      if (!email) {
+        alert("Vui lòng nhập Email Google hoặc mã định danh!");
         return;
       }
-      const expectedPin = String(target.maPin || '123456').trim();
-      if (pin !== expectedPin) {
-        alert('Mã PIN không chính xác! (Mặc định thử nghiệm là 123456)');
-        return;
+      const existing = (appState.usersMatrix || []).find(u => (u.googleEmail || "").toLowerCase() === email || (u.id || "").toLowerCase() === email);
+      if (typeof window.dangNhapBangEmailDinhDanh === "function") {
+        window.dangNhapBangEmailDinhDanh(email, existing ? existing.hoTen : "", "", "Định danh Ma trận");
       }
-
-      appState.isLoggedIn = true;
-      appState.currentUser = target;
-      sessionStorage.setItem('qa_edusys_logged_user_id', target.id);
-      updateActiveUserDisplay();
-      closeLoginModal();
-      addAuditEntry('Đăng nhập xác thực', `${target.hoTen} (${target.googleEmail}) đã đăng nhập với quyền [${target.roleType}]`);
-      saveState();
-      renderAll();
-      showToast(`Xin chào ${target.hoTen}! Đã mở khóa các tiêu chí theo Ma trận Phân quyền.`, 'success');
     }
 
     function logoutUser() {
-      const oldName = appState.currentUser?.hoTen || 'Người dùng';
+      const oldName = appState.currentUser?.hoTen || "Người dùng";
       appState.isLoggedIn = false;
       appState.currentUser = GUEST_VIEWER_USER;
-      sessionStorage.removeItem('qa_edusys_logged_user_id');
+      window.emailGiaoVienToanCuc = "";
+      window.dinhDanhGiaoVienToanCuc = "";
+      window.quyenSuaChua = false;
+      window.quyenChiTiet = { lop: [], nut: [], menu: [] };
+      sessionStorage.removeItem("qa_edusys_logged_user_id");
+      sessionStorage.removeItem("qa_edusys_logged_email");
+      sessionStorage.removeItem("qa_edusys_logged_user_json");
       updateActiveUserDisplay();
-      addAuditEntry('Đăng xuất', `${oldName} đã đăng xuất. Hệ thống chuyển về chế độ Chỉ xem.`);
+      if (typeof apDungQuyenTheoTaiKhoanHienTai === "function") apDungQuyenTheoTaiKhoanHienTai();
+      if (typeof hienThiBangPhanQuyen === "function") hienThiBangPhanQuyen();
+      if (typeof hienThiDanhSachQuanTriUI === "function") hienThiDanhSachQuanTriUI();
+      addAuditEntry("Đăng xuất", `${oldName} đã đăng xuất. Hệ thống chuyển về chế độ Chỉ xem (* Công khai).`);
       renderAll();
-      showToast('Đã đăng xuất! Hệ thống đang ở chế độ Chỉ xem.', 'info');
+      showToast("Đã đăng xuất! Hệ thống đang ở chế độ Chỉ xem (* Công khai).", "info");
     }
 
     function loadState(pushAudit = true) {
@@ -1731,18 +1827,22 @@
 
     // Kiểm tra quyền chỉnh sửa: Nếu CHƯA ĐĂNG NHẬP -> Chỉ xem 100%!
     function canUserEditCriterion(criterionId) {
+      if (typeof window.coQuyenSuaTieuChiMaTran === "function") {
+        if (window.quyenSuaChua || window.coQuyenSuaTieuChiMaTran(criterionId)) return true;
+      }
       if (!appState.isLoggedIn) return false;
       const u = appState.currentUser;
-      if (!u || u.roleType === 'guest' || u.roleType === 'viewer') return false;
-      if (u.roleType === 'admin') return true;
+      if (!u || u.roleType === "guest" || u.roleType === "viewer") return false;
+      if (u.roleType === "admin") return true;
       const allowed = u.tieuChiDuocSua;
       if (!allowed || !Array.isArray(allowed)) return false;
-      if (allowed.includes('ALL')) return true;
+      if (allowed.includes("ALL")) return true;
       return allowed.includes(String(criterionId));
     }
 
     function isCurrentUserAdmin() {
-      return appState.isLoggedIn && appState.currentUser && appState.currentUser.roleType === 'admin';
+      if (typeof window.quyenSuaChua !== "undefined" && window.quyenSuaChua) return true;
+      return appState.isLoggedIn && appState.currentUser && appState.currentUser.roleType === "admin";
     }
 
     // Lấy danh sách tên người phụ trách chính của 1 tiêu chí từ Ma trận
@@ -1945,6 +2045,21 @@
         }
       });
 
+      // Đồng bộ thẳng vào bảng duLieuBangPhanQuyen của PhanQuyenAdmin.js
+      if (Array.isArray(duLieuBangPhanQuyen)) {
+        (appState.usersMatrix || []).forEach(u => {
+          if (!u.googleEmail || u.roleType === "admin") return;
+          let row = duLieuBangPhanQuyen.find(r => String(r[0] || "").trim().toLowerCase() === u.googleEmail.toLowerCase());
+          if (row) {
+            row[1] = (u.tieuChiDuocSua || []).join(", ");
+          } else if (Array.isArray(u.tieuChiDuocSua) && u.tieuChiDuocSua.length > 0) {
+            duLieuBangPhanQuyen.push([u.googleEmail, u.tieuChiDuocSua.join(", "), "btnChamTieuChi, btnThemMinhChung", "menuDashboard, menuTimeline, menuCriteria, menuEvidence, menuReports"]);
+          }
+        });
+        localStorage.setItem(layKhoaCachLy("PHAN_QUYEN_ADMIN"), JSON.stringify(duLieuBangPhanQuyen));
+        dongBoMaTranTuBang2D(duLieuBangPhanQuyen);
+        hienThiBangPhanQuyen();
+      }
       closeQuickAssignModal();
       saveAndSyncMatrixToSheet();
       renderAll();
