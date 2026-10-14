@@ -33,6 +33,7 @@ const CAUHINH_KETNOI = {
   DANH_SACH_NGUOI_DUNG: [
     {
       id: "nam",
+      maPin: "123456",
       hoTen: "Thầy Nguyễn Văn Nam",
       chucVu: "Hiệu trưởng",
       vaiTroHoiDong: "Chủ tịch Hội đồng TĐG",
@@ -45,6 +46,7 @@ const CAUHINH_KETNOI = {
     },
     {
       id: "thu",
+      maPin: "123456",
       hoTen: "Cô Trần Thị Thu",
       chucVu: "Phó Hiệu trưởng",
       vaiTroHoiDong: "Phó Chủ tịch / Thư ký HĐ",
@@ -57,6 +59,7 @@ const CAUHINH_KETNOI = {
     },
     {
       id: "long",
+      maPin: "123456",
       hoTen: "Thầy Lê Hoàng Long",
       chucVu: "Tổ trưởng Chuyên môn",
       vaiTroHoiDong: "Ủy viên - Nhóm Chuyên môn",
@@ -69,6 +72,7 @@ const CAUHINH_KETNOI = {
     },
     {
       id: "mai",
+      maPin: "123456",
       hoTen: "Cô Phạm Thị Mai",
       chucVu: "Tổng phụ trách Đội / Tư vấn",
       vaiTroHoiDong: "Ủy viên - Nhóm Phong trào & An toàn",
@@ -81,6 +85,7 @@ const CAUHINH_KETNOI = {
     },
     {
       id: "quan",
+      maPin: "123456",
       hoTen: "Thầy Đỗ Văn Quân",
       chucVu: "Phụ trách CSVC / Thư viện - Thiết bị",
       vaiTroHoiDong: "Ủy viên - Nhóm CSVC",
@@ -93,6 +98,7 @@ const CAUHINH_KETNOI = {
     },
     {
       id: "doankiemtra",
+      maPin: "123456",
       hoTen: "Đoàn Đánh giá ngoài / Giám sát",
       chucVu: "Cán bộ Thẩm định / Thanh tra",
       vaiTroHoiDong: "Quan sát viên / Đánh giá ngoài",
@@ -108,7 +114,7 @@ const CAUHINH_KETNOI = {
   // 3. ĐƯỜNG DẪN KẾT NỐI HẠ TẦNG SỐ (URL ENDPOINTS & DRIVE CLOUD)
   KET_NOI_HA_TANG: {
     GOOGLE_WEB_APP_URL: "", 
-    GOOGLE_DRIVE_FOLDER_URL: "14SLCUGa1Rke-DxRRnTLvCNxE-fii4807",
+    GOOGLE_DRIVE_FOLDER_URL: "https://drive.google.com/drive/folders/YOUR_EVIDENCE_FOLDER_ID",
     CSDL_NGANH_URL: "https://csdl.moet.gov.vn",
     TEMIS_URL: "https://temis.csdl.edu.vn"
   },
