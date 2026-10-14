@@ -79,22 +79,25 @@
             <span id="presence-count-text">Trực tuyến</span>
           </div>
 
-          <!-- Active User Switcher (Dynamic from ketnoi.js) -->
-          <div class="relative group">
-            <div class="flex items-center bg-slate-800/90 border border-slate-700 hover:border-indigo-400 rounded-xl px-2.5 py-1.5 cursor-pointer transition-all">
-              <div class="w-7 h-7 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs font-bold mr-2" id="user-avatar">
-                N
+          <!-- Auth Status & Prominent Login / Logout Button -->
+          <div class="flex items-center space-x-2">
+            <div onclick="openLoginModal()" class="flex items-center bg-slate-800/90 border border-slate-700 hover:border-indigo-400 rounded-xl px-2.5 py-1.5 cursor-pointer transition-all" title="Nhấp để Đăng nhập hoặc Đổi tài khoản">
+              <div class="w-7 h-7 rounded-lg bg-slate-600 flex items-center justify-center text-white text-xs font-bold mr-2" id="user-avatar">
+                <i class="fa-solid fa-eye text-[11px]"></i>
               </div>
               <div class="text-left hidden sm:block">
-                <div class="text-xs font-bold leading-tight" id="user-name">Đang tải...</div>
-                <div class="text-[10px] text-indigo-300 truncate max-w-[150px]" id="user-role-badge">Tài khoản</div>
+                <div class="text-xs font-bold leading-tight text-slate-200" id="user-name">Khách (Chưa đăng nhập)</div>
+                <div class="text-[10px] text-amber-300 truncate max-w-[155px]" id="user-role-badge">👁️ Chế độ Chỉ xem</div>
               </div>
-              <i class="fa-solid fa-chevron-down text-slate-400 text-xs ml-2"></i>
             </div>
-            <!-- Dynamic User Dropdown Menu from ketnoi.js -->
-            <div class="absolute right-0 mt-2 w-72 bg-slate-900 border border-slate-700 rounded-xl shadow-2xl p-2 hidden group-hover:block z-50 text-xs" id="user-dropdown-menu">
-              <!-- Rendered dynamically by JS from ketnoi.js -->
-            </div>
+
+            <button id="btn-auth-login" onclick="openLoginModal()" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md shadow-emerald-600/30 flex items-center transition whitespace-nowrap">
+              <i class="fa-solid fa-right-to-bracket mr-1.5"></i><span>Đăng nhập</span>
+            </button>
+
+            <button id="btn-auth-logout" onclick="logoutUser()" class="hidden px-2.5 py-1.5 rounded-xl bg-rose-600/90 hover:bg-rose-600 text-white font-bold text-xs shadow-md flex items-center transition whitespace-nowrap" title="Đăng xuất về chế độ Chỉ xem">
+              <i class="fa-solid fa-right-from-bracket mr-1"></i><span class="hidden md:inline">Đăng xuất</span>
+            </button>
           </div>
 
           <!-- Quick Tools (Trash, Audit, Conflict Demo) -->
@@ -139,7 +142,7 @@
           <i class="fa-solid fa-print"></i><span>Xuất Báo cáo Phụ lục V & IV</span>
         </button>
         <button onclick="showTab('settings')" id="nav-settings" class="tab-btn px-3 py-1.5 rounded-lg text-xs font-medium flex items-center space-x-1.5 whitespace-nowrap transition">
-          <i class="fa-solid fa-sliders"></i><span>Cài đặt & Triển khai</span>
+          <i class="fa-solid fa-user-check"></i><span>Ma trận Phân quyền (Check & Sheet)</span>
         </button>
       </div>
     </nav>
@@ -766,25 +769,40 @@
           </div>
         </div>
 
-        <!-- BẢNG MA TRẬN PHÂN QUYỀN THEO TIÊU CHÍ (CRITERION-LEVEL RBAC MATRIX) -->
+        <!-- BẢNG MA TRẬN PHÂN QUYỀN TƯƠNG TÁC CHECKBOX & ĐỒNG BỘ GOOGLE SHEET (MA_TRAN_PHAN_QUYEN) -->
         <div class="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
-          <div class="p-4 bg-slate-800 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div class="p-4 bg-slate-900 text-white flex flex-col lg:flex-row lg:items-center justify-between gap-3">
             <div>
-              <h3 class="font-bold text-sm flex items-center">
-                <i class="fa-solid fa-user-shield text-amber-400 mr-2"></i>Ma trận Phân quyền Tương tác theo 15 Tiêu chí (Mỗi người một việc)
-              </h3>
-              <p class="text-[11px] text-slate-300 mt-0.5">
-                Kiểm soát chặt chẽ: Cán bộ chỉ được sửa và nộp minh chứng ở tiêu chí được giao; các tiêu chí khác tự động khóa ở chế độ <strong>Chỉ xem</strong>.
+              <div class="flex items-center space-x-2">
+                <h3 class="font-extrabold text-sm flex items-center">
+                  <i class="fa-solid fa-table-cells-lock text-emerald-400 mr-2"></i>Bảng Check Ma trận Phân quyền 15 Tiêu chí & Đồng bộ Sheet (MA_TRAN_PHAN_QUYEN)
+                </h3>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/30 text-indigo-200 border border-indigo-400/40">Sheet + UI Check</span>
+              </div>
+              <p class="text-[11px] text-slate-300 mt-1">
+                Đăng nhập quyền <strong>Hiệu trưởng (Admin)</strong> để tích chọn (<input type="checkbox" checked disabled class="rounded text-emerald-500">) phân công tiêu chí cho từng thành viên và đồng bộ 2 chiều với trang tính <code>MA_TRAN_PHAN_QUYEN</code> trên Google Sheets.
               </p>
             </div>
-            <div class="flex items-center space-x-2 text-[11px] flex-shrink-0">
-              <span class="px-2 py-0.5 rounded bg-indigo-500/30 border border-indigo-400 text-indigo-200 font-bold">👑 Toàn quyền</span>
-              <span class="px-2 py-0.5 rounded bg-emerald-500/30 border border-emerald-400 text-emerald-200 font-bold">✏️ Được sửa</span>
-              <span class="px-2 py-0.5 rounded bg-slate-700 border border-slate-600 text-slate-300 font-medium">👁️ Chỉ xem</span>
+            <div class="flex flex-wrap items-center gap-2 flex-shrink-0">
+              <button onclick="openAddUserMatrixModal()" id="btn-add-matrix-user" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center shadow transition">
+                <i class="fa-solid fa-user-plus mr-1.5"></i>Thêm Cán bộ
+              </button>
+              <button onclick="saveAndSyncMatrixToSheet()" id="btn-save-matrix-sheet" class="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center shadow transition">
+                <i class="fa-solid fa-floppy-disk mr-1.5"></i>Lưu & Đồng bộ lên Sheet
+              </button>
+              <button onclick="loadMatrixFromGoogleSheet()" class="px-3 py-1.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-100 font-semibold text-xs flex items-center transition">
+                <i class="fa-solid fa-arrows-rotate mr-1.5"></i>Tải từ Sheet
+              </button>
             </div>
           </div>
+
+          <!-- Banner trạng thái quyền chỉnh sửa Ma trận -->
+          <div id="rbac-matrix-auth-banner" class="px-4 py-2.5 bg-amber-50 border-b border-amber-200 text-xs text-amber-900 flex items-center justify-between">
+            <!-- Rendered by JS -->
+          </div>
+
           <div class="overflow-x-auto custom-scroll" id="rbac-matrix-table-container">
-            <!-- Rendered dynamically by JS -->
+            <!-- Rendered dynamically by JS with interactive checkboxes -->
           </div>
         </div>
 
@@ -1164,6 +1182,109 @@
     </div>
   </div>
 
+
+  <!-- 6. LOGIN AUTHENTICATION MODAL (XÁC ĐỊNH QUYỀN TRUY CẬP) -->
+  <div id="login-modal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-md w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-4 bg-gradient-to-r from-indigo-800 to-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center space-x-2.5">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300 font-bold">
+            <i class="fa-solid fa-user-lock"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-sm">Đăng nhập Xác định Quyền Hội đồng TĐG</h3>
+            <p class="text-[11px] text-slate-300">Nếu không đăng nhập, hệ thống ở chế độ <strong>Chỉ xem</strong></p>
+          </div>
+        </div>
+        <button onclick="closeLoginModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleLoginSubmit(event)" class="p-5 space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Chọn Tài khoản hoặc Nhập Email Google:</label>
+          <select id="login-user-select" onchange="fillLoginEmailFromSelect(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 font-semibold text-slate-800 mb-2">
+            <!-- Populated dynamically -->
+          </select>
+          <input type="email" id="login-email-input" required placeholder="Nhập email Google (VD: nguyenvannam.hieu_truong@gmail.com)" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 font-mono text-indigo-700 font-bold focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-1">
+            <label class="font-bold text-slate-700">Mã PIN / Mật khẩu phân quyền:</label>
+            <span class="text-[10px] text-slate-500">Mặc định: <code class="font-bold text-indigo-600">123456</code></span>
+          </div>
+          <input type="password" id="login-pin-input" value="123456" required placeholder="Nhập mã PIN (Mặc định: 123456)" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 font-mono font-bold tracking-widest focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+        </div>
+
+        <div class="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-600 space-y-1">
+          <div class="font-bold text-slate-800"><i class="fa-solid fa-shield-halved text-indigo-600 mr-1"></i>Cơ chế Phân quyền Tự động:</div>
+          <div>• Sau khi đăng nhập, hệ thống đối chiếu Email với <strong>Ma trận Phân quyền (Sheet <code>MA_TRAN_PHAN_QUYEN</code>)</strong>.</div>
+          <div>• Bạn chỉ có thể sửa các tiêu chí được tích chọn (<input type="checkbox" checked disabled>); các tiêu chí khác tự động khóa <strong>Chỉ xem</strong>.</div>
+        </div>
+
+        <div class="pt-2 flex items-center justify-between gap-2">
+          <button type="button" onclick="logoutUser(); closeLoginModal();" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold">
+            Tiếp tục Chỉ xem (Khách)
+          </button>
+          <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md shadow-indigo-500/20 flex items-center">
+            <i class="fa-solid fa-right-to-bracket mr-1.5"></i>Xác thực & Đăng nhập
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. ADD NEW USER TO RBAC MATRIX MODAL -->
+  <div id="add-user-matrix-modal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-4 bg-slate-800 text-white flex items-center justify-between">
+        <h3 class="font-bold text-sm flex items-center">
+          <i class="fa-solid fa-user-plus text-emerald-400 mr-2"></i>Thêm Cán bộ / Giáo viên vào Ma trận Phân quyền
+        </h3>
+        <button onclick="closeAddUserMatrixModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <form onsubmit="saveNewUserToMatrix(event)" class="p-5 space-y-3 text-xs">
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Họ và tên cán bộ:</label>
+            <input type="text" id="new-user-name" required placeholder="VD: Cô Nguyễn Thị Lan" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-semibold">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Chức vụ / Bộ phận:</label>
+            <input type="text" id="new-user-title" required placeholder="VD: Tổ trưởng Tổ 1-2-3" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2">
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Email Google đăng nhập:</label>
+            <input type="email" id="new-user-email" required placeholder="lan.gv@gmail.com" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">Mã PIN đăng nhập:</label>
+            <input type="text" id="new-user-pin" value="123456" required class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-mono font-bold">
+          </div>
+        </div>
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Nhóm quyền trong Hội đồng:</label>
+          <select id="new-user-role" class="w-full bg-slate-50 border border-slate-300 rounded-lg p-2 font-bold text-indigo-700">
+            <option value="editor">Ủy viên Biên tập (Chỉ sửa các tiêu chí được Check)</option>
+            <option value="reviewer">Phó Chủ tịch / Thư ký HĐ (Thẩm định & Sửa tiêu chí được Check)</option>
+            <option value="admin">Hiệu trưởng / Chủ tịch HĐ (Toàn quyền 15 tiêu chí & Phê duyệt)</option>
+            <option value="viewer">Quan sát viên / Đánh giá ngoài (Chỉ xem 100%)</option>
+          </select>
+        </div>
+        <div class="pt-3 border-t border-slate-200 flex justify-end space-x-2">
+          <button type="button" onclick="closeAddUserMatrixModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold">Hủy</button>
+          <button type="submit" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow">Thêm vào Bảng Check</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <!-- ================= EMBEDDED JAVASCRIPT LOGIC ================= -->
   <script>
     // Master Injected Data from Circular 57
@@ -1194,10 +1315,25 @@
       }
     };
 
-    // Khởi tạo trạng thái ứng dụng (Application State)
+    // Tài khoản Khách mặc định khi chưa đăng nhập (CHỈ ĐƯỢC XEM 100%)
+    const GUEST_VIEWER_USER = {
+      id: 'guest',
+      hoTen: 'Khách (Chưa đăng nhập)',
+      chucVu: 'Chế độ Chỉ xem',
+      vaiTroHoiDong: 'Chỉ xem hồ sơ & minh chứng',
+      roleType: 'guest',
+      googleEmail: '',
+      tieuChiDuocSua: [],
+      initial: 'K',
+      avatarColor: 'bg-slate-600'
+    };
+
+    // Khởi tạo trạng thái ứng dụng (Mặc định chưa đăng nhập -> Chỉ xem)
     let appState = {
       workspace: KETNOI.THONG_TIN_TRUONG.CAP_HOC_MAC_DINH || 'TIEU_HOC',
-      currentUser: KETNOI.DANH_SACH_NGUOI_DUNG[0],
+      isLoggedIn: false,
+      currentUser: GUEST_VIEWER_USER,
+      usersMatrix: JSON.parse(JSON.stringify(KETNOI.DANH_SACH_NGUOI_DUNG || [])),
       currentMonth: 10,
       currentStageFilter: 'all',
       currentStdFilter: 'all',
@@ -1256,51 +1392,146 @@
     }
 
     function initUserDropdown() {
-      const menu = document.getElementById('user-dropdown-menu');
-      if (!menu) return;
+      // Khôi phục Ma trận phân quyền đã lưu và phiên đăng nhập (nếu có)
+      const savedMatrix = localStorage.getItem('qa_edusys_users_matrix');
+      if (savedMatrix) {
+        try {
+          const parsedM = JSON.parse(savedMatrix);
+          if (Array.isArray(parsedM) && parsedM.length > 0) {
+            appState.usersMatrix = parsedM;
+          }
+        } catch(e) {}
+      }
 
-      const users = KETNOI.DANH_SACH_NGUOI_DUNG || [];
-      menu.innerHTML = `
-        <div class="p-2 border-b border-slate-800 text-[11px] text-slate-400 font-semibold uppercase tracking-wider">
-          Danh Sách Cán Bộ & Email Google (ketnoi.js)
-        </div>
-        ${users.map(u => `
-          <button onclick="switchUser('${u.id}')" class="w-full text-left p-2 rounded-lg hover:bg-slate-800 flex items-center space-x-2 text-white">
-            <span class="w-6 h-6 rounded ${u.avatarColor || 'bg-indigo-600'} text-center leading-6 font-bold flex-shrink-0">${u.initial}</span>
-            <div class="truncate">
-              <div class="font-bold truncate">${u.hoTen}</div>
-              <div class="text-[10px] text-slate-400 truncate">${u.chucVu} • <span class="text-indigo-400">${u.googleEmail}</span></div>
-            </div>
-          </button>
-        `).join('')}
-      `;
+      const savedAuthId = sessionStorage.getItem('qa_edusys_logged_user_id');
+      if (savedAuthId) {
+        const found = appState.usersMatrix.find(u => u.id === savedAuthId);
+        if (found) {
+          appState.isLoggedIn = true;
+          appState.currentUser = found;
+        }
+      }
+
+      // Nếu chạy trên Google Apps Script, tự động đồng bộ Sheet MA_TRAN_PHAN_QUYEN về
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        google.script.run.withSuccessHandler(res => {
+          if (res && res.success && Array.isArray(res.users) && res.users.length > 0) {
+            appState.usersMatrix = res.users;
+            localStorage.setItem('qa_edusys_users_matrix', JSON.stringify(res.users));
+            if (appState.isLoggedIn) {
+              const updatedMe = res.users.find(u => u.id === appState.currentUser.id || u.googleEmail === appState.currentUser.googleEmail);
+              if (updatedMe) appState.currentUser = updatedMe;
+            }
+            renderAll();
+          }
+        }).apiLayMaTranPhanQuyenSheet(appState.usersMatrix);
+      }
 
       updateActiveUserDisplay();
     }
 
     function updateActiveUserDisplay() {
-      const u = appState.currentUser;
+      const u = appState.currentUser || GUEST_VIEWER_USER;
       const nameEl = document.getElementById('user-name');
       const roleEl = document.getElementById('user-role-badge');
       const avatarEl = document.getElementById('user-avatar');
+      const btnLogin = document.getElementById('btn-auth-login');
+      const btnLogout = document.getElementById('btn-auth-logout');
 
-      if (nameEl) nameEl.innerText = u.hoTen;
-      if (roleEl) roleEl.innerText = `${u.chucVu} (${u.vaiTroHoiDong})`;
-      if (avatarEl) {
-        avatarEl.innerText = u.initial;
-        avatarEl.className = `w-7 h-7 rounded-lg ${u.avatarColor || 'bg-indigo-600'} flex items-center justify-center text-white text-xs font-bold mr-2`;
+      if (!appState.isLoggedIn || u.roleType === 'guest') {
+        if (nameEl) nameEl.innerText = 'Khách (Chưa đăng nhập)';
+        if (roleEl) {
+          roleEl.innerText = '👁️ Chỉ xem (Bấm Đăng nhập để sửa)';
+          roleEl.className = 'text-[10px] text-amber-300 truncate max-w-[165px] font-semibold';
+        }
+        if (avatarEl) {
+          avatarEl.innerHTML = '<i class="fa-solid fa-eye text-[11px]"></i>';
+          avatarEl.className = 'w-7 h-7 rounded-lg bg-slate-600 flex items-center justify-center text-white text-xs font-bold mr-2';
+        }
+        if (btnLogin) btnLogin.classList.remove('hidden');
+        if (btnLogout) btnLogout.classList.add('hidden');
+      } else {
+        if (nameEl) nameEl.innerText = u.hoTen;
+        const tcCount = (u.roleType === 'admin' || (u.tieuChiDuocSua && u.tieuChiDuocSua.includes('ALL')))
+                        ? 'Toàn bộ 15 TC'
+                        : (u.roleType === 'viewer' ? 'Chỉ xem' : `Sửa ${(u.tieuChiDuocSua || []).length} TC`);
+        if (roleEl) {
+          roleEl.innerText = `${u.chucVu} • ${tcCount}`;
+          roleEl.className = 'text-[10px] text-emerald-300 truncate max-w-[165px] font-semibold';
+        }
+        if (avatarEl) {
+          avatarEl.innerText = u.initial || 'U';
+          avatarEl.className = `w-7 h-7 rounded-lg ${u.avatarColor || 'bg-indigo-600'} flex items-center justify-center text-white text-xs font-bold mr-2`;
+        }
+        if (btnLogin) btnLogin.classList.add('hidden');
+        if (btnLogout) btnLogout.classList.remove('hidden');
       }
     }
 
-    function switchUser(userId) {
-      const target = KETNOI.DANH_SACH_NGUOI_DUNG.find(u => u.id === userId);
-      if (target) {
-        appState.currentUser = target;
-        updateActiveUserDisplay();
-        showToast(`Đã chuyển sang tài khoản: ${target.hoTen} (${target.googleEmail})`, 'success');
-        addAuditEntry('Đổi người dùng', `Đăng nhập phiên làm việc của ${target.hoTen} (${target.googleEmail})`);
-        renderAll();
+    function openLoginModal() {
+      const sel = document.getElementById('login-user-select');
+      const emailInput = document.getElementById('login-email-input');
+      const users = appState.usersMatrix || [];
+      if (sel) {
+        sel.innerHTML = `<option value="">-- Chọn nhanh cán bộ trong danh sách Ma trận --</option>` +
+          users.map(u => `<option value="${u.id}" ${appState.currentUser?.id === u.id ? 'selected' : ''}>${u.hoTen} (${u.chucVu}) - ${u.googleEmail}</option>`).join('');
       }
+      if (emailInput) {
+        const defaultU = appState.isLoggedIn ? appState.currentUser : users[0];
+        emailInput.value = defaultU ? defaultU.googleEmail : '';
+      }
+      document.getElementById('login-modal').classList.remove('hidden');
+    }
+
+    function closeLoginModal() {
+      document.getElementById('login-modal').classList.add('hidden');
+    }
+
+    function fillLoginEmailFromSelect(userId) {
+      const found = (appState.usersMatrix || []).find(u => u.id === userId);
+      if (found) {
+        document.getElementById('login-email-input').value = found.googleEmail || '';
+        document.getElementById('login-pin-input').value = found.maPin || '123456';
+      }
+    }
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      const email = (document.getElementById('login-email-input')?.value || '').trim().toLowerCase();
+      const pin = (document.getElementById('login-pin-input')?.value || '').trim();
+      const users = appState.usersMatrix || [];
+      const target = users.find(u => (u.googleEmail || '').toLowerCase() === email);
+
+      if (!target) {
+        alert('Không tìm thấy Email này trong Ma trận Phân quyền! Vui lòng kiểm tra lại hoặc liên hệ Hiệu trưởng.');
+        return;
+      }
+      const expectedPin = String(target.maPin || '123456').trim();
+      if (pin !== expectedPin) {
+        alert('Mã PIN không chính xác! (Mặc định thử nghiệm là 123456)');
+        return;
+      }
+
+      appState.isLoggedIn = true;
+      appState.currentUser = target;
+      sessionStorage.setItem('qa_edusys_logged_user_id', target.id);
+      updateActiveUserDisplay();
+      closeLoginModal();
+      addAuditEntry('Đăng nhập xác thực', `${target.hoTen} (${target.googleEmail}) đã đăng nhập với quyền [${target.roleType}]`);
+      saveState();
+      renderAll();
+      showToast(`Xin chào ${target.hoTen}! Đã mở khóa các tiêu chí theo Ma trận Phân quyền.`, 'success');
+    }
+
+    function logoutUser() {
+      const oldName = appState.currentUser?.hoTen || 'Người dùng';
+      appState.isLoggedIn = false;
+      appState.currentUser = GUEST_VIEWER_USER;
+      sessionStorage.removeItem('qa_edusys_logged_user_id');
+      updateActiveUserDisplay();
+      addAuditEntry('Đăng xuất', `${oldName} đã đăng xuất. Hệ thống chuyển về chế độ Chỉ xem.`);
+      renderAll();
+      showToast('Đã đăng xuất! Hệ thống đang ở chế độ Chỉ xem.', 'info');
     }
 
     function loadState(pushAudit = true) {
@@ -1456,26 +1687,160 @@
       }
     }
 
-    // Kiểm tra quyền chỉnh sửa theo Ma trận Phân quyền (ketnoi.js)
+    // Kiểm tra quyền chỉnh sửa: Nếu CHƯA ĐĂNG NHẬP -> Chỉ xem 100%!
     function canUserEditCriterion(criterionId) {
+      if (!appState.isLoggedIn) return false;
       const u = appState.currentUser;
-      if (!u) return false;
+      if (!u || u.roleType === 'guest' || u.roleType === 'viewer') return false;
       if (u.roleType === 'admin') return true;
-      if (u.roleType === 'viewer') return false;
       const allowed = u.tieuChiDuocSua;
-      if (!allowed || !Array.isArray(allowed)) return true; // fallback nếu chưa cấu hình mảng
+      if (!allowed || !Array.isArray(allowed)) return false;
       if (allowed.includes('ALL')) return true;
       return allowed.includes(String(criterionId));
     }
 
-    // Lấy danh sách tên người phụ trách chính của 1 tiêu chí
+    function isCurrentUserAdmin() {
+      return appState.isLoggedIn && appState.currentUser && appState.currentUser.roleType === 'admin';
+    }
+
+    // Lấy danh sách tên người phụ trách chính của 1 tiêu chí từ Ma trận
     function getCriterionEditorsText(criterionId) {
-      const users = KETNOI.DANH_SACH_NGUOI_DUNG || [];
-      const editors = users.filter(u => u.roleType !== 'admin' && Array.isArray(u.tieuChiDuocSua) && u.tieuChiDuocSua.includes(String(criterionId)));
+      const users = appState.usersMatrix || [];
+      const editors = users.filter(u => u.roleType !== 'admin' && u.roleType !== 'viewer' && Array.isArray(u.tieuChiDuocSua) && u.tieuChiDuocSua.includes(String(criterionId)));
       if (editors.length > 0) {
         return editors.map(e => e.hoTen).join(', ');
       }
       return 'Ban Giám hiệu';
+    }
+
+    // Bật/tắt Checkbox phân quyền tiêu chí trên UI
+    function toggleMatrixCheckbox(userId, criterionId, isChecked) {
+      if (!isCurrentUserAdmin()) {
+        showToast('Chỉ Hiệu trưởng (Admin) mới được phép thay đổi Check phân quyền!', 'error');
+        renderRbacMatrixTable();
+        return;
+      }
+      const user = (appState.usersMatrix || []).find(u => u.id === userId);
+      if (!user) return;
+      if (!Array.isArray(user.tieuChiDuocSua)) user.tieuChiDuocSua = [];
+      if (user.tieuChiDuocSua.includes('ALL')) {
+        user.tieuChiDuocSua = ['1.1','1.2','1.3','1.4','2.1','2.2','2.3','3.1','3.2','3.3','3.4','3.5','4.1','4.2','4.3'];
+      }
+      const cStr = String(criterionId);
+      if (isChecked) {
+        if (!user.tieuChiDuocSua.includes(cStr)) user.tieuChiDuocSua.push(cStr);
+      } else {
+        user.tieuChiDuocSua = user.tieuChiDuocSua.filter(x => x !== cStr);
+      }
+      localStorage.setItem('qa_edusys_users_matrix', JSON.stringify(appState.usersMatrix));
+      if (appState.currentUser && appState.currentUser.id === user.id) {
+        appState.currentUser = user;
+        updateActiveUserDisplay();
+      }
+      renderCriteriaList();
+      renderRbacMatrixTable();
+    }
+
+    function changeUserRoleInMatrix(userId, newRole) {
+      if (!isCurrentUserAdmin()) {
+        showToast('Chỉ Hiệu trưởng (Admin) mới được đổi vai trò!', 'error');
+        return;
+      }
+      const user = (appState.usersMatrix || []).find(u => u.id === userId);
+      if (!user) return;
+      user.roleType = newRole;
+      if (newRole === 'admin') {
+        user.tieuChiDuocSua = ['ALL'];
+      } else if (newRole === 'viewer') {
+        user.tieuChiDuocSua = [];
+      } else if (Array.isArray(user.tieuChiDuocSua) && user.tieuChiDuocSua.includes('ALL')) {
+        user.tieuChiDuocSua = ['1.1', '1.2'];
+      }
+      localStorage.setItem('qa_edusys_users_matrix', JSON.stringify(appState.usersMatrix));
+      renderAll();
+      showToast(`Đã cập nhật vai trò của ${user.hoTen}`, 'success');
+    }
+
+    function saveAndSyncMatrixToSheet() {
+      if (!isCurrentUserAdmin()) {
+        showToast('Vui lòng Đăng nhập tài khoản Hiệu trưởng (Admin) để lưu và đồng bộ Ma trận lên Sheet!', 'warning');
+        openLoginModal();
+        return;
+      }
+      localStorage.setItem('qa_edusys_users_matrix', JSON.stringify(appState.usersMatrix));
+      addAuditEntry('Lưu Ma trận Phân quyền', `${appState.currentUser.hoTen} đã cập nhật bảng Check Ma trận Phân quyền.`);
+      saveState();
+
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        showToast('Đang đồng bộ bảng Check lên Sheet MA_TRAN_PHAN_QUYEN...', 'info');
+        google.script.run.withSuccessHandler(res => {
+          if (res && res.success) {
+            showToast(`Đã lưu ${res.updatedCount} cán bộ và gắn Checkbox chuẩn lên Google Sheet MA_TRAN_PHAN_QUYEN!`, 'success');
+          } else {
+            showToast('Lỗi đồng bộ Sheet: ' + (res?.error || res?.message), 'error');
+          }
+        }).apiLuuMaTranPhanQuyenSheet(appState.usersMatrix);
+      } else {
+        showToast('Đã lưu Ma trận Phân quyền (Check) vào bộ nhớ hệ thống!', 'success');
+      }
+    }
+
+    function loadMatrixFromGoogleSheet() {
+      if (typeof google !== 'undefined' && google.script && google.script.run) {
+        showToast('Đang tải Ma trận Phân quyền từ Sheet MA_TRAN_PHAN_QUYEN...', 'info');
+        google.script.run.withSuccessHandler(res => {
+          if (res && res.success && Array.isArray(res.users)) {
+            appState.usersMatrix = res.users;
+            localStorage.setItem('qa_edusys_users_matrix', JSON.stringify(res.users));
+            renderAll();
+            showToast('Đã đồng bộ Ma trận Check từ Google Sheet thành công!', 'success');
+          }
+        }).apiLayMaTranPhanQuyenSheet(appState.usersMatrix);
+      } else {
+        showToast('Đã làm mới Ma trận Phân quyền từ cấu hình hiện tại!', 'info');
+        renderRbacMatrixTable();
+      }
+    }
+
+    function openAddUserMatrixModal() {
+      if (!isCurrentUserAdmin()) {
+        showToast('Chỉ Hiệu trưởng (Admin) mới được thêm cán bộ vào Ma trận!', 'warning');
+        openLoginModal();
+        return;
+      }
+      document.getElementById('add-user-matrix-modal').classList.remove('hidden');
+    }
+
+    function closeAddUserMatrixModal() {
+      document.getElementById('add-user-matrix-modal').classList.add('hidden');
+    }
+
+    function saveNewUserToMatrix(e) {
+      e.preventDefault();
+      const hoTen = document.getElementById('new-user-name').value.trim();
+      const chucVu = document.getElementById('new-user-title').value.trim();
+      const googleEmail = document.getElementById('new-user-email').value.trim();
+      const maPin = document.getElementById('new-user-pin').value.trim() || '123456';
+      const roleType = document.getElementById('new-user-role').value;
+      const words = hoTen.split(' ');
+      const initial = (words[words.length - 1] || 'U').charAt(0).toUpperCase();
+      const newUser = {
+        id: 'u_' + Date.now(),
+        hoTen,
+        chucVu,
+        vaiTroHoiDong: roleType === 'admin' ? 'Chủ tịch HĐ' : (roleType === 'reviewer' ? 'Thư ký HĐ' : (roleType === 'viewer' ? 'Quan sát viên' : 'Ủy viên HĐ')),
+        roleType,
+        googleEmail,
+        maPin,
+        tieuChiDuocSua: roleType === 'admin' ? ['ALL'] : [],
+        initial,
+        avatarColor: roleType === 'admin' ? 'bg-indigo-600' : (roleType === 'reviewer' ? 'bg-emerald-600' : 'bg-blue-600')
+      };
+      appState.usersMatrix.push(newUser);
+      localStorage.setItem('qa_edusys_users_matrix', JSON.stringify(appState.usersMatrix));
+      closeAddUserMatrixModal();
+      renderRbacMatrixTable();
+      showToast(`Đã thêm ${hoTen}! Hãy tích chọn (Check) các tiêu chí giao cho cán bộ này trên bảng.`, 'success');
     }
 
     function renderRbacMatrixTable() {
@@ -1483,43 +1848,77 @@
       if (!container) return;
       const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
       const criteria = appState.workspaces[ws]?.criteria || [];
-      const users = KETNOI.DANH_SACH_NGUOI_DUNG || [];
+      const users = appState.usersMatrix || [];
+      const isAdmin = isCurrentUserAdmin();
+
+      const banner = document.getElementById('rbac-matrix-auth-banner');
+      if (banner) {
+        if (isAdmin) {
+          banner.className = 'px-4 py-2.5 bg-emerald-50 border-b border-emerald-200 text-xs text-emerald-900 flex items-center justify-between';
+          banner.innerHTML = `
+            <span><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i><strong>Chế độ Quản trị (Hiệu trưởng):</strong> Bạn có thể tích chọn (Check) trực tiếp vào từng ô tiêu chí bên dưới để cấp/thu hồi quyền sửa của giáo viên. Ô không tích chọn sẽ ở chế độ <strong>Chỉ xem</strong>.</span>
+            <span class="font-mono text-[11px] text-emerald-700 font-bold">Sheet đích: MA_TRAN_PHAN_QUYEN</span>
+          `;
+        } else {
+          banner.className = 'px-4 py-2.5 bg-amber-50 border-b border-amber-200 text-xs text-amber-900 flex items-center justify-between';
+          banner.innerHTML = `
+            <span><i class="fa-solid fa-lock text-amber-600 mr-1.5"></i><strong>Chế độ Chỉ xem Ma trận:</strong> Bạn đang xem bảng phân công. Để tích chọn (Check) thay đổi phân quyền, vui lòng đăng nhập tài khoản <strong>Hiệu trưởng (Admin)</strong>.</span>
+            <button onclick="openLoginModal()" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold text-[11px] whitespace-nowrap"><i class="fa-solid fa-right-to-bracket mr-1"></i>Đăng nhập Admin</button>
+          `;
+        }
+      }
 
       container.innerHTML = `
         <table class="w-full text-left text-[11px] border-collapse">
           <thead class="bg-slate-100 text-slate-700 font-bold border-b border-slate-200">
             <tr>
-              <th class="py-2.5 px-3 sticky left-0 bg-slate-100 z-10 border-r border-slate-200 min-w-[180px]">Thành viên Hội đồng TĐG</th>
-              <th class="py-2.5 px-2 border-r border-slate-200 min-w-[110px]">Vai trò</th>
+              <th class="py-2.5 px-3 sticky left-0 bg-slate-100 z-10 border-r border-slate-200 min-w-[200px]">Thành viên & Email Google</th>
+              <th class="py-2.5 px-2 border-r border-slate-200 min-w-[125px]">Loại Quyền</th>
               ${criteria.map(c => `
-                <th class="py-2 px-1.5 text-center border-r border-slate-200 min-w-[54px]" title="${c.name}">
+                <th class="py-2 px-1.5 text-center border-r border-slate-200 min-w-[54px]" title="${c.code}: ${c.name}">
                   <div class="${c.mandatory ? 'text-rose-600 font-extrabold' : 'text-indigo-700 font-bold'}">${c.code.replace('TC ', '')}${c.mandatory ? '*' : ''}</div>
+                  <div class="text-[9px] text-slate-400 font-normal">Check</div>
                 </th>
               `).join('')}
             </tr>
           </thead>
           <tbody class="divide-y divide-slate-200">
             ${users.map(u => {
-              const isCurrent = appState.currentUser && appState.currentUser.id === u.id;
+              const isCurrent = appState.isLoggedIn && appState.currentUser && appState.currentUser.id === u.id;
+              const isAll = u.roleType === 'admin' || (Array.isArray(u.tieuChiDuocSua) && u.tieuChiDuocSua.includes('ALL'));
+              const isViewer = u.roleType === 'viewer';
               return `
                 <tr class="${isCurrent ? 'bg-indigo-50/70' : 'hover:bg-slate-50'} transition">
-                  <td class="py-2 px-3 sticky left-0 ${isCurrent ? 'bg-indigo-50' : 'bg-white'} z-10 border-r border-slate-200 font-bold text-slate-800">
+                  <td class="py-2 px-3 sticky left-0 ${isCurrent ? 'bg-indigo-50' : 'bg-white'} z-10 border-r border-slate-200">
                     <div class="flex items-center space-x-2">
-                      <span class="w-5 h-5 rounded ${u.avatarColor || 'bg-indigo-600'} text-white text-[10px] flex items-center justify-center font-bold flex-shrink-0">${u.initial}</span>
-                      <span class="truncate">${u.hoTen}</span>
+                      <span class="w-6 h-6 rounded ${u.avatarColor || 'bg-indigo-600'} text-white text-[10px] flex items-center justify-center font-bold flex-shrink-0">${u.initial || 'U'}</span>
+                      <div class="min-w-0">
+                        <div class="font-bold text-slate-800 truncate">${u.hoTen} ${isCurrent ? '<span class="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full ml-1">Bạn</span>' : ''}</div>
+                        <div class="text-[10px] text-slate-500 font-mono truncate">${u.googleEmail || 'Chưa gán email'}</div>
+                      </div>
                     </div>
                   </td>
-                  <td class="py-2 px-2 border-r border-slate-200 text-[10px] text-slate-500 font-medium">${u.chucVu}</td>
+                  <td class="py-2 px-2 border-r border-slate-200">
+                    <select ${isAdmin ? '' : 'disabled'} onchange="changeUserRoleInMatrix('${u.id}', this.value)" class="w-full text-[10px] font-bold rounded-lg p-1 border border-slate-300 ${isAdmin ? 'bg-white cursor-pointer' : 'bg-slate-100 cursor-not-allowed'}">
+                      <option value="admin" ${u.roleType === 'admin' ? 'selected' : ''}>👑 Admin (Tất cả)</option>
+                      <option value="reviewer" ${u.roleType === 'reviewer' ? 'selected' : ''}>🔍 Thư ký / Phó HT</option>
+                      <option value="editor" ${u.roleType === 'editor' ? 'selected' : ''}>✏️ Biên tập TC</option>
+                      <option value="viewer" ${u.roleType === 'viewer' ? 'selected' : ''}>👁️ Chỉ xem 100%</option>
+                    </select>
+                  </td>
                   ${criteria.map(c => {
-                    const isAll = u.roleType === 'admin' || (Array.isArray(u.tieuChiDuocSua) && u.tieuChiDuocSua.includes('ALL'));
-                    const isEdit = !isAll && u.roleType !== 'viewer' && Array.isArray(u.tieuChiDuocSua) && u.tieuChiDuocSua.includes(String(c.id));
-                    if (isAll) {
-                      return `<td class="py-2 px-1 text-center border-r border-slate-100 bg-indigo-50/40"><span class="inline-block px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-800 font-bold text-[10px]" title="Toàn quyền Phê duyệt & Sửa">👑 Duyệt</span></td>`;
-                    } else if (isEdit) {
-                      return `<td class="py-2 px-1 text-center border-r border-slate-100 bg-emerald-50/50"><span class="inline-block px-1.5 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]" title="Được phân công Biên tập & Nộp MC">✏️ Sửa</span></td>`;
-                    } else {
-                      return `<td class="py-2 px-1 text-center border-r border-slate-100 text-slate-400"><span class="text-[10px]" title="Chỉ được xem, không được sửa">👁️ Xem</span></td>`;
-                    }
+                    const checked = isAll || (!isViewer && Array.isArray(u.tieuChiDuocSua) && u.tieuChiDuocSua.includes(String(c.id)));
+                    const disableCb = !isAdmin || u.roleType === 'admin' || u.roleType === 'viewer';
+                    return `
+                      <td class="py-2 px-1 text-center border-r border-slate-100 ${checked ? 'bg-emerald-50/60' : 'bg-white'}">
+                        <input type="checkbox"
+                          ${checked ? 'checked' : ''}
+                          ${disableCb ? 'disabled' : ''}
+                          onchange="toggleMatrixCheckbox('${u.id}', '${c.id}', this.checked)"
+                          title="${u.hoTen} - ${c.code}: ${checked ? 'ĐƯỢC SỬA (Checked)' : 'CHỈ XEM (Unchecked)'}"
+                          class="w-4 h-4 rounded text-emerald-600 border-slate-300 focus:ring-emerald-500 ${disableCb ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'}">
+                      </td>
+                    `;
                   }).join('')}
                 </tr>
               `;
