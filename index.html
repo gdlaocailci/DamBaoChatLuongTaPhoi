@@ -1236,7 +1236,48 @@
     </div>
   </div>
 
-  <!-- 7. ADD NEW USER TO RBAC MATRIX MODAL -->
+  <!-- 6B. QUICK ASSIGN CRITERION EDITORS MODAL (ĐỔI NGƯỜI PHỤ TRÁCH TRỰC TIẾP TRÊN GIAO DIỆN) -->
+  <div id="quick-assign-modal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
+      <div class="p-4 bg-gradient-to-r from-indigo-700 to-slate-900 text-white flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-sm flex items-center" id="quick-assign-title">
+            <i class="fa-solid fa-users-gear text-amber-300 mr-2"></i>Phân công Người phụ trách Tiêu chí
+          </h3>
+          <p class="text-[11px] text-indigo-200 mt-0.5">Tích chọn trực tiếp trên giao diện — Tự động lưu & đồng bộ Sheet, không cần sửa code</p>
+        </div>
+        <button onclick="closeQuickAssignModal()" class="text-white/80 hover:text-white p-1 rounded-lg">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="p-5 space-y-4 text-xs">
+        <input type="hidden" id="quick-assign-cid">
+        <div>
+          <label class="block font-bold text-slate-700 mb-1">Tên Tổ / Bộ phận chủ trì hiển thị:</label>
+          <input type="text" id="quick-assign-dept" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 font-semibold text-slate-800">
+        </div>
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label class="font-bold text-slate-700">Tích chọn (Check) Cán bộ / Giáo viên được quyền Biên tập:</label>
+            <button type="button" onclick="closeQuickAssignModal(); openAddUserMatrixModal();" class="text-indigo-600 hover:text-indigo-800 font-bold text-[11px]">
+              <i class="fa-solid fa-user-plus mr-1"></i>+ Thêm cán bộ mới
+            </button>
+          </div>
+          <div id="quick-assign-users-list" class="max-h-60 overflow-y-auto custom-scroll divide-y divide-slate-100 border border-slate-200 rounded-xl bg-slate-50/50">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+        <div class="pt-2 border-t border-slate-200 flex justify-end space-x-2">
+          <button type="button" onclick="closeQuickAssignModal()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold">Đóng</button>
+          <button type="button" onclick="saveQuickAssignCriterion()" class="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow flex items-center">
+            <i class="fa-solid fa-check mr-1.5"></i>Lưu Phân công & Đồng bộ
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. ADD / EDIT USER IN RBAC MATRIX MODAL -->
   <div id="add-user-matrix-modal" class="fixed inset-0 bg-slate-950/75 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
     <div class="bg-white rounded-2xl max-w-lg w-full shadow-2xl border border-slate-200 overflow-hidden">
       <div class="p-4 bg-slate-800 text-white flex items-center justify-between">
@@ -1248,6 +1289,7 @@
         </button>
       </div>
       <form onsubmit="saveNewUserToMatrix(event)" class="p-5 space-y-3 text-xs">
+        <input type="hidden" id="edit-user-id">
         <div class="grid grid-cols-2 gap-3">
           <div>
             <label class="block font-bold text-slate-700 mb-1">Họ và tên cán bộ:</label>
@@ -1771,6 +1813,7 @@
       addAuditEntry('Lưu Ma trận Phân quyền', `${appState.currentUser.hoTen} đã cập nhật bảng Check Ma trận Phân quyền.`);
       saveState();
 
+      const webAppUrl = getConfiguredWebAppUrl();
       if (typeof google !== 'undefined' && google.script && google.script.run) {
         showToast('Đang đồng bộ bảng Check lên Sheet MA_TRAN_PHAN_QUYEN...', 'info');
         google.script.run.withSuccessHandler(res => {
@@ -1780,12 +1823,25 @@
             showToast('Lỗi đồng bộ Sheet: ' + (res?.error || res?.message), 'error');
           }
         }).apiLuuMaTranPhanQuyenSheet(appState.usersMatrix);
+      } else if (webAppUrl && webAppUrl.startsWith('http')) {
+        showToast('Đang đồng bộ Ma trận Check lên Google Sheet qua Web App...', 'info');
+        fetch(webAppUrl, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'saveMatrix', users: appState.usersMatrix })
+        }).then(() => {
+          showToast('Đã đồng bộ Ma trận Check lên Google Sheet MA_TRAN_PHAN_QUYEN thành công!', 'success');
+        }).catch(() => {
+          showToast('Đã lưu Ma trận trên máy; sẽ đồng bộ lên Sheet khi có mạng.', 'info');
+        });
       } else {
-        showToast('Đã lưu Ma trận Phân quyền (Check) vào bộ nhớ hệ thống!', 'success');
+        showToast('Đã lưu Ma trận Phân quyền (Check) trực tiếp trên giao diện!', 'success');
       }
     }
 
     function loadMatrixFromGoogleSheet() {
+      const webAppUrl = getConfiguredWebAppUrl();
       if (typeof google !== 'undefined' && google.script && google.script.run) {
         showToast('Đang tải Ma trận Phân quyền từ Sheet MA_TRAN_PHAN_QUYEN...', 'info');
         google.script.run.withSuccessHandler(res => {
@@ -1796,19 +1852,140 @@
             showToast('Đã đồng bộ Ma trận Check từ Google Sheet thành công!', 'success');
           }
         }).apiLayMaTranPhanQuyenSheet(appState.usersMatrix);
+      } else if (webAppUrl && webAppUrl.startsWith('http')) {
+        showToast('Đang tải Ma trận Check từ Google Sheet...', 'info');
+        fetch(webAppUrl + (webAppUrl.includes('?') ? '&' : '?') + 'action=getMatrix')
+          .then(r => r.json())
+          .then(res => {
+            if (res && res.success && Array.isArray(res.users) && res.users.length > 0) {
+              appState.usersMatrix = res.users;
+              localStorage.setItem('qa_edusys_users_matrix', JSON.stringify(res.users));
+              renderAll();
+              showToast('Đã tải Ma trận Phân quyền mới nhất từ Google Sheet!', 'success');
+            }
+          }).catch(() => {
+            renderRbacMatrixTable();
+          });
       } else {
-        showToast('Đã làm mới Ma trận Phân quyền từ cấu hình hiện tại!', 'info');
+        showToast('Đã làm mới Ma trận Phân quyền trên giao diện!', 'info');
         renderRbacMatrixTable();
       }
     }
 
-    function openAddUserMatrixModal() {
+    // Lấy URL Web App từ giao diện hoặc ketnoi.js (Không cần sửa code)
+    function getConfiguredWebAppUrl() {
+      return localStorage.getItem('qa_edusys_webapp_url') || (KETNOI.KET_NOI_HA_TANG && KETNOI.KET_NOI_HA_TANG.GOOGLE_WEB_APP_URL) || '';
+    }
+
+    function saveWebAppUrlFromUi(urlVal) {
+      localStorage.setItem('qa_edusys_webapp_url', (urlVal || '').trim());
+      showToast('Đã lưu đường dẫn Google Web App! Hệ thống sẽ tự động đồng bộ Sheet.', 'success');
+      loadMatrixFromGoogleSheet();
+    }
+
+    // Hộp thoại Đổi nhanh Người phụ trách ngay trên Thẻ Tiêu chí
+    function openQuickAssignModal(cId) {
       if (!isCurrentUserAdmin()) {
-        showToast('Chỉ Hiệu trưởng (Admin) mới được thêm cán bộ vào Ma trận!', 'warning');
+        showToast('Vui lòng đăng nhập quyền Hiệu trưởng (Admin) để đổi người phụ trách!', 'warning');
         openLoginModal();
         return;
       }
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const c = (appState.workspaces[ws]?.criteria || []).find(item => item.id === String(cId));
+      if (!c) return;
+
+      document.getElementById('quick-assign-cid').value = c.id;
+      document.getElementById('quick-assign-title').innerHTML = `<i class="fa-solid fa-users-gear text-amber-300 mr-2"></i>Đổi Người Phụ trách ${c.code}: ${c.name}`;
+      document.getElementById('quick-assign-dept').value = c.dept || '';
+
+      const listEl = document.getElementById('quick-assign-users-list');
+      const users = (appState.usersMatrix || []).filter(u => u.roleType !== 'admin' && u.roleType !== 'viewer');
+      listEl.innerHTML = users.map(u => {
+        const isChecked = Array.isArray(u.tieuChiDuocSua) && (u.tieuChiDuocSua.includes('ALL') || u.tieuChiDuocSua.includes(String(c.id)));
+        return `
+          <label class="flex items-center justify-between p-2.5 hover:bg-indigo-50/60 cursor-pointer transition">
+            <div class="flex items-center space-x-2.5">
+              <input type="checkbox" value="${u.id}" ${isChecked ? 'checked' : ''} class="quick-assign-cb w-4 h-4 rounded text-emerald-600 focus:ring-emerald-500">
+              <div>
+                <div class="font-bold text-slate-800">${u.hoTen} <span class="text-[10px] font-normal text-slate-500">(${u.chucVu})</span></div>
+                <div class="text-[10px] font-mono text-slate-400">${u.googleEmail}</div>
+              </div>
+            </div>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded ${isChecked ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-100 text-slate-500'}">
+              ${isChecked ? 'Đang phụ trách' : 'Chỉ xem'}
+            </span>
+          </label>
+        `;
+      }).join('');
+
+      document.getElementById('quick-assign-modal').classList.remove('hidden');
+    }
+
+    function closeQuickAssignModal() {
+      document.getElementById('quick-assign-modal').classList.add('hidden');
+    }
+
+    function saveQuickAssignCriterion() {
+      const cId = String(document.getElementById('quick-assign-cid').value);
+      const newDept = document.getElementById('quick-assign-dept').value.trim();
+      const ws = appState.workspace === 'LIEN_CAP' ? 'TIEU_HOC' : appState.workspace;
+      const c = (appState.workspaces[ws]?.criteria || []).find(item => item.id === cId);
+      if (c && newDept) {
+        c.dept = newDept;
+      }
+
+      const checkedUserIds = new Set(Array.from(document.querySelectorAll('.quick-assign-cb:checked')).map(cb => cb.value));
+      (appState.usersMatrix || []).forEach(u => {
+        if (u.roleType === 'admin' || u.roleType === 'viewer') return;
+        if (!Array.isArray(u.tieuChiDuocSua)) u.tieuChiDuocSua = [];
+        if (checkedUserIds.has(u.id)) {
+          if (!u.tieuChiDuocSua.includes(cId)) u.tieuChiDuocSua.push(cId);
+        } else {
+          u.tieuChiDuocSua = u.tieuChiDuocSua.filter(x => x !== cId);
+        }
+      });
+
+      closeQuickAssignModal();
+      saveAndSyncMatrixToSheet();
+      renderAll();
+    }
+
+    function openAddUserMatrixModal(editUserId) {
+      if (!isCurrentUserAdmin()) {
+        showToast('Chỉ Hiệu trưởng (Admin) mới được thêm/sửa cán bộ trong Ma trận!', 'warning');
+        openLoginModal();
+        return;
+      }
+      const editInput = document.getElementById('edit-user-id');
+      if (editUserId) {
+        const u = (appState.usersMatrix || []).find(item => item.id === editUserId);
+        if (u) {
+          if (editInput) editInput.value = u.id;
+          document.getElementById('new-user-name').value = u.hoTen || '';
+          document.getElementById('new-user-title').value = u.chucVu || '';
+          document.getElementById('new-user-email').value = u.googleEmail || '';
+          document.getElementById('new-user-pin').value = u.maPin || '123456';
+          document.getElementById('new-user-role').value = u.roleType || 'editor';
+        }
+      } else {
+        if (editInput) editInput.value = '';
+        document.getElementById('new-user-name').value = '';
+        document.getElementById('new-user-title').value = '';
+        document.getElementById('new-user-email').value = '';
+        document.getElementById('new-user-pin').value = '123456';
+        document.getElementById('new-user-role').value = 'editor';
+      }
       document.getElementById('add-user-matrix-modal').classList.remove('hidden');
+    }
+
+    function deleteUserFromMatrix(userId) {
+      if (!isCurrentUserAdmin()) return;
+      const u = (appState.usersMatrix || []).find(item => item.id === userId);
+      if (!u) return;
+      if (!confirm(`Bạn có chắc chắn muốn xóa cán bộ "${u.hoTen}" khỏi Ma trận Phân quyền?`)) return;
+      appState.usersMatrix = appState.usersMatrix.filter(item => item.id !== userId);
+      saveAndSyncMatrixToSheet();
+      renderAll();
     }
 
     function closeAddUserMatrixModal() {
@@ -1817,6 +1994,7 @@
 
     function saveNewUserToMatrix(e) {
       e.preventDefault();
+      const editId = document.getElementById('edit-user-id')?.value;
       const hoTen = document.getElementById('new-user-name').value.trim();
       const chucVu = document.getElementById('new-user-title').value.trim();
       const googleEmail = document.getElementById('new-user-email').value.trim();
@@ -1824,23 +2002,37 @@
       const roleType = document.getElementById('new-user-role').value;
       const words = hoTen.split(' ');
       const initial = (words[words.length - 1] || 'U').charAt(0).toUpperCase();
-      const newUser = {
-        id: 'u_' + Date.now(),
-        hoTen,
-        chucVu,
-        vaiTroHoiDong: roleType === 'admin' ? 'Chủ tịch HĐ' : (roleType === 'reviewer' ? 'Thư ký HĐ' : (roleType === 'viewer' ? 'Quan sát viên' : 'Ủy viên HĐ')),
-        roleType,
-        googleEmail,
-        maPin,
-        tieuChiDuocSua: roleType === 'admin' ? ['ALL'] : [],
-        initial,
-        avatarColor: roleType === 'admin' ? 'bg-indigo-600' : (roleType === 'reviewer' ? 'bg-emerald-600' : 'bg-blue-600')
-      };
-      appState.usersMatrix.push(newUser);
-      localStorage.setItem('qa_edusys_users_matrix', JSON.stringify(appState.usersMatrix));
+
+      if (editId) {
+        const existing = (appState.usersMatrix || []).find(item => item.id === editId);
+        if (existing) {
+          existing.hoTen = hoTen;
+          existing.chucVu = chucVu;
+          existing.googleEmail = googleEmail;
+          existing.maPin = maPin;
+          existing.roleType = roleType;
+          existing.initial = initial;
+          if (roleType === 'admin') existing.tieuChiDuocSua = ['ALL'];
+          if (roleType === 'viewer') existing.tieuChiDuocSua = [];
+        }
+      } else {
+        const newUser = {
+          id: 'u_' + Date.now(),
+          hoTen,
+          chucVu,
+          vaiTroHoiDong: roleType === 'admin' ? 'Chủ tịch HĐ' : (roleType === 'reviewer' ? 'Thư ký HĐ' : (roleType === 'viewer' ? 'Quan sát viên' : 'Ủy viên HĐ')),
+          roleType,
+          googleEmail,
+          maPin,
+          tieuChiDuocSua: roleType === 'admin' ? ['ALL'] : [],
+          initial,
+          avatarColor: roleType === 'admin' ? 'bg-indigo-600' : (roleType === 'reviewer' ? 'bg-emerald-600' : 'bg-blue-600')
+        };
+        appState.usersMatrix.push(newUser);
+      }
       closeAddUserMatrixModal();
-      renderRbacMatrixTable();
-      showToast(`Đã thêm ${hoTen}! Hãy tích chọn (Check) các tiêu chí giao cho cán bộ này trên bảng.`, 'success');
+      saveAndSyncMatrixToSheet();
+      renderAll();
     }
 
     function renderRbacMatrixTable() {
@@ -1892,9 +2084,17 @@
                   <td class="py-2 px-3 sticky left-0 ${isCurrent ? 'bg-indigo-50' : 'bg-white'} z-10 border-r border-slate-200">
                     <div class="flex items-center space-x-2">
                       <span class="w-6 h-6 rounded ${u.avatarColor || 'bg-indigo-600'} text-white text-[10px] flex items-center justify-center font-bold flex-shrink-0">${u.initial || 'U'}</span>
-                      <div class="min-w-0">
-                        <div class="font-bold text-slate-800 truncate">${u.hoTen} ${isCurrent ? '<span class="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full ml-1">Bạn</span>' : ''}</div>
-                        <div class="text-[10px] text-slate-500 font-mono truncate">${u.googleEmail || 'Chưa gán email'}</div>
+                      <div class="min-w-0 flex-grow">
+                        <div class="font-bold text-slate-800 truncate flex items-center justify-between">
+                          <span>${u.hoTen} ${isCurrent ? '<span class="text-[9px] bg-emerald-100 text-emerald-800 px-1.5 py-0.2 rounded-full ml-1">Bạn</span>' : ''}</span>
+                          ${isAdmin ? `
+                            <span class="inline-flex items-center space-x-1 ml-1">
+                              <button onclick="openAddUserMatrixModal('${u.id}')" class="text-indigo-600 hover:text-indigo-800 p-0.5" title="Sửa tên, chức vụ, email, mã PIN"><i class="fa-solid fa-pen text-[10px]"></i></button>
+                              ${u.id !== appState.currentUser?.id ? `<button onclick="deleteUserFromMatrix('${u.id}')" class="text-rose-500 hover:text-rose-700 p-0.5" title="Xóa cán bộ khỏi ma trận"><i class="fa-solid fa-trash-can text-[10px]"></i></button>` : ''}
+                            </span>
+                          ` : ''}
+                        </div>
+                        <div class="text-[10px] text-slate-500 font-mono truncate">${u.chucVu} • ${u.googleEmail || 'Chưa gán email'}</div>
                       </div>
                     </div>
                   </td>
@@ -2326,7 +2526,10 @@
                   <div class="text-[11px] text-slate-500 mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1">
                     <span><i class="fa-solid fa-users-gear mr-1"></i>Bộ phận: ${c.dept}</span>
                     <span>•</span>
-                    <span><i class="fa-solid fa-user-check mr-1 text-indigo-600"></i>Người phụ trách: <strong>${assignedEditors}</strong></span>
+                    <span class="inline-flex items-center">
+                      <i class="fa-solid fa-user-check mr-1 text-indigo-600"></i>Người phụ trách: <strong class="ml-1 text-slate-800">${assignedEditors}</strong>
+                      ${isCurrentUserAdmin() ? `<button onclick="openQuickAssignModal('${c.id}')" class="ml-2 px-2 py-0.5 rounded bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold text-[10px] transition flex items-center" title="Đổi người phụ trách tiêu chí này ngay trên giao diện"><i class="fa-solid fa-user-pen mr-1"></i>Đổi người phụ trách</button>` : ''}
+                    </span>
                     <span>•</span>
                     <span><i class="fa-solid fa-calendar mr-1"></i>Hạn: Tháng ${c.month} (GĐ ${c.stage})</span>
                     <span>•</span>
